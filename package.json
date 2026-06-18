@@ -1,0 +1,33 @@
+{
+  "name": "chronocity",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "zustand": "^5.0.0",
+    "deck.gl": "^9.0.33",
+    "three": "^0.169.0",
+    "maplibre-gl": "^4.7.1",
+    "react-map-gl": "^7.1.7",
+    "framer-motion": "^11.11.1",
+    "gsap": "^3.12.5",
+    "tone": "^15.0.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.169.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8"
+  }
+}

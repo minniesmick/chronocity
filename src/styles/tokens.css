@@ -1,0 +1,95 @@
+/* ChronoCity — Design Tokens
+ * Tekno-sinematik minimalizm: koyu zemin, amber aksan, yüksek kontrast veri etiketi.
+ * Tüm component'ler buradan beslenir — hardcode hex/px YAZMA.
+ * Kaynak: .design/chronocity/DESIGN_BRIEF.md → Aesthetic Direction
+ */
+
+:root {
+  /* ---- Zemin & Yüzeyler ---- */
+  --color-bg: #0a0a0f; /* ana koyu zemin */
+  --color-bg-elevated: #12121a; /* hafif yükseltilmiş yüzey */
+  --color-panel: #1e293b; /* kontrol paneli */
+  --color-panel-translucent: rgba(30, 41, 59, 0.72); /* glassmorphism panel */
+  --color-overlay: rgba(10, 10, 15, 0.82); /* modal/loading overlay */
+
+  /* ---- Aksan: Amber/Ember ---- */
+  --color-accent: #f59e0b; /* birincil amber aksan */
+  --color-accent-bright: #fbbf24; /* hover/glow */
+  --color-accent-dim: #b45309; /* pasif/disabled aksan */
+  --color-accent-glow: rgba(245, 158, 11, 0.35); /* ışık halesi */
+
+  /* ---- Metin ---- */
+  --color-text: #e2e8f0; /* birincil metin */
+  --color-text-muted: #94a3b8; /* ikincil/etiket */
+  --color-text-faint: #64748b; /* en silik, ipucu */
+  --color-text-on-accent: #0a0a0f; /* amber üstü metin */
+
+  /* ---- Kenarlık & Çizgi ---- */
+  --color-border: rgba(226, 232, 240, 0.08);
+  --color-border-strong: rgba(226, 232, 240, 0.16);
+  --color-focus-ring: var(--color-accent-bright);
+
+  /* ---- Olay Tipleri (EventMarker) ---- */
+  --color-event-positive: #10b981; /* iyi — yeşil */
+  --color-event-negative: #ef4444; /* kötü — kırmızı */
+  --color-event-neutral: #f59e0b; /* nötr/önemli — amber */
+
+  /* ---- Şehir Renkleri (Globe noktaları) ---- */
+  --color-city-istanbul: #f59e0b; /* amber */
+  --color-city-new-york: #3b82f6; /* mavi */
+  --color-city-chicago: #8b5cf6; /* mor */
+  --color-city-berlin: #10b981; /* yeşil */
+  --color-city-vienna: #ef4444; /* kırmızı */
+
+  /* ---- Tipografi ---- */
+  --font-heading: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Space Grotesk", ui-monospace, "Cascadia Code", monospace;
+
+  --text-xs: 0.75rem; /* 12px — etiket */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px — body */
+  --text-lg: 1.25rem; /* 20px */
+  --text-xl: 1.75rem; /* 28px */
+  --text-2xl: 2.5rem; /* 40px — yıl göstergesi */
+  --text-3xl: 4rem; /* 64px — hero/intro */
+
+  --leading-tight: 1.1;
+  --leading-normal: 1.5;
+  --tracking-wide: 0.08em; /* mono etiketler için */
+  --tracking-wider: 0.18em; /* sinematik caps */
+
+  /* ---- Spacing (4px base grid) ---- */
+  --space-1: 0.25rem; /* 4 */
+  --space-2: 0.5rem; /* 8 */
+  --space-3: 1rem; /* 16 */
+  --space-4: 1.5rem; /* 24 */
+  --space-5: 2rem; /* 32 */
+  --space-6: 3rem; /* 48 */
+  --space-7: 4rem; /* 64 */
+
+  /* ---- Radius ---- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* ---- Gölge & Glow ---- */
+  --shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-glow-accent: 0 0 24px var(--color-accent-glow);
+
+  /* ---- Geçiş (60fps: transform/opacity) ---- */
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 160ms;
+  --duration-base: 320ms;
+  --duration-slow: 800ms; /* gece/gündüz lerp */
+
+  /* ---- Z-index katmanları ---- */
+  --z-map: 0;
+  --z-overlay-ui: 10;
+  --z-panel: 20;
+  --z-popup: 30;
+  --z-modal: 40;
+  --z-loading: 50;
+}

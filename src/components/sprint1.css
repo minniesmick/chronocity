@@ -1,0 +1,200 @@
+/* SPRINT 1 — MapCanvas + sahne kabuğu. Token-driven. */
+
+.city-exp {
+  position: fixed;
+  inset: 0;
+  transition: background var(--duration-slow) var(--ease-cinematic);
+}
+
+/* Gündüz — hafif amber zemin parıltısı */
+.city-exp[data-day="true"] {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 120%, rgba(245, 158, 11, 0.1), transparent 70%),
+    var(--color-bg);
+}
+
+/* Gece — daha koyu, ufukta güçlü amber kor */
+.city-exp[data-day="false"] {
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 125%, rgba(245, 158, 11, 0.22), transparent 65%),
+    #050507;
+}
+
+.map-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-map);
+}
+
+.map-canvas canvas {
+  outline: none;
+}
+
+.map-canvas__status {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+}
+
+.map-canvas__status--err {
+  color: var(--color-event-negative);
+}
+
+/* ---- Üst bar: geri + şehir adı ---- */
+.city-exp__top {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  right: var(--space-3);
+  z-index: var(--z-overlay-ui);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+.city-exp__back,
+.city-exp__name {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-panel-translucent);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(10px);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.city-exp__back {
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-wide);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.city-exp__back:hover {
+  border-color: var(--color-accent);
+}
+
+.city-exp__name {
+  font-family: var(--font-heading);
+  font-weight: 500;
+}
+
+.city-exp__spacer {
+  flex: 1;
+}
+
+/* ---- Gece/Gündüz segmented toggle ---- */
+.daynight {
+  pointer-events: auto;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--color-panel-translucent);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(10px);
+}
+
+.daynight__btn {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.daynight__btn[data-on="true"] {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.city-exp__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-pill);
+  background: var(--c);
+  box-shadow: 0 0 10px var(--c);
+}
+
+/* ---- Geçici dev scrubber ---- */
+.scrubber {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-5);
+  transform: translateX(-50%);
+  z-index: var(--z-panel);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: min(680px, 86vw);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-panel-translucent);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-panel);
+}
+
+.scrubber__year {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-accent);
+  text-shadow: var(--shadow-glow-accent);
+  min-width: 5ch;
+  text-align: center;
+}
+
+.scrubber__bounds {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  white-space: nowrap;
+}
+
+.scrubber__range {
+  flex: 1;
+  appearance: none;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    90deg,
+    var(--color-accent) 0%,
+    var(--color-accent-dim) 100%
+  );
+  cursor: pointer;
+}
+
+.scrubber__range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-bright);
+  box-shadow: 0 0 12px var(--color-accent-glow);
+  cursor: grab;
+}
+
+.scrubber__range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-bright);
+  box-shadow: 0 0 12px var(--color-accent-glow);
+  cursor: grab;
+}
