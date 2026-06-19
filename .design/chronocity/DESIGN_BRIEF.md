@@ -34,16 +34,32 @@ ChronoCity; New York, Chicago, Berlin, Viyana ve İstanbul'un kentsel dokusunu z
 
 ## Existing Patterns
 
-**Sprint 0 + Sprint 1 tamamlandı.** Scaffold + 3D çekirdek çalışıyor, NYC verisi doğrulandı.
+**S0+S1+S2+S3(kısmi) tamamlandı. 11 şehir verisi hazır.** Tüm temel akış + timeline + event noktaları + animated ikonlar çalışıyor.
 
-- **Typography**: Space Grotesk (heading/mono) + Inter (body) — `src/styles/tokens.css`'te sabitlendi
-- **Colors**: `#0A0A0F` zemin, `#F59E0B` amber aksan, `#E2E8F0` metin, `#1E293B` panel — tokens'ta sabitlendi. Şehir renkleri: istanbul=#f59e0b, new-york=#3b82f6, chicago=#8b5cf6, berlin=#10b981, vienna=#ef4444
-- **Spacing**: 4px base grid — `--space-{1-8}` scale tokens'ta tanımlı
-- **Stack**: React 18 + Vite 5 + TS scaffold ✅. Zustand 5 global store (t/activeCity/era/isDayMode/isPlaying/activeEvent/audioReady) ✅. FastAPI backend `/ws` + CORS ✅.
-- **3D Çekirdek**: deck.gl 9 GeoJsonLayer — NYC 6.550 bina, `construction_year` morph (t→yıl 1800–2026), GPU transitions 400ms. LightingEffect gündüz (sıcak, 1.4) / gece (soğuk, 0.5). ✅
-- **Tamamlanan componentler**: `MapCanvas`, `DayNightToggle`, `DevTimeScrubber` (geçici), `CityExperience`, `useCityBuildings` hook ✅
-- **Veri**: NYC `buildings.geojson` (3.4MB, `height`+`construction_year`, 6.550 bina Midtown/Flatiron). Diğer şehirler → `hasBuildingData: false` no-op stratejisi.
-- **Sıradaki**: Sprint 2 (SDP1 devam ediyor) — GlobeSelector + IntroScene + CityLoadingScreen + React Router. Tek şehir verisi var (NYC), diğerleri veri geldikçe eklenecek.
+- **Typography**: Space Grotesk (heading/mono) + Inter (body) — `src/styles/tokens.css`
+- **Colors**: `#0A0A0F` zemin, `#F59E0B` amber, `#E2E8F0` metin — tokens. Şehir renkleri: istanbul=#f59e0b, new-york=#3b82f6, chicago=#8b5cf6, berlin=#10b981, vienna=#ef4444 (diğerleri cities.ts'te)
+- **Stack**: React 18 + Vite 5 + TS. Zustand 5 store: `t/activeCity/era/isDayMode/isPlaying/activeEvent/audioReady`. FastAPI `/ws` + CORS. Framer Motion v11.
+- **3D Çekirdek**: deck.gl 9 GeoJsonLayer — 11 şehir, `construction_year` morph, GPU transitions 400ms. LightingEffect gündüz/gece ✅
+- **Era Renk Sistemi**: `colorByEra(year)` 7 dönem + `colorUndated(frame)` RAF pulse → `src/lib/buildingColors.ts` ✅
+- **Zaman lib**: `src/lib/time.ts` — `yearFromT`, `tFromYear` (clamped 0–1), `eraFromYear`, `YEAR_MIN=1800`, `YEAR_MAX=2026` ✅
+- **Routing**: React Router v6 — `/` IntroScene, `/globe` GlobeSelector, `/city/:id` CityExperience. AnimatePresence mode="wait" ✅
+- **CSS mimarisi**: `sprint1.css` (MapCanvas + CityExp + DayNight + TimelineBar + EventMarker), `sprint2.css` (IntroScene + GlobeSelector + CityLoadingScreen). Token-driven, no hardcode. ✅
+- **Animated Icons**: `src/components/icons/` — 31 adet Framer Motion animated SVG. Props: `size`, `color`, `strokeWidth`, `className`. Handle: `AnimatedIconHandle { startAnimation, stopAnimation }`. Kaynak: `framer-motion` (not motion/react). ✅
+- **Tamamlanan componentler**:
+  - `MapCanvas` (deck.gl), `DayNightToggle` (icon entegre), `CityExperience` (header slide-down + icon back butonu), `useCityBuildings` hook ✅
+  - `GlobeSelector` (Three.js, scale-in 0.82→1.0, ambient glow, label RAF overlay, raycaster click) ✅
+  - `IntroScene` (scanlines, stagger animasyon, exit fade) ✅
+  - `CityLoadingScreen` (typewriter milestones, progress bar, AnimatePresence exit) ✅
+  - `TimelineBar` (glassmorphism, play/pause, era pills, keyboard nav, auto-play) ✅
+  - `EventMarker` (proximity fade, pulse, hover→setActiveEvent) ✅
+  - `useCityEvents` hook (activeCity → fetch `/cities/{id}/events/info.json`) ✅
+- **Event verisi**: Berlin (9 olay 1871–2006) + İstanbul (9 olay 1856–2010) → `public/cities/{city}/events/info.json` ✅
+- **Müzik klasörleri**: 11 şehir × 4 era = 44 placeholder → `/public/cities/{city}/music/{eraId}.mp3` ✅
+- **Veri (11 şehir, tümü `hasBuildingData: true`, `public/cities/{id}/buildings.geojson`):**
+  - NYC 6.5K bina 3.4MB | Berlin 27.5K 12MB | Vienna 18K 8.3MB | Chicago 4.5K 1.6MB
+  - İstanbul 5K 1.4MB | Paris 13.7K 6MB | London 26.9K 9.5MB | Tokyo 26K 7.4MB
+  - Madrid 14.2K 6.2MB | Barcelona 19.5K 8.4MB | Moscow 8.2K 3.2MB
+- **Sıradaki**: S3 → EventPopup + ReplayButton. S4 → EraAudioEngine.
 
 ## User Flow (Ekran Sırası)
 

@@ -1,0 +1,83 @@
+[
+  {
+    "date": "1856-02-18",
+    "title": "Islahat Fermanı",
+    "shortDesc": "Osmanlı'da gayrimüslimlere eşit haklar tanındı; modernleşme ivme kazandı.",
+    "type": "positive",
+    "category": "siyasi",
+    "coordinates": [41.0082, 28.9784],
+    "wikiSlug": "Reform_Edict_of_1856"
+  },
+  {
+    "date": "1908-07-24",
+    "title": "II. Meşrutiyet İlanı",
+    "shortDesc": "İttihat ve Terakki baskısıyla Kanun-i Esasi yeniden yürürlüğe girdi.",
+    "type": "positive",
+    "category": "siyasi",
+    "coordinates": [41.0136, 28.9550],
+    "wikiSlug": "Second_Constitutional_Era"
+  },
+  {
+    "date": "1918-11-13",
+    "title": "İtilaf Donanması İstanbul'da",
+    "shortDesc": "Mondros Mütarekesi sonrası İtilaf güçleri İstanbul'u işgal etti.",
+    "type": "negative",
+    "category": "savaş",
+    "coordinates": [41.0082, 28.9784],
+    "wikiSlug": "Occupation_of_Constantinople"
+  },
+  {
+    "date": "1923-10-29",
+    "title": "Cumhuriyet İlanı",
+    "shortDesc": "Türkiye Cumhuriyeti kuruldu; Ankara başkent, İstanbul kültür merkezi kaldı.",
+    "type": "positive",
+    "category": "siyasi",
+    "coordinates": [41.0082, 28.9784],
+    "wikiSlug": "Proclamation_of_the_Republic_of_Turkey"
+  },
+  {
+    "date": "1955-09-06",
+    "title": "İstanbul Pogromu",
+    "shortDesc": "Rum, Ermeni ve Yahudi mülklerine yönelik organize saldırılar yaşandı.",
+    "type": "negative",
+    "category": "sosyal",
+    "coordinates": [41.0317, 28.9779],
+    "wikiSlug": "Istanbul_pogrom"
+  },
+  {
+    "date": "1973-10-29",
+    "title": "Boğaziçi Köprüsü Açıldı",
+    "shortDesc": "Avrupa ile Asya'yı bağlayan köprü, Cumhuriyet'in 50. yılında açıldı.",
+    "type": "positive",
+    "category": "altyapı",
+    "coordinates": [41.0461, 29.0338],
+    "wikiSlug": "Bosphorus_Bridge"
+  },
+  {
+    "date": "1999-08-17",
+    "title": "Marmara Depremi",
+    "shortDesc": "7.6 büyüklüğündeki deprem 17.000'den fazla can aldı, İzmit merkezliydi.",
+    "type": "negative",
+    "category": "afet",
+    "coordinates": [40.7020, 29.9870],
+    "wikiSlug": "1999_İzmit_earthquake"
+  },
+  {
+    "date": "2005-10-03",
+    "title": "AB Üyelik Müzakereleri Başladı",
+    "shortDesc": "Türkiye ile Avrupa Birliği arasında katılım müzakereleri resmen açıldı.",
+    "type": "positive",
+    "category": "siyasi",
+    "coordinates": [41.0082, 28.9784],
+    "wikiSlug": "Accession_of_Turkey_to_the_European_Union"
+  },
+  {
+    "date": "2010-01-01",
+    "title": "Avrupa Kültür Başkenti",
+    "shortDesc": "İstanbul, Pécs ve Essen ile birlikte 2010 Avrupa Kültür Başkenti seçildi.",
+    "type": "positive",
+    "category": "kültür",
+    "coordinates": [41.0082, 28.9784],
+    "wikiSlug": "Istanbul_European_Capital_of_Culture"
+  }
+]

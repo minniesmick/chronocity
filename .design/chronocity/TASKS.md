@@ -15,6 +15,8 @@ Stack: React 18 + Vite + TypeScript + deck.gl + Three.js + Web Audio API + FastA
 
 - [x] **Asset Klasör Yapısı**: `/public/cities/{city}/music/`, `/public/cities/{city}/events/{date}/` yapısı 5 şehir için oluşturuldu. NYC `buildings.geojson` (6550 bina, height+construction_year) `public/cities/new-york/`'a kopyalandı. _Not: İstanbul örnek event JSON'ları ertelendi — veri şehri NYC._ _New._
 
+- [x] **11 Şehir Bina Verisi**: Manus.ai ile 11 şehir için bina GeoJSON indirildi (height %100 hepsi). Merkez bbox'a kırpıldı, `public/cities/{city}/buildings.geojson`'a kopyalandı. NYC/Berlin/Moscow/Paris/Vienna/Chicago/London/Tokyo/Madrid/Barcelona/İstanbul. `hasBuildingData: true` tüm şehirler. `CityId` tipi güncellendi. _New._
+
 - [x] **FastAPI Backend Scaffold**: `backend/main.py` — WebSocket endpoint (`/ws`), CORS ayarı, health check. `requirements.txt`. _New._
 
 ---
@@ -29,29 +31,33 @@ Stack: React 18 + Vite + TypeScript + deck.gl + Three.js + Web Audio API + FastA
 
 - [x] **TimeUniform (data-driven)**: `t`→yıl morph çalışıyor — construction_year kapısı + amber yükseklik rampası, deck.gl GPU transitions (getElevation/getFillColor 400ms) ile pürüzsüz. `useStore` `t` tüm sisteme yayılır. _Karar: el-yazımı GLSL uTime yerine data-driven + GPU transition (sağlam, aynı görsel). Gerçek GLSL injection opsiyonel hardening olarak ertelendi._ _New._
 
+- [x] **Era Renk Sistemi + Pulse Animasyon**: `colorByEra(year)` — 7 dönem bandı (taş/barok 1870 öncesi → cam-mavi 2010+). Tarihi belirsiz binalar `colorUndated(frame)` — gri-mavi, 20fps RAF loop (~50ms setFrame) ile nefes pulse (opacity 55–95). Dated binalar zamanı gelince dönem rengiyle çıkar, undated her zaman görünür. `buildingColors.ts` tamamen yeniden yazıldı, `MapCanvas.tsx` RAF loop eklendi. _New._
+
 - [x] **DayNightToggle**: Yapışık ikili segmented buton (Gündüz/Gece) üst barda. `isDayMode` store → MapCanvas LightingEffect (gündüz sıcak/parlak ↔ gece loş/soğuk) + bina paleti (gece kısa binalar kararır) + arka plan 800ms CSS geçişi. İki screenshot doğrulandı. `DayNightToggle.tsx`. _New._
 
 ---
 
 ## SPRINT 2 — Globe & Entry Flow
 
-- [ ] **GlobeSelector — Three.js Globe**: `THREE.SphereGeometry` + earth texture. 5 şehir noktası: her biri şehre özel renk (İstanbul → amber, NYC → mavi, Berlin → yeşil, Chicago → mor, Viyana → kırmızı). Hover → pulse animasyonu + şehir adı type-on. Idle → adlar hafif dalgalanır. _New._
+- [x] **GlobeSelector — Three.js Globe**: `THREE.SphereGeometry(2,64,64)` + PhongMaterial + wireframe atmosfer. 11 şehir noktası (globe child → onunla döner), her biri şehre özel renk. Hover → dot scale lerp 1.7×, label border glow. Raycaster click → `/city/:id` navigate. `ResizeObserver` + auto-rotate 0.0008 rad/frame. _New._
 
-- [ ] **Bayrak & Şehir Label**: Her şehir noktasının yanında ülke bayrağı SVG (küçük, 20px). Şehir adı `gsap` ile type-on animasyonu, sonra subtle float. _New. Depends on: GlobeSelector._
+- [x] **Bayrak & Şehir Label**: HTML overlay katmanı — bayrak emoji + şehir adı. RAF döngüsünde `getWorldPosition` → `project(camera)` → CSS transform güncelleme (React state yok, sıfır re-render). Ön yüz kontrolü (camDir dot test). Hover data-attribute → border + name rengi city color. _New. Depends on: GlobeSelector._
 
-- [ ] **IntroScene**: Video `<video loop muted autoplay>` fullscreen. Logo fade-in. "Enter" CTA veya scroll. Framer Motion exit animation → GlobeSelector geçişi. _New._
+- [x] **IntroScene**: Gradient placeholder (TODO: `<video>` arka plan). Logo Framer Motion fade-in (delay stagger). "KEŞFET →" CTA → `/globe`. Exit animasyonu. _New. Video slot hazır, asset bekliyor._
 
-- [ ] **CityLoadingScreen**: Şehre özel video + şehir istatistikleri typewriter (nüfus, kuruluş yılı, 3 dönüm noktası). Alt kısımda ince progress bar. Asset preload tamamlanınca → MainExperience. _New. Depends on: Asset Klasör Yapısı._
+- [x] **CityLoadingScreen**: Overlay mimari (MapCanvas arka planda mount edilir, canvas tam boyuta ulaşır). Flag + şehir adı + ülke + nüfus/kuruluş + 3 milestone typewriter (600ms stagger). setInterval progress bar (1.8s). `AnimatePresence` exit. TODO: `<video>` slot hazır. _New. Depends on: Asset Klasör Yapısı._
+
+React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/city/:id` → CityExperience. `AnimatePresence mode="wait"` + `location` key ile route exit animasyonları.
 
 ---
 
 ## SPRINT 3 — Timeline & Events
 
-- [ ] **TimelineBar**: Tam genişlik horizontal slider (üst veya alt, toggle edilebilir). Yıl göstergesi (büyük mono font). Drag + keyboard (←/→). `t` parametresini global state'e yayar (Zustand veya Context). _New._
+- [x] **TimelineBar**: Glassmorphism panel alt-merkez, 820px max genişlik. Büyük mono yıl göstergesi + ▶/⏸ play butonu. `--pct` CSS var ile canlı track rengi. Era tick işaretleri (1800/1870/1918/1945/1980/2000/2010/2026) — aktifler amber. Keyboard: ←/→ = 1 yıl, Shift+←/→ = 10 yıl, Space = play/pause. Auto-play: setInterval 180ms/yıl (~40s tam yolculuk), t=1'de otomatik dur. `t` → Zustand `setT`. _New. DevTimeScrubber yerini aldı._
 
-- [ ] **YearIndicator + RadioButton**: Aktif yılı gösteren minimal sayısal display. Era müziği manuel seçim radio butonları (1960s / 1980s / 2000s / Modern). Şehre göre etiketler değişir. _New. Depends on: TimelineBar._
+- [x] **YearIndicator + RadioButton**: Yıl TimelineBar sol tarafında büyük mono gösterge. Era pill radio'ları TimelineBar sağında (60'lar / 80'ler / 2000'ler / Modern). t scrub / auto-play → `eraFromYear()` auto-sync. Manuel click override. `era` → Zustand `setEra`. Müzik klasörleri hazır: `/public/cities/{cityId}/music/{eraId}.mp3` — 11 şehir × 4 era = 44 placeholder oluşturuldu. _New. Depends on: TimelineBar._
 
-- [ ] **EventMarker**: Timeline üstünde olay noktaları. 3 tip: `negative` → kırmızı pulse, `positive` → yeşil pulse, `neutral` → amber pulse. `t` parametresi yaklaşınca fade-in. _New. Depends on: TimelineBar, events/info.json._
+- [x] **EventMarker**: Timeline track üstünde 8px renkli noktalar. `positive` yeşil / `negative` kırmızı / `neutral` amber. Uzaklık: >20 yıl gizli, 10-20 yıl %40, <10 yıl tam görünür. ±2 yıl içinde CSS pulse animasyon. Hover → `setActiveEvent` (EventPopup için). `useCityEvents` hook: store `activeCity` → `/public/cities/{city}/events/info.json` fetch. Berlin (9 olay) + İstanbul (9 olay) sample data eklendi. _New. Depends on: TimelineBar._
 
 - [ ] **EventPopup**: EventMarker'a tıklanınca slide-up card. Başlık + kısa açıklama + `cover.jpg`. "Daha fazla" butonu → GeminiReportDrawer tetikler. Kapatma animasyonu. _New. Depends on: EventMarker._
 
@@ -183,8 +189,8 @@ FluidHeatmap temel           → TrafficSimulation (stretch)
 |--------|-------|---------|
 | S0 ✅ | Scaffold + Tokens + FastAPI | Asset klasörü + ilk event JSON'ları |
 | S1 ✅ | MapCanvas + Shader (kritik) | Berlin/Vienna manuel veri indirme |
-| S2 | Globe + Intro + Loading | Wikidata event veri çekimi |
-| S3 | Timeline + Events | Event JSON doldurma (30–50 / şehir) |
+| S2 ✅ | Globe + Intro + Loading | Wikidata event veri çekimi |
+| S3 🔄 | Timeline + Events (EventPopup + ReplayButton kalan) | Event JSON doldurma (30–50 / şehir) |
 | S4 | Audio Engine + Visualizer | MP3 test + browser ses testi |
 | S5 | Multi-city data loader | NYC/Chicago GeoJSON temizleme |
 | S6 | Fluid Heatmap + Layers | IBB API endpoint testi |
@@ -194,4 +200,4 @@ FluidHeatmap temel           → TrafficSimulation (stretch)
 | S10 | Design review + demo | Teknik rapor + bug report |
 | **SDP2** | **Güneş/Gölge + Router + ML + NL Ajan** | **SDP2 test senaryoları + teknik rapor bölümü** |
 
-> **Durum özeti (2026-06-17):** SDP1 S0+S1 tamamlandı (3D çekirdek, NYC verisi, time morph, gece/gündüz). S2–S10 devam ediyor. SDP2 S1 bittikten sonra paralel planlanıyor.
+> **Durum özeti (2026-06-19):** SDP1 S0+S1+S2+S3(kısmi) tamamlandı. 11 şehir verisi, era renk sistemi, pulse animasyon, Three.js globe (scale-in animasyon + glow overlay), React Router + AnimatePresence, IntroScene (scanlines + stagger), CityLoadingScreen (typewriter + progress), TimelineBar (keyboard ←/→ + auto-play + era pill), EventMarker (proximity fade + pulse + useCityEvents hook) ✅. Berlin + İstanbul event verisi (9'ar olay) hazır. 31 animated icon → `src/components/icons/` (ArrowNarrowLeft/Right, Moon, BrightnessDown, Player, Clock, Refresh, Globe, HistoryCircle, Volume, Layers, SlidersH, MapPin, InfoCircle, Sparkles, BrainCircuit, ChartLine, Locate, SatelliteDish, Keyframes, Target, Filter, Heart, Star, Download, Expand, X). Back + DayNight butonlarına entegre. PRODUCT.md + DESIGN.md hazır (impeccable skill). S3 kalan: EventPopup, ReplayButton. SDP2 S1 bittikten sonra paralel planlanıyor.

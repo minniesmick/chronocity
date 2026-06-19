@@ -105,6 +105,9 @@
 }
 
 .daynight__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-pill);
   font-family: var(--font-mono);
@@ -130,7 +133,223 @@
   box-shadow: 0 0 10px var(--c);
 }
 
-/* ---- Geçici dev scrubber ---- */
+/* ============================================================
+   TIMELINE BAR (Sprint 3) — DevTimeScrubber'ın yerini alır
+   ============================================================ */
+.timeline {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-5);
+  transform: translateX(-50%);
+  z-index: var(--z-panel);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: min(820px, 92vw);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-panel-translucent);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-panel);
+}
+
+.timeline__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.timeline__play {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  font-size: 13px;
+  color: var(--color-accent);
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.timeline__play:hover {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.timeline__year {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-accent);
+  text-shadow: var(--shadow-glow-accent);
+  min-width: 4.5ch;
+  text-align: right;
+  letter-spacing: -0.02em;
+}
+
+.timeline__track-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timeline__range {
+  width: 100%;
+  flex: 1;
+  appearance: none;
+  height: 3px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    90deg,
+    var(--color-accent) calc(var(--pct, 100%) * 1%),
+    var(--color-border-strong) calc(var(--pct, 100%) * 1%)
+  );
+  cursor: pointer;
+  outline: none;
+}
+
+.timeline__range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-bright);
+  box-shadow: 0 0 10px var(--color-accent-glow);
+  cursor: grab;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.timeline__range:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  transform: scale(1.2);
+}
+
+.timeline__range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-bright);
+  cursor: grab;
+}
+
+/* Track area: event noktaları + range input overlay */
+.timeline__track-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 20px;
+}
+
+.timeline__range {
+  position: relative;
+  z-index: 1;
+}
+
+/* Event marker noktaları */
+.event-marker {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.event-marker--positive {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e99;
+}
+
+.event-marker--negative {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef444499;
+}
+
+.event-marker--neutral {
+  background: var(--color-accent);
+  box-shadow: 0 0 6px var(--color-accent-glow);
+}
+
+@keyframes marker-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+  50%       { transform: translate(-50%, -50%) scale(1.6); opacity: 0.6; }
+}
+
+.event-marker--pulse {
+  animation: marker-pulse 1.4s ease-in-out infinite;
+}
+
+/* Era tick işaretleri */
+.timeline__ticks {
+  position: relative;
+  height: 14px;
+}
+
+.timeline__tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-faint);
+  transition: color var(--duration-fast) var(--ease-standard);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.timeline__tick[data-active="true"] {
+  color: var(--color-accent-dim);
+}
+
+/* Era müzik radio pill'leri */
+.timeline__era {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.timeline__era-pill {
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-strong);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-faint);
+  background: transparent;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+  white-space: nowrap;
+}
+
+.timeline__era-pill[data-active="true"] {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.timeline__era-pill:hover:not([data-active="true"]) {
+  border-color: var(--color-accent-dim);
+  color: var(--color-text-muted);
+}
+
+/* ---- Geçici dev scrubber (kullanımda değil, saklanıyor) ---- */
 .scrubber {
   position: absolute;
   left: 50%;

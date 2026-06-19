@@ -1,0 +1,83 @@
+[
+  {
+    "date": "1871-01-18",
+    "title": "Alman İmparatorluğu İlanı",
+    "shortDesc": "Prusya önderliğinde Almanya birleşti, Berlin imparatorluk başkenti oldu.",
+    "type": "positive",
+    "category": "siyasi",
+    "coordinates": [52.5186, 13.4081],
+    "wikiSlug": "German_Empire"
+  },
+  {
+    "date": "1918-11-09",
+    "title": "Kaiser Tahttan Çekildi",
+    "shortDesc": "II. Wilhelm tahtı bıraktı, Weimar Cumhuriyeti ilan edildi.",
+    "type": "neutral",
+    "category": "siyasi",
+    "coordinates": [52.5200, 13.4050],
+    "wikiSlug": "Weimar_Republic"
+  },
+  {
+    "date": "1933-01-30",
+    "title": "Hitler İktidara Geldi",
+    "shortDesc": "Hitler Almanya Başbakanı oldu; demokratik düzen çöktü.",
+    "type": "negative",
+    "category": "siyasi",
+    "coordinates": [52.5145, 13.3812],
+    "wikiSlug": "Adolf_Hitler"
+  },
+  {
+    "date": "1945-05-02",
+    "title": "Berlin'in Düşüşü",
+    "shortDesc": "Sovyet kuvvetleri Berlin'i ele geçirdi; II. Dünya Savaşı sona yaklaştı.",
+    "type": "negative",
+    "category": "savaş",
+    "coordinates": [52.5244, 13.4105],
+    "wikiSlug": "Battle_of_Berlin"
+  },
+  {
+    "date": "1961-08-13",
+    "title": "Duvar İnşaatı Başladı",
+    "shortDesc": "Doğu Almanya, Berlin Duvarı'nı ördü; şehir ikiye bölündü.",
+    "type": "negative",
+    "category": "sosyal",
+    "coordinates": [52.5163, 13.3777],
+    "wikiSlug": "Berlin_Wall"
+  },
+  {
+    "date": "1989-11-09",
+    "title": "Duvar Yıkıldı",
+    "shortDesc": "Berlin Duvarı açıldı; Almanya'nın yeniden birleşme süreci başladı.",
+    "type": "positive",
+    "category": "sosyal",
+    "coordinates": [52.5163, 13.3777],
+    "wikiSlug": "Fall_of_the_Berlin_Wall"
+  },
+  {
+    "date": "1990-10-03",
+    "title": "Alman Birleşmesi",
+    "shortDesc": "Doğu ve Batı Almanya tek devlet altında toplandı.",
+    "type": "positive",
+    "category": "siyasi",
+    "coordinates": [52.5200, 13.4050],
+    "wikiSlug": "German_reunification"
+  },
+  {
+    "date": "1999-04-19",
+    "title": "Bundestag Berlin'e Taşındı",
+    "shortDesc": "Alman parlamentosu Bonn'dan Berlin'e döndü; Reichstag restore edildi.",
+    "type": "positive",
+    "category": "mimari",
+    "coordinates": [52.5186, 13.3762],
+    "wikiSlug": "Reichstag_building"
+  },
+  {
+    "date": "2006-06-09",
+    "title": "FIFA Dünya Kupası",
+    "shortDesc": "Berlin, 2006 Dünya Kupası'na ev sahipliği yaptı; final Olympiastadion'da.",
+    "type": "positive",
+    "category": "kültür",
+    "coordinates": [52.5147, 13.2395],
+    "wikiSlug": "2006_FIFA_World_Cup"
+  }
+]

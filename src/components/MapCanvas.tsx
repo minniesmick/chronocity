@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import {
@@ -13,11 +13,10 @@ import { CITIES } from "@/data/cities";
 import { useCityBuildings } from "@/hooks/useCityBuildings";
 import { useStore } from "@/store/useStore";
 import { yearFromT } from "@/lib/time";
-import { colorByHeight } from "@/lib/buildingColors";
+import { colorByEra, colorUndated } from "@/lib/buildingColors";
 
 type BFeature = Feature<Geometry, BuildingProperties>;
 
-// Sinematik ışıklandırma — binalar 3D form kazansın.
 const dayLighting = new LightingEffect({
   ambient: new AmbientLight({ color: [255, 245, 230], intensity: 1.1 }),
   sun: new DirectionalLight({
@@ -27,7 +26,6 @@ const dayLighting = new LightingEffect({
   }),
 });
 
-// Gece — loş, soğuk ambient + sıcak amber yan ışık.
 const nightLighting = new LightingEffect({
   ambient: new AmbientLight({ color: [150, 170, 220], intensity: 0.5 }),
   sun: new DirectionalLight({
@@ -37,7 +35,6 @@ const nightLighting = new LightingEffect({
   }),
 });
 
-/** Bina bu yılda inşa edilmiş mi? Yıl yoksa hep mevcut (baseline kent). */
 const isBuilt = (f: BFeature, year: number): boolean => {
   const y = f.properties.construction_year;
   return y == null || y <= year;
@@ -48,6 +45,22 @@ export default function MapCanvas({ city }: { city: CityId }) {
   const t = useStore((s) => s.t);
   const isDayMode = useStore((s) => s.isDayMode);
   const currentYear = yearFromT(t);
+
+  // Pulse animasyonu için ~20fps RAF sayacı
+  const [frame, setFrame] = useState(0);
+  const rafRef = useRef<number>(0);
+  useEffect(() => {
+    let last = 0;
+    const tick = (now: number) => {
+      if (now - last > 50) {
+        last = now;
+        setFrame((f) => f + 1);
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
   const center = CITIES[city].center;
   const initialViewState: MapViewState = {
@@ -69,21 +82,27 @@ export default function MapCanvas({ city }: { city: CityId }) {
         wireframe: false,
         getElevation: (f: BFeature) =>
           isBuilt(f, currentYear) ? f.properties.height : 0,
-        getFillColor: (f: BFeature) =>
-          isBuilt(f, currentYear)
-            ? colorByHeight(f.properties.height, !isDayMode)
-            : [0, 0, 0, 0],
-        material: { ambient: 0.5, diffuse: 0.6, shininess: 32, specularColor: [60, 50, 40] },
+        getFillColor: (f: BFeature) => {
+          if (!isBuilt(f, currentYear)) return [0, 0, 0, 0];
+          const year = f.properties.construction_year;
+          if (year == null) return colorUndated(frame, !isDayMode);
+          return colorByEra(year, !isDayMode);
+        },
+        material: {
+          ambient: 0.5,
+          diffuse: 0.6,
+          shininess: 32,
+          specularColor: [60, 50, 40],
+        },
         pickable: true,
-        // Zaman ilerleyince binalar pürüzsüz yükselsin
         transitions: { getElevation: 400, getFillColor: 400 },
         updateTriggers: {
           getElevation: currentYear,
-          getFillColor: [currentYear, isDayMode],
+          getFillColor: [currentYear, isDayMode, frame],
         },
       }),
     ];
-  }, [data, city, currentYear, isDayMode]);
+  }, [data, city, currentYear, isDayMode, frame]);
 
   return (
     <div className="map-canvas">

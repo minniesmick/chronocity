@@ -1,31 +1,38 @@
-// Bina renk rampası — tekno-sinematik amber/ember.
-// Yükseklik arttıkça koyu ember → parlak amber.
-// (Sprint 1b'de bu mantık GLSL uTime shader'ına taşınacak; şimdilik JS-side
-//  data-driven, `t` değişince updateTriggers ile yeniden hesaplanır.)
+type RGBA = [number, number, number, number];
 
-type RGB = [number, number, number];
-
-const EMBER: RGB = [120, 53, 15]; // koyu, kısa binalar
-const AMBER: RGB = [251, 191, 36]; // parlak, yüksek binalar
-const HEIGHT_NORM = 250; // metre — normalizasyon tavanı (Empire State ~381m clamp)
-
-const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
+// Era renk skalasi — donem atmosferi
+const ERA_BANDS: Array<{ until: number; day: [number, number, number] }> = [
+  { until: 1870, day: [180, 150, 100] }, // taş/barok
+  { until: 1918, day: [190, 120,  80] }, // Grunderzeit tuğla
+  { until: 1945, day: [200, 165,  60] }, // Art Deco altın
+  { until: 1970, day: [140, 150, 160] }, // beton/brutalzim
+  { until: 1990, day: [175, 175, 155] }, // prefab bej
+  { until: 2010, day: [130, 175, 150] }, // cam/celik
+  { until: 9999, day: [100, 170, 215] }, // modern cam-mavi
+];
 
 /**
- * Yüksekliğe göre amber gradyan. alpha sabit opak.
- * night=true → kısa binalar kararır, yüksekler parlak kalır (gece şehir ışıkları hissi).
+ * Yapım yılına göre dönem rengi.
+ * night=true → 55% karartma.
  */
-export function colorByHeight(
-  height: number,
-  night = false,
-): [number, number, number, number] {
-  const k = clamp01(height / HEIGHT_NORM);
-  const mul = night ? 0.5 + 0.5 * k : 1;
+export function colorByEra(year: number, night = false): RGBA {
+  const band = ERA_BANDS.find((b) => year < b.until) ?? ERA_BANDS[ERA_BANDS.length - 1];
+  const mul = night ? 0.55 : 1.0;
   return [
-    Math.round(lerp(EMBER[0], AMBER[0], k) * mul),
-    Math.round(lerp(EMBER[1], AMBER[1], k) * mul),
-    Math.round(lerp(EMBER[2], AMBER[2], k) * mul),
-    230,
+    Math.round(band.day[0] * mul),
+    Math.round(band.day[1] * mul),
+    Math.round(band.day[2] * mul),
+    220,
   ];
+}
+
+/**
+ * Tarihi belirsiz (construction_year=null) binalara nefes efekti rengi.
+ * frame: RAF sayacından gelen int — Math.sin ile pulse hesaplanır.
+ */
+export function colorUndated(frame: number, night = false): RGBA {
+  const pulse = 0.5 + 0.5 * Math.sin(frame * 0.08);
+  const base = night ? 50 : 95;
+  const v = Math.round(base + 30 * pulse);
+  return [v, v + 10, v + 30, Math.round(55 + 40 * pulse)];
 }

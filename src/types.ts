@@ -1,6 +1,17 @@
 // ChronoCity — paylaşılan tipler
 
-export type CityId = "istanbul" | "new-york" | "chicago" | "berlin" | "vienna";
+export type CityId =
+  | "istanbul"
+  | "new-york"
+  | "chicago"
+  | "berlin"
+  | "vienna"
+  | "paris"
+  | "london"
+  | "barcelona"
+  | "madrid"
+  | "tokyo"
+  | "moscow";
 
 export type EraId = "1960s" | "1980s" | "2000s" | "modern";
 

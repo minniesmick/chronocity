@@ -1,40 +1,78 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { CITIES } from "@/data/cities";
 import type { CityId } from "@/types";
 import MapCanvas from "@/components/MapCanvas";
-import DevTimeScrubber from "@/components/DevTimeScrubber";
+import ArrowNarrowLeftIcon from "@/components/icons/arrow-narrow-left-icon";
+import TimelineBar from "@/components/TimelineBar";
 import DayNightToggle from "@/components/DayNightToggle";
+import CityLoadingScreen from "@/components/CityLoadingScreen";
 import "@/components/sprint1.css";
+import "@/components/sprint2.css";
 
-/**
- * SPRINT 1 ana sahne kabuğu. MapCanvas (3D bina) + geçici scrubber + geri.
- * SPRINT 2'de CityLoadingScreen → MainExperience router'ı bunu sarmalayacak.
- */
-export default function CityExperience({ city }: { city: CityId }) {
-  const setActiveCity = useStore((s) => s.setActiveCity);
+export default function CityExperience() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const isDayMode = useStore((s) => s.isDayMode);
+
+  const city = id as CityId;
   const meta = CITIES[city];
+  const setActiveCity = useStore((s) => s.setActiveCity);
+
+  useEffect(() => {
+    setActiveCity(city);
+    return () => setActiveCity(null);
+  }, [city, setActiveCity]);
+
+  const [showLoading, setShowLoading] = useState(true);
+
+  if (!meta) {
+    navigate("/globe");
+    return null;
+  }
 
   return (
     <div className="city-exp" data-day={isDayMode}>
+      {/* Harita hep açık — loading screen üstüne overlay gelir */}
       <MapCanvas city={city} />
 
-      <header className="city-exp__top">
+      <motion.header
+        className="city-exp__top"
+        initial={{ opacity: 0, y: -18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      >
         <button
           className="city-exp__back"
-          onClick={() => setActiveCity(null)}
-          aria-label="Şehir seçimine dön"
+          onClick={() => navigate("/globe")}
+          aria-label="Globe'a dön"
         >
-          ← geri
+          <ArrowNarrowLeftIcon size={16} color="currentColor" /> geri
         </button>
-        <span className="city-exp__name" style={{ "--c": meta.color } as React.CSSProperties}>
+        <span
+          className="city-exp__name"
+          style={{ "--c": meta.color } as React.CSSProperties}
+        >
           <span className="city-exp__dot" /> {meta.name}
         </span>
         <span className="city-exp__spacer" />
         <DayNightToggle />
-      </header>
+      </motion.header>
 
-      <DevTimeScrubber />
+      <TimelineBar />
+
+      {/* Loading screen overlay — AnimatePresence ile smooth exit */}
+      <AnimatePresence>
+        {showLoading && (
+          <CityLoadingScreen
+            key={city}
+            city={meta}
+            onReady={() => setShowLoading(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

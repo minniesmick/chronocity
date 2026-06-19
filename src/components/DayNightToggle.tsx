@@ -1,9 +1,7 @@
 import { useStore } from "@/store/useStore";
+import BrightnessDownIcon from "@/components/icons/brightness-down-icon";
+import MoonIcon from "@/components/icons/moon-icon";
 
-/**
- * Gece/Gündüz yapışık ikili buton. `isDayMode` store uniform'u → MapCanvas
- * lighting + bina paleti + arka plan değişir. Geçiş arka planda 800ms (CSS).
- */
 export default function DayNightToggle() {
   const isDayMode = useStore((s) => s.isDayMode);
   const toggleDayMode = useStore((s) => s.toggleDayMode);
@@ -16,7 +14,8 @@ export default function DayNightToggle() {
         aria-pressed={isDayMode}
         onClick={() => !isDayMode && toggleDayMode()}
       >
-        ☀ Gündüz
+        <BrightnessDownIcon size={14} color="currentColor" />
+        Gündüz
       </button>
       <button
         className="daynight__btn"
@@ -24,7 +23,8 @@ export default function DayNightToggle() {
         aria-pressed={!isDayMode}
         onClick={() => isDayMode && toggleDayMode()}
       >
-        ☾ Gece
+        <MoonIcon size={14} color="currentColor" />
+        Gece
       </button>
     </div>
   );
