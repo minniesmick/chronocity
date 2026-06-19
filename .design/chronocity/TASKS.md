@@ -39,9 +39,9 @@ Stack: React 18 + Vite + TypeScript + deck.gl + Three.js + Web Audio API + FastA
 
 ## SPRINT 2 — Globe & Entry Flow
 
-- [x] **GlobeSelector — Three.js Globe**: `THREE.SphereGeometry(2,64,64)` + PhongMaterial + wireframe atmosfer. 11 şehir noktası (globe child → onunla döner), her biri şehre özel renk. Hover → dot scale lerp 1.7×, label border glow. Raycaster click → `/city/:id` navigate. `ResizeObserver` + auto-rotate 0.0008 rad/frame. _New._
+- [x] **GlobeSelector — Three.js Globe**: `THREE.SphereGeometry(2,64,64)` + PhongMaterial. 11 şehir noktası. UV-aligned `latLonToVec3` formülü. Drag-to-rotate + autoPause 90 frame. Raycaster click. Auto-rotate 0.0008 rad/frame. **Gündüz/gece texture swap**: `earth-night.jpg` ↔ `earth-day.jpg` — `isDayMode` store ile anlık geçiş + ışık intensity/renk güncelleme (textureCacheRef, ambientRef, sunRef, atmMatRef). Varsayılan: gece. _New._
 
-- [x] **Bayrak & Şehir Label**: HTML overlay katmanı — bayrak emoji + şehir adı. RAF döngüsünde `getWorldPosition` → `project(camera)` → CSS transform güncelleme (React state yok, sıfır re-render). Ön yüz kontrolü (camDir dot test). Hover data-attribute → border + name rengi city color. _New. Depends on: GlobeSelector._
+- [x] **Bayrak & Şehir Label → Lüks Kart**: `.globe-city-card` glassmorphism — left border (şehre özel renk), bayrak emoji (16px), şehir adı uppercase+tracking, ülke adı (city-color). Downward triangle pointer (CSS ::after). Hover glow (color-mix). DayNightToggle sağ üst overlay. RAF döngüsünde `getWorldPosition → project(camera)` → CSS transform (sıfır React re-render). _New. Depends on: GlobeSelector._
 
 - [x] **IntroScene**: Gradient placeholder (TODO: `<video>` arka plan). Logo Framer Motion fade-in (delay stagger). "KEŞFET →" CTA → `/globe`. Exit animasyonu. _New. Video slot hazır, asset bekliyor._
 
@@ -75,9 +75,13 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 ## SPRINT 5 — City Data & Multi-City
 
-- [ ] **CityDataLoader**: Her şehir için GeoJSON lazy load + cache. Şehir değişince `BuildingLayer` swap. Loading state + error boundary. _New. Depends on: MapCanvas, BuildingLayer._
+- [x] **CityDataLoader**: `useCityBuildings` → module-level Map cache. İkinci ziyarette re-fetch yok. Yeni şehir yüklenirken eski data tutulur (flash of empty map yok). useState initializer: cache hit → loading:false anında. _New. Depends on: MapCanvas, BuildingLayer._
 
-- [ ] **FlyTo Animasyonu**: Şehir seçilince `deck.gl FlyToInterpolator` ile smooth kamera geçişi. Globe → harita zoom-in. _New. Depends on: GlobeSelector, MapCanvas._
+- [x] **FlyTo Animasyonu**: DeckGL `initialViewState` (uncontrolled) → controlled `viewState + onViewStateChange`. Mount: zoom=5, pitch=20. 300ms sonra `FlyToInterpolator({ speed: 1.4 })` → zoom=14.5, pitch=50, bearing=-20, duration=2200ms. _New. Depends on: GlobeSelector, MapCanvas._
+
+- [x] **BuildingPopup**: Bina tıklanınca lüks glassmorphism kart. 46px mono yükseklik (era rengi). Animated height bar (0→pct). Era label (Gründerzeit/Brutalizm/vb.). Sol border = `--bpop-accent` (era-matched). AnimatePresence key={x-y}. Viewport clamp. DeckGL onClick: bina → open, boş alan → close. `eraColors.ts`'ten renk. _New. Depends on: BuildingLayer._
+
+- [x] **eraColors.ts**: Paylaşımlı era renk modülü. 7 dönem × {hex, label, yearStart, yearEnd}. `eraByYear(year)` → EraColor. `ERA_ID_COLORS`: EraId → building era rengi. BuildingPopup + TimelineBar era pills + GlobeSelector senkron. _New._
 
 - [ ] **Multi-City Event Data**: 5 şehir × 30–50 olay. Wikidata SPARQL sorgusu ile çek, JSON düzenle. Her şehir için `/public/cities/{city}/events/` doldur. _Arkadaşın görevi — veri toplama._
 
@@ -192,7 +196,7 @@ FluidHeatmap temel           → TrafficSimulation (stretch)
 | S2 ✅ | Globe + Intro + Loading | Wikidata event veri çekimi |
 | S3 ✅ | Timeline + Events + EventPopup + ReplayButton | Event JSON doldurma (30–50 / şehir) |
 | S4 ✅ | EraAudioEngine + FrequencyVisualizer | MP3 test + browser ses testi |
-| S5 | Multi-city data loader | NYC/Chicago GeoJSON temizleme |
+| S5 ✅ | CityDataLoader cache + FlyTo + BuildingPopup + eraColors + Globe day/night + lüks kartlar | NYC/Chicago GeoJSON temizleme |
 | S6 | Fluid Heatmap + Layers | IBB API endpoint testi |
 | S7 | WebSocket + Gemini | API response test senaryoları |
 | S8 | Onboarding + StreetView | UX test: ilk kullanıcı deneyimi |
@@ -200,4 +204,4 @@ FluidHeatmap temel           → TrafficSimulation (stretch)
 | S10 | Design review + demo | Teknik rapor + bug report |
 | **SDP2** | **Güneş/Gölge + Router + ML + NL Ajan** | **SDP2 test senaryoları + teknik rapor bölümü** |
 
-> **Durum özeti (2026-06-19):** SDP1 S0+S1+S2+S3+S4 tamamlandı. 11 şehir verisi, era renk sistemi, pulse animasyon, Three.js globe (UV-aligned lat/lon + drag-rotate + atmosphere rim + earth-night.jpg texture), React Router + AnimatePresence, IntroScene, CityLoadingScreen, TimelineBar (keyboard + auto-play + era pill), EventMarker (click-based, proximity fade, pulse, useCityEvents), EventPopup (glassmorphism, FM animate prop, ESC/X/dışarı), ReplayButton (amber floating, RefreshIcon), EraAudioEngine (Web Audio API singleton, A/B crossfade, autoplay-safe), FrequencyVisualizer (AnalyserNode 64-bin, Canvas 2D 32-bar amber, mix-blend-mode screen) ✅. Berlin + İstanbul event verisi (9'ar olay). 31 animated icon entegre. PRODUCT.md + DESIGN.md hazır. Sıradaki: S5 CityDataLoader + FlyTo.
+> **Durum özeti (2026-06-19):** SDP1 S0+S1+S2+S3+S4+S5(kısmi) tamamlandı. 11 şehir verisi, era renk sistemi, pulse animasyon, Three.js globe (UV-aligned lat/lon + drag-rotate + atmosphere rim + earth-night.jpg texture), React Router + AnimatePresence, IntroScene, CityLoadingScreen, TimelineBar (keyboard + auto-play + era pill), EventMarker (click-based, proximity fade, pulse, useCityEvents), EventPopup (glassmorphism, FM animate prop, ESC/X/dışarı), ReplayButton (amber floating, RefreshIcon), EraAudioEngine (Web Audio API singleton, A/B crossfade, autoplay-safe), FrequencyVisualizer (AnalyserNode 64-bin, Canvas 2D 32-bar amber, mix-blend-mode screen) ✅. Berlin + İstanbul event verisi (9'ar olay). 31 animated icon entegre. PRODUCT.md + DESIGN.md hazır. Sıradaki: S5 CityDataLoader + FlyTo.

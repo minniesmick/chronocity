@@ -38,20 +38,25 @@ ChronoCity; New York, Chicago, Berlin, Viyana ve İstanbul'un kentsel dokusunu z
 
 - **Typography**: Space Grotesk (heading/mono) + Inter (body) — `src/styles/tokens.css`
 - **Colors**: `#0A0A0F` zemin, `#F59E0B` amber, `#E2E8F0` metin — tokens. Şehir renkleri: istanbul=#f59e0b, new-york=#3b82f6, chicago=#8b5cf6, berlin=#10b981, vienna=#ef4444 (diğerleri cities.ts'te)
-- **Stack**: React 18 + Vite 5 + TS. Zustand 5 store: `t/activeCity/era/isDayMode/isPlaying/activeEvent/audioReady`. FastAPI `/ws` + CORS. Framer Motion v11.
-- **3D Çekirdek**: deck.gl 9 GeoJsonLayer — 11 şehir, `construction_year` morph, GPU transitions 400ms. LightingEffect gündüz/gece ✅
-- **Era Renk Sistemi**: `colorByEra(year)` 7 dönem + `colorUndated(frame)` RAF pulse → `src/lib/buildingColors.ts` ✅
+- **Stack**: React 18 + Vite 5 + TS. Zustand 5 store: `t/activeCity/era/isDayMode/isPlaying/activeEvent/audioReady/activeBuilding`. FastAPI `/ws` + CORS. Framer Motion v11.
+- **3D Çekirdek**: deck.gl 9 GeoJsonLayer — 11 şehir, `construction_year` morph, GPU transitions 400ms. LightingEffect gündüz/gece + FlyToInterpolator (zoom=5→14.5, 2.2s) ✅
+- **Era Renk Sistemi**: `colorByEra(year)` 7 dönem + `colorUndated(frame)` RAF pulse → `src/lib/buildingColors.ts`. Paylaşımlı: `src/lib/eraColors.ts` (BuildingPopup + TimelineBar pill + GlobeSelector senkronize) ✅
 - **Zaman lib**: `src/lib/time.ts` — `yearFromT`, `tFromYear` (clamped 0–1), `eraFromYear`, `YEAR_MIN=1800`, `YEAR_MAX=2026` ✅
 - **Routing**: React Router v6 — `/` IntroScene, `/globe` GlobeSelector, `/city/:id` CityExperience. AnimatePresence mode="wait" ✅
 - **CSS mimarisi**: `sprint1.css` (MapCanvas + CityExp + DayNight + TimelineBar + EventMarker), `sprint2.css` (IntroScene + GlobeSelector + CityLoadingScreen). Token-driven, no hardcode. ✅
 - **Animated Icons**: `src/components/icons/` — 31 adet Framer Motion animated SVG. Props: `size`, `color`, `strokeWidth`, `className`. Handle: `AnimatedIconHandle { startAnimation, stopAnimation }`. Kaynak: `framer-motion` (not motion/react). ✅
 - **Tamamlanan componentler**:
   - `MapCanvas` (deck.gl), `DayNightToggle` (icon entegre), `CityExperience` (header slide-down + icon back butonu), `useCityBuildings` hook ✅
-  - `GlobeSelector` (Three.js, scale-in 0.82→1.0, ambient glow, label RAF overlay, raycaster click) ✅
+  - `GlobeSelector` (Three.js, scale-in 0.82→1.0, ambient glow, raycaster click, **gündüz/gece texture swap** earth-night.jpg↔earth-day.jpg, **lüks .globe-city-card** glassmorphism, bayrak+şehir+ülke, downward triangle pointer, city-color left border, DayNightToggle overlay) ✅
   - `IntroScene` (scanlines, stagger animasyon, exit fade) ✅
   - `CityLoadingScreen` (typewriter milestones, progress bar, AnimatePresence exit) ✅
-  - `TimelineBar` (glassmorphism, play/pause, era pills, keyboard nav, auto-play) ✅
-  - `EventMarker` (proximity fade, pulse, hover→setActiveEvent) ✅
+  - `TimelineBar` (glassmorphism, play/pause, era pills **era-color CSS var ile dönem renginde**, keyboard nav, auto-play) ✅
+  - `EventMarker` (proximity fade, pulse, click→setActiveEvent) ✅
+  - `EventPopup` (glassmorphism slide-up, FM animate prop, ESC/X/dışarı) ✅
+  - `ReplayButton` (amber floating, RefreshIcon) ✅
+  - `EraAudioEngine` / `useEraAudio` (Web Audio API A/B crossfade, autoplay-safe) ✅
+  - `FrequencyVisualizer` (AnalyserNode 64-bin, Canvas 2D 32-bar amber, mix-blend-mode screen) ✅
+  - `BuildingPopup` (lüks glassmorphism, 46px mono yükseklik, era accent border, animated bar, eraColors) ✅
   - `useCityEvents` hook (activeCity → fetch `/cities/{id}/events/info.json`) ✅
 - **Event verisi**: Berlin (9 olay 1871–2006) + İstanbul (9 olay 1856–2010) → `public/cities/{city}/events/info.json` ✅
 - **Müzik klasörleri**: 11 şehir × 4 era = 44 placeholder → `/public/cities/{city}/music/{eraId}.mp3` ✅

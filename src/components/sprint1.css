@@ -452,15 +452,15 @@
 }
 
 .timeline__era-pill[data-active="true"] {
-  background: var(--color-accent);
-  color: var(--color-text-on-accent);
-  border-color: var(--color-accent);
-  box-shadow: var(--shadow-glow-accent);
+  background: var(--era-color, var(--color-accent));
+  color: #0a0a0f;
+  border-color: var(--era-color, var(--color-accent));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--era-color, #f59e0b) 55%, transparent);
 }
 
 .timeline__era-pill:hover:not([data-active="true"]) {
-  border-color: var(--color-accent-dim);
-  color: var(--color-text-muted);
+  border-color: var(--era-color, var(--color-accent-dim));
+  color: var(--era-color, var(--color-text-muted));
 }
 
 /* ============================================================

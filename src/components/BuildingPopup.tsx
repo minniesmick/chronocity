@@ -1,21 +1,7 @@
 import { useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
-
-const ERA_ACCENT: Array<{ until: number; hex: string; label: string }> = [
-  { until: 1870, hex: "#b4966e", label: "Taş & Barok" },
-  { until: 1918, hex: "#be7850", label: "Gründerzeit" },
-  { until: 1945, hex: "#c8a53c", label: "Art Deco" },
-  { until: 1970, hex: "#8c96a0", label: "Brutalizm" },
-  { until: 1990, hex: "#afaf9b", label: "Prefab" },
-  { until: 2010, hex: "#82af96", label: "Cam & Çelik" },
-  { until: 9999, hex: "#64aad7", label: "Modern" },
-];
-
-function eraAccent(year: number | null) {
-  if (!year) return { hex: "#8c96a0", label: "Tarihi Belirsiz" };
-  return ERA_ACCENT.find((b) => year < b.until) ?? ERA_ACCENT[ERA_ACCENT.length - 1];
-}
+import { eraByYear } from "@/lib/eraColors";
 
 const POPUP_W = 260;
 const POPUP_H = 170;
@@ -29,7 +15,7 @@ export default function BuildingPopup() {
     <AnimatePresence>
       {ab && (() => {
         const p = ab.properties;
-        const era = eraAccent(p.construction_year);
+        const era = eraByYear(p.construction_year);
         const heightPct = Math.min(100, Math.round((p.height / 280) * 100));
 
         // Viewport clamp — popup yukarı-sola açılır, kenara dayandı mı kontrol et

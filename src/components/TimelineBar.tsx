@@ -4,6 +4,7 @@ import { useStore } from "@/store/useStore";
 import { yearFromT, tFromYear, eraFromYear, YEAR_MIN, YEAR_MAX } from "@/lib/time";
 import { useCityEvents } from "@/hooks/useCityEvents";
 import EventMarker from "@/components/EventMarker";
+import { ERA_ID_COLORS } from "@/lib/eraColors";
 import type { EraId } from "@/types";
 
 const ERA_TICKS = [1800, 1870, 1918, 1945, 1980, 2000, 2010, 2026];
@@ -159,6 +160,7 @@ export default function TimelineBar() {
             onClick={() => setEra(id)}
             aria-pressed={era === id}
             title={`/public/cities/{şehir}/music/${id}.mp3`}
+            style={{ "--era-color": ERA_ID_COLORS[id].hex } as React.CSSProperties}
           >
             {ERA_LABELS[id]}
           </button>

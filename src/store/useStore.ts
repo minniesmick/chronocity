@@ -33,7 +33,7 @@ export const useStore = create<ChronoState>((set) => ({
   t: 1,
   activeCity: null,
   era: "modern",
-  isDayMode: true,
+  isDayMode: false,
   isPlaying: false,
   activeEvent: null,
   activeBuilding: null,

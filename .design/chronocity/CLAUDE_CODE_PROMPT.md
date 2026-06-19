@@ -40,35 +40,26 @@ React 18 + Vite + TypeScript, Three.js (Globe), deck.gl (harita), GLSL (WebGL2),
 }
 ```
 
-**Mevcut durum: S0 + S1 + S2 + S3 (kısmi) TAMAMLANDI ✅**
+**Mevcut durum: S0 + S1 + S2 + S3 + S4 + S5(kısmi) TAMAMLANDI ✅**
 
-- Design tokens, scaffold, Zustand store, FastAPI backend → hazır
-- deck.gl 3D skyline, construction_year time morph, DayNightToggle → çalışıyor
-- **Era renk sistemi**: `colorByEra(year)` 7 dönem bandı + `colorUndated(frame)` pulse → hazır
-- **PRODUCT.md + DESIGN.md** → proje kökünde hazır (impeccable skill için)
-- **11 şehir verisi** (`hasBuildingData: true` hepsi, `public/cities/{id}/buildings.geojson`):
-  - NYC 6.5K bina 3.4MB | Berlin 27.5K 12MB | Vienna 18K 8.3MB | Chicago 4.5K 1.6MB
-  - İstanbul 5K 1.4MB | Paris 13.7K 6MB | London 26.9K 9.5MB | Tokyo 26K 7.4MB
-  - Madrid 14.2K 6.2MB | Barcelona 19.5K 8.4MB | Moscow 8.2K 3.2MB
-- **Sprint 2 tamamlandı**: GlobeSelector (Three.js, scale-in animasyon, amber glow) + IntroScene (scanlines, stagger) + CityLoadingScreen (typewriter, progress) + React Router v6 + AnimatePresence
-- **Sprint 3 kısmen tamamlandı**:
-  - TimelineBar: glassmorphism panel, yıl göstergesi (blur geçişi), era pill radio'lar, play/auto-play, keyboard ←/→/Space
-  - YearIndicator + EraRadio: `eraFromYear()` lib/time.ts'te, `/public/cities/{id}/music/{eraId}.mp3` placeholder'lar hazır (44 adet)
-  - EventMarker: timeline üstünde renkli noktalar (positive/negative/neutral), proximity fade, pulse, hover → `setActiveEvent`
-  - `useCityEvents` hook: `activeCity` store → `/public/cities/{id}/events/info.json` fetch
-  - **Berlin + İstanbul event verisi** hazır (9'ar olay, `public/cities/{id}/events/info.json`)
-- **Animated Icons**: `src/components/icons/` — 31 adet Framer Motion animated SVG icon (arrow-narrow-left/right, moon, brightness-down, player, clock, refresh, globe, volume-2/x, layers, sliders-horizontal, map-pin, info-circle, sparkles, brain-circuit, chart-line, locate, satellite-dish, keyframes, target, filter, heart, star, download, expand, x + daha fazlası). API: `size`, `color`, `strokeWidth`, `className` props + `AnimatedIconHandle` ref.
-- **Polish + Animate tamamlandı**: globe mount scale-in, header slide-down, timeline slide-up, yıl blur geçişi, intro scanlines, label hover glow
+- Design tokens, scaffold, Zustand store (`t/activeCity/era/isDayMode/isPlaying/activeEvent/activeBuilding/audioReady`), FastAPI backend → hazır
+- deck.gl 3D skyline, construction_year time morph, FlyToInterpolator (zoom 5→14.5, 2.2s), DayNightToggle → çalışıyor
+- **Era renk sistemi**: `colorByEra(year)` 7 dönem (buildingColors.ts) + paylaşımlı `src/lib/eraColors.ts` (BuildingPopup, TimelineBar pills, GlobeSelector senkron)
+- **Globe day/night**: `earth-night.jpg` ↔ `earth-day.jpg` texture swap (textureCacheRef pattern). Varsayılan: gece. DayNightToggle her iki sayfada (Globe + CityExperience).
+- **Lüks şehir kartları**: `.globe-city-card` — bayrak + şehir adı + ülke, city-color left border, downward triangle, hover glow
+- **GeoJSON cache**: `useCityBuildings` module-level Map cache, stale-while-revalidate pattern
+- **EventPopup**: slide-up glassmorphism, FM animate prop (Strict Mode safe), ESC/X/dışarı
+- **ReplayButton**: amber floating, t=0 + setPlaying(true) + RefreshIcon animate
+- **EraAudioEngine**: Web Audio API singleton (src/lib/audioContext.ts), A/B GainNode crossfade 1.5s, autoplay-safe, 404 sessiz
+- **FrequencyVisualizer**: AnalyserNode 64-bin, Canvas 2D 32-bar amber, mix-blend-mode screen
+- **BuildingPopup**: 46px mono yükseklik, era accent border/bar, AnimatePresence key={x-y}, viewport clamp
+- **Berlin + İstanbul event verisi** hazır (9'ar olay)
+- **11 şehir GeoJSON** (`hasBuildingData: true` hepsi): NYC/Berlin/Vienna/Chicago/İstanbul/Paris/London/Tokyo/Madrid/Barcelona/Moscow
+- **Animated Icons**: 31 adet Framer Motion animated SVG (src/components/icons/)
 
-**Sıradaki görev: S3 kalan task'ları**
-
-TASKS.md'da S3'te bekleyen:
-1. **EventPopup** — EventMarker hover/click → slide-up glassmorphism kart (başlık + shortDesc + tip rengi + "Daha fazla" CTA). `activeEvent` store'dan okur.
-2. **ReplayButton** — `refresh-icon` kullan, float bottom-right, tıklanınca t=0 set + setPlaying(true)
-
-Sonra S4 → EraAudioEngine (Web Audio API + Tone.js, `/public/cities/{id}/music/{eraId}.mp3`)
-
-Başlamadan önce `src/` dizinini tara, mevcut component'lere bak.
+**Sıradaki: S5 devam + S6**
+- S5 kalan: Multi-city event data (arkadaş görevi)
+- S6: FluidHeatmap + LayerPanel
 
 ---
 
