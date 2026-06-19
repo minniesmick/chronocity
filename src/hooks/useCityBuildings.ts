@@ -10,15 +10,20 @@ interface State {
   error: string | null;
 }
 
+// Module-level cache — sayfa yenilenene kadar yaşar, re-fetch yok
+const cache = new Map<CityId, FC>();
+
 /**
  * Aktif şehrin buildings.geojson'ını lazy yükler.
- * Verisi olmayan şehir (hasBuildingData=false) → no-op, yükleme yok.
+ * İkinci ziyarette cache'den döner (fetch yok).
+ * Yeni şehir yüklenirken eski veri tutulur → flash of empty map yok.
  */
 export function useCityBuildings(city: CityId | null): State {
-  const [state, setState] = useState<State>({
-    data: null,
-    loading: false,
-    error: null,
+  const [state, setState] = useState<State>(() => {
+    if (city && cache.has(city)) {
+      return { data: cache.get(city)!, loading: false, error: null };
+    }
+    return { data: null, loading: !!city && !!CITIES[city]?.hasBuildingData, error: null };
   });
 
   useEffect(() => {
@@ -26,8 +31,16 @@ export function useCityBuildings(city: CityId | null): State {
       setState({ data: null, loading: false, error: null });
       return;
     }
+
+    // Cache hit — anında render, fetch yok
+    if (cache.has(city)) {
+      setState({ data: cache.get(city)!, loading: false, error: null });
+      return;
+    }
+
     let cancelled = false;
-    setState({ data: null, loading: true, error: null });
+    // Eski veri varsa koru (loading:true ama data:mevcut) — flash yok
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
     fetch(`/cities/${city}/buildings.geojson`)
       .then((r) => {
@@ -35,16 +48,16 @@ export function useCityBuildings(city: CityId | null): State {
         return r.json();
       })
       .then((data: FC) => {
-        if (!cancelled) setState({ data, loading: false, error: null });
+        if (cancelled) return;
+        cache.set(city, data);
+        setState({ data, loading: false, error: null });
       })
       .catch((e: Error) => {
         if (!cancelled)
-          setState({ data: null, loading: false, error: e.message });
+          setState((prev) => ({ ...prev, loading: false, error: e.message }));
       });
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [city]);
 
   return state;

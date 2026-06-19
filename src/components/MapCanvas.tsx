@@ -4,6 +4,7 @@ import { GeoJsonLayer } from "@deck.gl/layers";
 import {
   AmbientLight,
   DirectionalLight,
+  FlyToInterpolator,
   LightingEffect,
   type MapViewState,
 } from "@deck.gl/core";
@@ -62,15 +63,34 @@ export default function MapCanvas({ city }: { city: CityId }) {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
+  // FlyTo: uncontrolled → controlled viewState
   const center = CITIES[city].center;
-  const initialViewState: MapViewState = {
+  const [viewState, setViewState] = useState<MapViewState>({
     longitude: center[0],
     latitude: center[1],
-    zoom: 14.5,
-    pitch: 50,
-    bearing: -20,
+    zoom: 5,      // uzaktan başla
+    pitch: 20,
+    bearing: 0,
     maxPitch: 75,
-  };
+  });
+
+  // Mount'ta şehre uç — loading screen kapanmadan başlar, kapanınca reveal edilir
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setViewState({
+        longitude: center[0],
+        latitude: center[1],
+        zoom: 14.5,
+        pitch: 50,
+        bearing: -20,
+        maxPitch: 75,
+        transitionDuration: 2200,
+        transitionInterpolator: new FlyToInterpolator({ speed: 1.4 }),
+      });
+    }, 300);
+    return () => clearTimeout(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // sadece mount'ta — city prop değişmez (unmount → remount)
 
   const layers = useMemo(() => {
     if (!data) return [];
@@ -107,7 +127,10 @@ export default function MapCanvas({ city }: { city: CityId }) {
   return (
     <div className="map-canvas">
       <DeckGL
-        initialViewState={initialViewState}
+        viewState={viewState}
+        onViewStateChange={({ viewState: vs }) =>
+          setViewState(vs as MapViewState)
+        }
         controller={true}
         effects={[isDayMode ? dayLighting : nightLighting]}
         layers={layers}
