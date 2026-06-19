@@ -9,6 +9,8 @@ import ArrowNarrowLeftIcon from "@/components/icons/arrow-narrow-left-icon";
 import TimelineBar from "@/components/TimelineBar";
 import DayNightToggle from "@/components/DayNightToggle";
 import CityLoadingScreen from "@/components/CityLoadingScreen";
+import EventPopup from "@/components/EventPopup";
+import ReplayButton from "@/components/ReplayButton";
 import "@/components/sprint1.css";
 import "@/components/sprint2.css";
 
@@ -62,6 +64,8 @@ export default function CityExperience() {
       </motion.header>
 
       <TimelineBar />
+      <EventPopup />
+      <ReplayButton />
 
       {/* Loading screen overlay — AnimatePresence ile smooth exit */}
       <AnimatePresence>

@@ -349,6 +349,137 @@
   color: var(--color-text-muted);
 }
 
+/* ============================================================
+   EVENT POPUP (Sprint 3)
+   ============================================================ */
+/* Wrapper: centering + pozisyon. FM animasyonu içerideki .event-popup'a uygulanır */
+.event-popup-anchor {
+  position: absolute;
+  bottom: 110px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: var(--z-panel);
+}
+
+.event-popup {
+  pointer-events: auto; /* anchor'daki none'ı override */
+  width: min(380px, 88vw);
+  padding: var(--space-4);
+  background: rgba(8, 11, 20, 0.97);
+  border: 1px solid color-mix(in srgb, var(--ev-color, #f59e0b) 40%, transparent);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 0 32px color-mix(in srgb, var(--ev-color, #f59e0b) 14%, transparent),
+    0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.event-popup__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.event-popup__badge {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--ev-color, #f59e0b) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ev-color, #f59e0b) 45%, transparent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: var(--tracking-wider);
+  color: var(--ev-color, #f59e0b);
+  white-space: nowrap;
+}
+
+.event-popup__year {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  letter-spacing: var(--tracking-wide);
+  flex: 1;
+}
+
+.event-popup__close {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-text-faint);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.event-popup__close:hover {
+  color: var(--color-text);
+}
+
+.event-popup__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  line-height: var(--leading-tight);
+}
+
+.event-popup__desc {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+  margin-bottom: var(--space-3);
+}
+
+.event-popup__more {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ev-color, #f59e0b);
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.event-popup__more:hover { opacity: 0.7; }
+
+/* ============================================================
+   REPLAY BUTTON (Sprint 3)
+   ============================================================ */
+.replay-btn {
+  position: absolute;
+  bottom: 110px;
+  right: var(--space-5);
+  z-index: var(--z-panel);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-panel-translucent);
+  border: 1px solid var(--color-border-strong);
+  backdrop-filter: blur(10px);
+  color: var(--color-accent);
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.replay-btn:hover {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  box-shadow: var(--shadow-glow-accent);
+}
+
 /* ---- Geçici dev scrubber (kullanımda değil, saklanıyor) ---- */
 .scrubber {
   position: absolute;

@@ -116,7 +116,7 @@ export default function TimelineBar() {
           <EventMarker
             events={events}
             currentYear={currentYear}
-            onHover={setActiveEvent}
+            onSelect={setActiveEvent}
           />
           <input
             className="timeline__range"
