@@ -451,6 +451,20 @@
 .event-popup__more:hover { opacity: 0.7; }
 
 /* ============================================================
+   FREQUENCY VISUALIZER (Sprint 4)
+   ============================================================ */
+.freq-viz {
+  position: absolute;
+  bottom: 116px; /* timeline + padding üstü */
+  left: var(--space-5);
+  z-index: var(--z-overlay-ui);
+  pointer-events: none;
+  opacity: 0.7;
+  mix-blend-mode: screen; /* koyu arka plan üstünde parlar */
+  filter: blur(0.4px);    /* çok hafif yumuşatma */
+}
+
+/* ============================================================
    REPLAY BUTTON (Sprint 3)
    ============================================================ */
 .replay-btn {

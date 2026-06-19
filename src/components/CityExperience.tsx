@@ -11,6 +11,7 @@ import DayNightToggle from "@/components/DayNightToggle";
 import CityLoadingScreen from "@/components/CityLoadingScreen";
 import EventPopup from "@/components/EventPopup";
 import ReplayButton from "@/components/ReplayButton";
+import FrequencyVisualizer from "@/components/FrequencyVisualizer";
 import { useEraAudio } from "@/hooks/useEraAudio";
 import "@/components/sprint1.css";
 import "@/components/sprint2.css";
@@ -66,6 +67,7 @@ export default function CityExperience() {
       </motion.header>
 
       <TimelineBar />
+      <FrequencyVisualizer />
       <EventPopup />
       <ReplayButton />
 

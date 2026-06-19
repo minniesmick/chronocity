@@ -1,47 +1,38 @@
 import { useEffect, useRef } from "react";
 import { useStore } from "@/store/useStore";
+import { getAudioContext, masterGain } from "@/lib/audioContext";
 
-const FADE_DURATION = 1.5; // saniye — crossfade süresi
-const VOLUME = 0.35;       // master volume (0–1)
+const FADE_DURATION = 1.5;
+const VOLUME = 0.35;
 
-/**
- * Era müzik motoru — Web Audio API native crossfade.
- * activeCity + era değişince yeni MP3 yükler, eski ses fade-out olur.
- * Kullanıcı etkileşimi olmadan AudioContext başlamaz (autoplay policy).
- * audioReady=true olduktan sonra devreye girer.
- */
 export function useEraAudio() {
   const era = useStore((s) => s.era);
   const activeCity = useStore((s) => s.activeCity);
   const audioReady = useStore((s) => s.audioReady);
   const setAudioReady = useStore((s) => s.setAudioReady);
 
-  const ctxRef = useRef<AudioContext | null>(null);
   const gainA = useRef<GainNode | null>(null);
   const gainB = useRef<GainNode | null>(null);
   const sourceA = useRef<AudioBufferSourceNode | null>(null);
   const sourceB = useRef<AudioBufferSourceNode | null>(null);
   const activeSlot = useRef<"a" | "b">("a");
-  const loadedKey = useRef<string>(""); // "{city}/{era}"
+  const loadedKey = useRef<string>("");
 
-  // AudioContext kullanıcı etkileşimi ile başlar
+  // AudioContext lazy init — kullanıcı etkileşimi gerekir
   useEffect(() => {
     const resume = () => {
-      if (ctxRef.current) {
-        ctxRef.current.resume().then(() => setAudioReady(true));
-        return;
+      const c = getAudioContext();
+      if (!gainA.current) {
+        gainA.current = c.createGain();
+        gainB.current = c.createGain();
+        gainA.current.gain.value = 0;
+        gainB.current.gain.value = 0;
+        // masterGain üzerinden → AnalyserNode'a da gider
+        gainA.current.connect(masterGain!);
+        gainB.current.connect(masterGain!);
       }
-      const ctx = new AudioContext();
-      ctxRef.current = ctx;
-      gainA.current = ctx.createGain();
-      gainB.current = ctx.createGain();
-      gainA.current.gain.value = 0;
-      gainB.current.gain.value = 0;
-      gainA.current.connect(ctx.destination);
-      gainB.current.connect(ctx.destination);
-      ctx.resume().then(() => setAudioReady(true));
+      c.resume().then(() => setAudioReady(true));
     };
-
     window.addEventListener("click", resume, { once: true });
     window.addEventListener("keydown", resume, { once: true });
     return () => {
@@ -50,43 +41,33 @@ export function useEraAudio() {
     };
   }, [setAudioReady]);
 
-  // Era/city değişince crossfade
+  // Era / city crossfade
   useEffect(() => {
     if (!audioReady || !activeCity || !era) return;
+    if (!gainA.current || !gainB.current) return;
 
-    const ctx = ctxRef.current;
-    if (!ctx) return;
-
+    const c = getAudioContext();
     const key = `${activeCity}/${era}`;
-    if (key === loadedKey.current) return; // aynı track, değiştirme
+    if (key === loadedKey.current) return;
     loadedKey.current = key;
 
-    const url = `/cities/${activeCity}/music/${era}.mp3`;
-
-    fetch(url)
-      .then((r) => {
-        if (!r.ok) throw new Error(`404: ${url}`);
-        return r.arrayBuffer();
-      })
-      .then((buf) => ctx.decodeAudioData(buf))
+    fetch(`/cities/${activeCity}/music/${era}.mp3`)
+      .then((r) => { if (!r.ok) throw new Error("404"); return r.arrayBuffer(); })
+      .then((buf) => c.decodeAudioData(buf))
       .then((decoded) => {
-        if (loadedKey.current !== key) return; // geç geldiyse iptal
+        if (loadedKey.current !== key) return;
 
         const next = activeSlot.current === "a" ? "b" : "a";
         const outGain = next === "b" ? gainA.current! : gainB.current!;
         const inGain  = next === "b" ? gainB.current! : gainA.current!;
         const outSrc  = next === "b" ? sourceA.current : sourceB.current;
 
-        // Eski kaynak fade-out + stop
-        const now = ctx.currentTime;
+        const now = c.currentTime;
         outGain.gain.setValueAtTime(outGain.gain.value, now);
         outGain.gain.linearRampToValueAtTime(0, now + FADE_DURATION);
-        if (outSrc) {
-          try { outSrc.stop(now + FADE_DURATION + 0.1); } catch (_) {}
-        }
+        if (outSrc) try { outSrc.stop(now + FADE_DURATION + 0.1); } catch (_) {}
 
-        // Yeni kaynak fade-in
-        const src = ctx.createBufferSource();
+        const src = c.createBufferSource();
         src.buffer = decoded;
         src.loop = true;
         src.connect(inGain);
@@ -94,31 +75,20 @@ export function useEraAudio() {
         inGain.gain.linearRampToValueAtTime(VOLUME, now + FADE_DURATION);
         src.start(now);
 
-        // Slot güncelle
         if (next === "b") sourceB.current = src;
         else sourceA.current = src;
         activeSlot.current = next;
       })
-      .catch(() => {
-        // Placeholder — MP3 henüz yok, sessiz kal
-      });
+      .catch(() => {});
   }, [era, activeCity, audioReady]);
 
-  // Şehir çıkınca durdur
+  // Şehir çıkınca fade-out
   useEffect(() => {
     if (activeCity) return;
-    const ctx = ctxRef.current;
-    if (!ctx) return;
-    const now = ctx.currentTime;
+    const c = getAudioContext();
+    const now = c.currentTime;
     gainA.current?.gain.linearRampToValueAtTime(0, now + FADE_DURATION);
     gainB.current?.gain.linearRampToValueAtTime(0, now + FADE_DURATION);
     loadedKey.current = "";
   }, [activeCity]);
-
-  // Unmount: AudioContext kapat
-  useEffect(() => {
-    return () => {
-      ctxRef.current?.close();
-    };
-  }, []);
 }
