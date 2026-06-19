@@ -59,9 +59,9 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 - [x] **EventMarker**: Timeline track üstünde 8px renkli noktalar. `positive` yeşil / `negative` kırmızı / `neutral` amber. Uzaklık: >20 yıl gizli, 10-20 yıl %40, <10 yıl tam görünür. ±2 yıl içinde CSS pulse animasyon. Hover → `setActiveEvent` (EventPopup için). `useCityEvents` hook: store `activeCity` → `/public/cities/{city}/events/info.json` fetch. Berlin (9 olay) + İstanbul (9 olay) sample data eklendi. _New. Depends on: TimelineBar._
 
-- [ ] **EventPopup**: EventMarker'a tıklanınca slide-up card. Başlık + kısa açıklama + `cover.jpg`. "Daha fazla" butonu → GeminiReportDrawer tetikler. Kapatma animasyonu. _New. Depends on: EventMarker._
+- [x] **EventPopup**: EventMarker tıklanınca slide-up glassmorphism kart. Badge + yıl + başlık + shortDesc + "Daha fazla" (wikiSlug→TR Wikipedia). ESC / X / dışarı tıkla ile kapat. FM animate prop (AnimatePresence yerine — Strict Mode fix). _New. Depends on: EventMarker._
 
-- [ ] **ReplayButton**: Floating buton. Tıklanınca IntroScene overlay olarak açılır, animasyonlar baştan. Kapanınca harita kaldığı yerden. _New._
+- [x] **ReplayButton**: Floating 40px amber buton bottom-right. setT(0) + setPlaying(true) + RefreshIcon animate. _New._
 
 ---
 

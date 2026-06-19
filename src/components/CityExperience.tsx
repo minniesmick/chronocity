@@ -11,6 +11,7 @@ import DayNightToggle from "@/components/DayNightToggle";
 import CityLoadingScreen from "@/components/CityLoadingScreen";
 import EventPopup from "@/components/EventPopup";
 import ReplayButton from "@/components/ReplayButton";
+import { useEraAudio } from "@/hooks/useEraAudio";
 import "@/components/sprint1.css";
 import "@/components/sprint2.css";
 
@@ -29,6 +30,7 @@ export default function CityExperience() {
   }, [city, setActiveCity]);
 
   const [showLoading, setShowLoading] = useState(true);
+  useEraAudio();
 
   if (!meta) {
     navigate("/globe");
