@@ -61,7 +61,9 @@ export default function CityExperience() {
           className="city-exp__name"
           style={{ "--c": meta.color } as React.CSSProperties}
         >
-          <span className="city-exp__dot" /> {meta.name}
+          <span className={`fi fi-${meta.countryCode} city-exp__flag`} aria-label={meta.country} />
+          <span className="city-exp__dot" />
+          {meta.name}
         </span>
         <span className="city-exp__spacer" />
         <DayNightToggle />

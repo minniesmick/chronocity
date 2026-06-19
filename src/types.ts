@@ -18,7 +18,7 @@ export type EraId = "1960s" | "1980s" | "2000s" | "modern";
 export type EventType = "positive" | "negative" | "neutral";
 
 export interface CityEvent {
-  date: string; // ISO "YYYY-MM-DD"
+  date: string;
   title: string;
   shortDesc: string;
   type: EventType;
@@ -31,13 +31,11 @@ export interface CityMeta {
   id: CityId;
   name: string;
   country: string;
-  flag: string; // emoji bayrak
-  color: string; // globe noktası rengi (tokens.css ile eşleşir)
-  center: [number, number]; // [lon, lat] — harita default merkezi
-  /** Bu şehrin işlenmiş buildings.geojson verisi mevcut mu?
-   *  false → şehir seçilince no-op (veri toplama sonra). */
+  flag: string;        // emoji bayrak (fallback)
+  countryCode: string; // ISO 3166-1 alpha-2, küçük harf — flag-icons için (fi fi-{code})
+  color: string;
+  center: [number, number]; // [lon, lat]
   hasBuildingData: boolean;
-  /** Loading ekranı için kısa istatistikler (typewriter). */
   stats?: {
     population: string;
     founded: string;
@@ -45,9 +43,8 @@ export interface CityMeta {
   };
 }
 
-// Yükseklik + inşa yılı taşıyan bina footprint'i (deck.gl GeoJsonLayer)
 export interface BuildingProperties {
-  height: number; // metre
+  height: number;
   construction_year: number | null;
   name: string | null;
 }

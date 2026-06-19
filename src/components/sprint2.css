@@ -231,9 +231,12 @@
 }
 
 .gcc__flag {
-  font-size: 16px;
-  line-height: 1;
+  width: 20px;
+  height: 15px;
+  border-radius: 2px;
   flex-shrink: 0;
+  object-fit: cover;
+  display: inline-block;
 }
 
 .gcc__body {

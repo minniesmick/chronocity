@@ -288,7 +288,7 @@ export default function GlobeSelector() {
             onClick={() => navigate(`/city/${city.id}`)}
             style={{ "--city-color": city.color } as React.CSSProperties}
           >
-            <span className="gcc__flag">{city.flag}</span>
+            <span className={`fi fi-${city.countryCode} gcc__flag`} aria-label={city.country} />
             <div className="gcc__body">
               <div className="gcc__name">{city.name}</div>
               <div className="gcc__country">{city.country}</div>

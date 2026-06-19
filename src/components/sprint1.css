@@ -239,6 +239,17 @@
   box-shadow: var(--shadow-glow-accent);
 }
 
+.city-exp__flag {
+  width: 18px;
+  height: 13px;
+  border-radius: 2px;
+  object-fit: cover;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-right: 2px;
+  vertical-align: middle;
+}
+
 .city-exp__dot {
   width: 9px;
   height: 9px;
