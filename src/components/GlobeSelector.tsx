@@ -52,11 +52,19 @@ export default function GlobeSelector() {
 
     // --- Globe mesh ---
     const globeGeo = new THREE.SphereGeometry(2, 64, 64);
+    const loader = new THREE.TextureLoader();
+    const earthTex = loader.load(
+      "/textures/earth-night.jpg",
+      undefined,
+      undefined,
+      () => { globeMat.color.setHex(0x0d1b2a); } // fallback: texture fail → koyu renk
+    );
     const globeMat = new THREE.MeshPhongMaterial({
-      color: 0x0d1b2a,
-      emissive: 0x05101e,
-      specular: 0x223355,
-      shininess: 30,
+      map: earthTex,
+      color: 0xffffff,
+      emissive: 0x000000,
+      specular: 0x112233,
+      shininess: 15,
     });
     const globe = new THREE.Mesh(globeGeo, globeMat);
     globe.scale.set(0.82, 0.82, 0.82); // mount animasyonu başlangıcı
