@@ -1,5 +1,119 @@
 /* SPRINT 1 — MapCanvas + sahne kabuğu. Token-driven. */
 
+/* ============================================================
+   BUILDING POPUP (Sprint 5 — lüks bina kartı)
+   ============================================================ */
+.bpop {
+  position: absolute;
+  z-index: var(--z-overlay-ui);
+  width: 260px;
+  background: rgba(6, 6, 12, 0.94);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 0.5px solid rgba(255, 255, 255, 0.07);
+  border-left: 2px solid var(--bpop-accent, #f59e0b);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px 14px 18px;
+  pointer-events: auto;
+}
+
+.bpop__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: rgba(226, 232, 240, 0.35);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  padding: 4px;
+  transition: color 0.15s;
+}
+.bpop__close:hover { color: rgba(226, 232, 240, 0.75); }
+
+.bpop__name {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.75);
+  padding-right: 20px;
+  line-height: 1.35;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bpop__divider {
+  height: 0.5px;
+  background: rgba(255, 255, 255, 0.07);
+  margin-bottom: 10px;
+}
+
+.bpop__height-num {
+  font-family: var(--font-mono);
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--bpop-accent, #f59e0b);
+}
+
+.bpop__unit {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(226, 232, 240, 0.35);
+  letter-spacing: 0;
+}
+
+.bpop__bar-track {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 1px;
+  margin: 10px 0 12px;
+  overflow: hidden;
+}
+
+.bpop__bar-fill {
+  height: 100%;
+  background: var(--bpop-accent, #f59e0b);
+  border-radius: 1px;
+}
+
+.bpop__meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.bpop__year {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.bpop__sep {
+  font-size: 6px;
+  color: var(--bpop-accent, #f59e0b);
+  opacity: 0.5;
+}
+
+.bpop__era {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bpop-accent, #f59e0b);
+  opacity: 0.7;
+}
+
+
 .city-exp {
   position: fixed;
   inset: 0;

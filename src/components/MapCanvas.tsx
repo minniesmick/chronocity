@@ -13,6 +13,7 @@ import type { CityId, BuildingProperties } from "@/types";
 import { CITIES } from "@/data/cities";
 import { useCityBuildings } from "@/hooks/useCityBuildings";
 import { useStore } from "@/store/useStore";
+import type { ActiveBuilding } from "@/store/useStore";
 import { yearFromT } from "@/lib/time";
 import { colorByEra, colorUndated } from "@/lib/buildingColors";
 
@@ -45,6 +46,7 @@ export default function MapCanvas({ city }: { city: CityId }) {
   const { data, loading, error } = useCityBuildings(city);
   const t = useStore((s) => s.t);
   const isDayMode = useStore((s) => s.isDayMode);
+  const setActiveBuilding = useStore((s) => s.setActiveBuilding);
   const currentYear = yearFromT(t);
 
   // Pulse animasyonu için ~20fps RAF sayacı
@@ -115,6 +117,17 @@ export default function MapCanvas({ city }: { city: CityId }) {
           specularColor: [60, 50, 40],
         },
         pickable: true,
+        onClick: (info) => {
+          if (info.object) {
+            setActiveBuilding({
+              properties: info.object.properties,
+              x: info.x,
+              y: info.y,
+            } as ActiveBuilding);
+          } else {
+            setActiveBuilding(null);
+          }
+        },
         transitions: { getElevation: 400, getFillColor: 400 },
         updateTriggers: {
           getElevation: currentYear,
@@ -135,6 +148,9 @@ export default function MapCanvas({ city }: { city: CityId }) {
         effects={[isDayMode ? dayLighting : nightLighting]}
         layers={layers}
         style={{ background: "transparent" }}
+        onClick={(info) => {
+          if (!info.object) setActiveBuilding(null);
+        }}
       />
       {loading && <div className="map-canvas__status">binalar yükleniyor…</div>}
       {error && (
