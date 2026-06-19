@@ -67,9 +67,9 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 ## SPRINT 4 — Audio Engine
 
-- [ ] **EraAudioEngine**: Web Audio API + Tone.js. `AudioContext` kullanıcı etkileşimi sonrası başlar (autoplay policy). `t` parametresine göre era MP3 crossfade (GainNode A→B). Zaman slider dursa müzik devam eder. Şehir değişince yeni set yüklenir. _New. Depends on: TimelineBar, /public/cities/{city}/music/._
+- [x] **EraAudioEngine**: Web Audio API native (Tone.js yok). Module singleton AudioContext. `audioReady` lazy init (ilk click/keydown, autoplay policy). Çift GainNode A/B crossfade 1.5s linearRamp. activeCity+era → `/cities/{city}/music/{era}.mp3` fetch+decodeAudioData. Race condition koruması (loadedKey ref). loop=true. Şehir çıkınca fade-out. 404 sessiz. `src/lib/audioContext.ts` + `src/hooks/useEraAudio.ts`. _New. Depends on: TimelineBar, /public/cities/{city}/music/._
 
-- [ ] **FrequencyVisualizer**: `AnalyserNode` → FFT data → Canvas 2D veya SVG halka animasyonu. MapCanvas üstünde subtle overlay. Müzik çalarken canlı. _New. Depends on: EraAudioEngine._
+- [x] **FrequencyVisualizer**: `AnalyserNode` (fftSize=128, 64 bin) → Canvas 2D, 32 bar × (3+2)px. requestAnimationFrame getByteFrequencyData. Amber linear gradient per bar (transparan→tam). mix-blend-mode:screen, opacity:0.7. audioReady=false → null (gizli). bottom:116px left, müzik gelince canlı. `src/components/FrequencyVisualizer.tsx`. _New. Depends on: EraAudioEngine._
 
 ---
 
@@ -190,8 +190,8 @@ FluidHeatmap temel           → TrafficSimulation (stretch)
 | S0 ✅ | Scaffold + Tokens + FastAPI | Asset klasörü + ilk event JSON'ları |
 | S1 ✅ | MapCanvas + Shader (kritik) | Berlin/Vienna manuel veri indirme |
 | S2 ✅ | Globe + Intro + Loading | Wikidata event veri çekimi |
-| S3 🔄 | Timeline + Events (EventPopup + ReplayButton kalan) | Event JSON doldurma (30–50 / şehir) |
-| S4 | Audio Engine + Visualizer | MP3 test + browser ses testi |
+| S3 ✅ | Timeline + Events + EventPopup + ReplayButton | Event JSON doldurma (30–50 / şehir) |
+| S4 ✅ | EraAudioEngine + FrequencyVisualizer | MP3 test + browser ses testi |
 | S5 | Multi-city data loader | NYC/Chicago GeoJSON temizleme |
 | S6 | Fluid Heatmap + Layers | IBB API endpoint testi |
 | S7 | WebSocket + Gemini | API response test senaryoları |
@@ -200,4 +200,4 @@ FluidHeatmap temel           → TrafficSimulation (stretch)
 | S10 | Design review + demo | Teknik rapor + bug report |
 | **SDP2** | **Güneş/Gölge + Router + ML + NL Ajan** | **SDP2 test senaryoları + teknik rapor bölümü** |
 
-> **Durum özeti (2026-06-19):** SDP1 S0+S1+S2+S3(kısmi) tamamlandı. 11 şehir verisi, era renk sistemi, pulse animasyon, Three.js globe (scale-in animasyon + glow overlay), React Router + AnimatePresence, IntroScene (scanlines + stagger), CityLoadingScreen (typewriter + progress), TimelineBar (keyboard ←/→ + auto-play + era pill), EventMarker (proximity fade + pulse + useCityEvents hook) ✅. Berlin + İstanbul event verisi (9'ar olay) hazır. 31 animated icon → `src/components/icons/` (ArrowNarrowLeft/Right, Moon, BrightnessDown, Player, Clock, Refresh, Globe, HistoryCircle, Volume, Layers, SlidersH, MapPin, InfoCircle, Sparkles, BrainCircuit, ChartLine, Locate, SatelliteDish, Keyframes, Target, Filter, Heart, Star, Download, Expand, X). Back + DayNight butonlarına entegre. PRODUCT.md + DESIGN.md hazır (impeccable skill). S3 kalan: EventPopup, ReplayButton. SDP2 S1 bittikten sonra paralel planlanıyor.
+> **Durum özeti (2026-06-19):** SDP1 S0+S1+S2+S3+S4 tamamlandı. 11 şehir verisi, era renk sistemi, pulse animasyon, Three.js globe (UV-aligned lat/lon + drag-rotate + atmosphere rim + earth-night.jpg texture), React Router + AnimatePresence, IntroScene, CityLoadingScreen, TimelineBar (keyboard + auto-play + era pill), EventMarker (click-based, proximity fade, pulse, useCityEvents), EventPopup (glassmorphism, FM animate prop, ESC/X/dışarı), ReplayButton (amber floating, RefreshIcon), EraAudioEngine (Web Audio API singleton, A/B crossfade, autoplay-safe), FrequencyVisualizer (AnalyserNode 64-bin, Canvas 2D 32-bar amber, mix-blend-mode screen) ✅. Berlin + İstanbul event verisi (9'ar olay). 31 animated icon entegre. PRODUCT.md + DESIGN.md hazır. Sıradaki: S5 CityDataLoader + FlyTo.
