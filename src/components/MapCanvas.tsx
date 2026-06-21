@@ -71,9 +71,10 @@ export default function MapCanvas({ city }: { city: CityId }) {
   const [viewState, setViewState] = useState<MapViewState>({
     longitude: center[0],
     latitude: center[1],
-    zoom: 5,      // uzaktan başla
+    zoom: 5,
     pitch: 20,
     bearing: 0,
+    minZoom: 12,
     maxPitch: 75,
   });
 
@@ -86,6 +87,7 @@ export default function MapCanvas({ city }: { city: CityId }) {
         zoom: 14.5,
         pitch: 50,
         bearing: -20,
+        minZoom: 12,
         maxPitch: 75,
         transitionDuration: 2200,
         transitionInterpolator: new FlyToInterpolator({ speed: 1.4 }),
@@ -95,6 +97,8 @@ export default function MapCanvas({ city }: { city: CityId }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // sadece mount'ta — city prop değişmez (unmount → remount)
 
+  const cityBbox = CITIES[city].bbox;
+
   const layers = useMemo(() => {
     const satelliteLayer = new TileLayer({
       id: "satellite",
@@ -102,6 +106,7 @@ export default function MapCanvas({ city }: { city: CityId }) {
       minZoom: 0,
       maxZoom: 19,
       tileSize: 256,
+      extent: cityBbox,  // only load tiles covering this city's bbox
       opacity: isDayMode ? 1.0 : 0.35,
       renderSubLayers: (props) => {
         const { boundingBox } = props.tile;
@@ -160,7 +165,8 @@ export default function MapCanvas({ city }: { city: CityId }) {
         },
       }),
     ];
-  }, [data, city, currentYear, isDayMode, frame]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, city, currentYear, isDayMode, frame, cityBbox]);
 
   return (
     <div className="map-canvas">

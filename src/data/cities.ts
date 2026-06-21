@@ -13,7 +13,8 @@ export const CITIES: Record<CityId, CityMeta> = {
     flag: "🇺🇸",
     countryCode: "us",
     color: "#3b82f6",
-    center: [-73.988, 40.748], // Midtown/Flatiron — işlenmiş veri bbox merkezi
+    center: [-73.988, 40.748],
+    bbox: [-74.02, 40.71, -73.94, 40.79],
     hasBuildingData: true,
     stats: {
       population: "8.26M",
@@ -33,6 +34,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "tr",
     color: "#f59e0b",
     center: [28.965, 41.013],
+    bbox: [28.92, 40.97, 29.01, 41.06],
     hasBuildingData: true,
     stats: {
       population: "15.9M",
@@ -52,6 +54,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "us",
     color: "#8b5cf6",
     center: [-87.628, 41.878],
+    bbox: [-87.67, 41.84, -87.58, 41.92],
     hasBuildingData: true,
     stats: {
       population: "2.7M",
@@ -71,6 +74,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "de",
     color: "#10b981",
     center: [13.405, 52.52],
+    bbox: [13.36, 52.49, 13.45, 52.55],
     hasBuildingData: true,
     stats: {
       population: "3.7M",
@@ -90,6 +94,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "at",
     color: "#ef4444",
     center: [16.373, 48.208],
+    bbox: [16.33, 48.17, 16.42, 48.25],
     hasBuildingData: true,
     stats: {
       population: "1.9M",
@@ -109,6 +114,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "fr",
     color: "#ec4899",
     center: [2.352, 48.856],
+    bbox: [2.30, 48.82, 2.41, 48.90],
     hasBuildingData: true,
     stats: {
       population: "2.1M",
@@ -128,6 +134,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "gb",
     color: "#06b6d4",
     center: [-0.08, 51.505],
+    bbox: [-0.14, 51.46, -0.01, 51.55],
     hasBuildingData: true,
     stats: {
       population: "9.0M",
@@ -147,6 +154,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "es",
     color: "#f97316",
     center: [2.164, 41.389],
+    bbox: [2.12, 41.35, 2.22, 41.43],
     hasBuildingData: true,
     stats: {
       population: "1.6M",
@@ -166,6 +174,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "es",
     color: "#eab308",
     center: [-3.695, 40.416],
+    bbox: [-3.74, 40.37, -3.64, 40.46],
     hasBuildingData: true,
     stats: {
       population: "3.3M",
@@ -185,6 +194,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "jp",
     color: "#a855f7",
     center: [139.745, 35.69],
+    bbox: [139.70, 35.65, 139.80, 35.73],
     hasBuildingData: true,
     stats: {
       population: "13.9M",
@@ -204,6 +214,7 @@ export const CITIES: Record<CityId, CityMeta> = {
     countryCode: "ru",
     color: "#64748b",
     center: [37.617, 55.755],
+    bbox: [37.56, 55.72, 37.68, 55.79],
     hasBuildingData: true,
     stats: {
       population: "12.5M",

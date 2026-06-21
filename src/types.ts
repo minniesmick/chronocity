@@ -35,6 +35,7 @@ export interface CityMeta {
   countryCode: string; // ISO 3166-1 alpha-2, küçük harf — flag-icons için (fi fi-{code})
   color: string;
   center: [number, number]; // [lon, lat]
+  bbox: [number, number, number, number]; // [minLon, minLat, maxLon, maxLat] — TileLayer extent + zoom bounds
   hasBuildingData: boolean;
   stats?: {
     population: string;
