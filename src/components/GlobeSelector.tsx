@@ -5,6 +5,9 @@ import * as THREE from "three";
 import { CITY_LIST } from "@/data/cities";
 import { useStore } from "@/store/useStore";
 import DayNightToggle from "@/components/DayNightToggle";
+import GlobeIcon from "@/components/icons/globe-icon";
+import PlayerIcon from "@/components/icons/player-icon";
+import type { AnimatedIconHandle } from "@/components/icons/types";
 import type { CityMeta } from "@/types";
 
 function latLonToVec3(lat: number, lon: number, r = 1): THREE.Vector3 {
@@ -25,6 +28,11 @@ export default function GlobeSelector() {
   const labelRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [hoveredCity, setHoveredCity] = useState<string | null>(null);
 
+  // Glob rotasyon kontrolü
+  const [isRotating, setIsRotating] = useState(true);
+  const pausedByUserRef = useRef(false);
+  const globeIconRef = useRef<AnimatedIconHandle>(null);
+
   // Three.js refs — ikinci useEffect'ten erişmek için
   const globeMatRef = useRef<THREE.MeshPhongMaterial | null>(null);
   const texCacheRef = useRef<{ night: THREE.Texture | null; day: THREE.Texture | null }>({ night: null, day: null });
@@ -34,6 +42,17 @@ export default function GlobeSelector() {
   const isDayRef    = useRef(isDayMode); // başlangıç değeri texture yükleme kararı için
 
   useEffect(() => { isDayRef.current = isDayMode; }, [isDayMode]);
+
+  // Mount'ta globe icon'u döndürmeye başla
+  useEffect(() => { globeIconRef.current?.startAnimation(); }, []);
+
+  const toggleRotation = () => {
+    const willPause = !pausedByUserRef.current;
+    pausedByUserRef.current = willPause;
+    setIsRotating(!willPause);
+    if (willPause) globeIconRef.current?.stopAnimation();
+    else globeIconRef.current?.startAnimation();
+  };
 
   // --- Ana sahne ---
   useEffect(() => {
@@ -182,7 +201,7 @@ export default function GlobeSelector() {
       }
 
       if (autoPause > 0) autoPause--;
-      else globe.rotation.y += 0.0008;
+      else if (!pausedByUserRef.current) globe.rotation.y += 0.0008;
 
       raycaster.setFromCamera(mouse, camera);
       const hits = dragging ? [] : raycaster.intersectObjects(dotMeshes);
@@ -300,6 +319,20 @@ export default function GlobeSelector() {
       {/* Sağ üst: gündüz/gece toggle */}
       <div className="globe-selector__controls">
         <DayNightToggle />
+      </div>
+
+      {/* Sol alt: rotasyon durdur/devam et */}
+      <div className="globe-selector__controls-bottom">
+        <button
+          className="globe-spin-btn"
+          onClick={toggleRotation}
+          aria-label={isRotating ? "Küreyi durdur" : "Küreyi döndür"}
+          data-rotating={isRotating}
+        >
+          <GlobeIcon ref={globeIconRef} size={15} color="currentColor" />
+          <span>{isRotating ? "Durdur" : "Döndür"}</span>
+          {!isRotating && <PlayerIcon size={10} color="currentColor" />}
+        </button>
       </div>
 
       <p className="globe-selector__hint">Sürükle · Döndür · Bir şehre tıkla</p>

@@ -159,6 +159,36 @@
   color: var(--color-event-negative);
 }
 
+/* ---- Zoom sınır bildirimi ---- */
+.map-zoom-hint {
+  position: absolute;
+  bottom: 108px; /* timeline üstü */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: rgba(8, 8, 14, 0.82);
+  border: 0.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.58);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 50;
+}
+
+.map-zoom-hint__icon {
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.7;
+}
+
 /* ---- Üst bar: geri + şehir adı ---- */
 .city-exp__top {
   position: absolute;

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import DeckGL from "@deck.gl/react";
 import { BitmapLayer, GeoJsonLayer } from "@deck.gl/layers";
 import { TileLayer } from "@deck.gl/geo-layers";
@@ -99,6 +100,17 @@ export default function MapCanvas({ city }: { city: CityId }) {
 
   const cityBbox = CITIES[city].bbox;
 
+  // Zoom sınır göstergesi
+  const [zoomHint, setZoomHint] = useState<'min' | 'max' | null>(null);
+  const zoomHintTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const prevZoomRef = useRef(viewState.zoom);
+
+  const triggerZoomHint = (type: 'min' | 'max') => {
+    clearTimeout(zoomHintTimer.current);
+    setZoomHint(type);
+    zoomHintTimer.current = setTimeout(() => setZoomHint(null), 1600);
+  };
+
   const layers = useMemo(() => {
     const satelliteLayer = new TileLayer({
       id: "satellite",
@@ -172,9 +184,16 @@ export default function MapCanvas({ city }: { city: CityId }) {
     <div className="map-canvas">
       <DeckGL
         viewState={viewState}
-        onViewStateChange={({ viewState: vs }) =>
-          setViewState(vs as MapViewState)
-        }
+        onViewStateChange={({ viewState: vs }) => {
+          const newVs = vs as MapViewState;
+          const newZoom = newVs.zoom ?? 0;
+          const prevZoom = prevZoomRef.current;
+          prevZoomRef.current = newZoom;
+          // Sınıra ilk değdiği anda göster
+          if (newZoom <= 12 && prevZoom > 12) triggerZoomHint('min');
+          if (newZoom >= 18.8 && prevZoom < 18.8) triggerZoomHint('max');
+          setViewState(newVs);
+        }}
         controller={true}
         effects={[isDayMode ? dayLighting : nightLighting]}
         layers={layers}
@@ -183,6 +202,23 @@ export default function MapCanvas({ city }: { city: CityId }) {
           if (!info.object) setActiveBuilding(null);
         }}
       />
+      <AnimatePresence>
+        {zoomHint && (
+          <motion.div
+            className="map-zoom-hint"
+            initial={{ opacity: 0, y: 6, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.95 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {zoomHint === 'min'
+              ? <><span className="map-zoom-hint__icon">⊖</span> Uzaklaştırma sınırı</>
+              : <><span className="map-zoom-hint__icon">⊕</span> Yakınlaştırma sınırı</>
+            }
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {loading && <div className="map-canvas__status">binalar yükleniyor…</div>}
       {error && (
         <div className="map-canvas__status map-canvas__status--err">
