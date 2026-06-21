@@ -13,6 +13,7 @@ import EventPopup from "@/components/EventPopup";
 import ReplayButton from "@/components/ReplayButton";
 import FrequencyVisualizer from "@/components/FrequencyVisualizer";
 import BuildingPopup from "@/components/BuildingPopup";
+import EraLegend from "@/components/EraLegend";
 import { useEraAudio } from "@/hooks/useEraAudio";
 import "@/components/sprint1.css";
 import "@/components/sprint2.css";
@@ -71,6 +72,7 @@ export default function CityExperience() {
 
       <TimelineBar />
       <FrequencyVisualizer />
+      <EraLegend />
       <BuildingPopup />
       <EventPopup />
       <ReplayButton />

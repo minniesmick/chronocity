@@ -119,7 +119,7 @@ export default function MapCanvas({ city }: { city: CityId }) {
       maxZoom: 19,
       tileSize: 256,
       extent: cityBbox,  // only load tiles covering this city's bbox
-      opacity: isDayMode ? 1.0 : 0.35,
+      opacity: isDayMode ? 1.0 : 0.45,
       renderSubLayers: (props) => {
         const { boundingBox } = props.tile;
         return new BitmapLayer({
@@ -202,6 +202,11 @@ export default function MapCanvas({ city }: { city: CityId }) {
           if (!info.object) setActiveBuilding(null);
         }}
       />
+      {/* Kalıcı zoom seviye göstergesi */}
+      <div className="map-zoom-level">
+        {viewState.zoom?.toFixed(1)} ×
+      </div>
+
       <AnimatePresence>
         {zoomHint && (
           <motion.div

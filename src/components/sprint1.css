@@ -189,6 +189,20 @@
   opacity: 0.7;
 }
 
+/* ---- Kalıcı zoom seviye etiketi ---- */
+.map-zoom-level {
+  position: absolute;
+  bottom: 140px;
+  left: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+  z-index: 20;
+  user-select: none;
+}
+
 /* ---- Üst bar: geri + şehir adı ---- */
 .city-exp__top {
   position: absolute;
@@ -716,4 +730,119 @@
   background: var(--color-accent-bright);
   box-shadow: 0 0 12px var(--color-accent-glow);
   cursor: grab;
+}
+
+/* ══ Era Legend ═══════════════════════════════════════════════════════════ */
+.era-legend {
+  position: absolute;
+  bottom: 160px;  /* zoom göstergesi üstü, timeline dışı */
+  left: var(--space-3);
+  z-index: 25;    /* z-panel(20) + 5 */
+  display: flex;
+  flex-direction: column-reverse;  /* toggle altta, panel yukarı açılır */
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.era-legend__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px 5px 8px;
+  background: rgba(8, 8, 14, 0.78);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.era-legend__toggle:hover {
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.era-legend__dot-row {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.era-legend__micro-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.85;
+  transition: background 0.3s ease;
+}
+
+.era-legend__label {
+  text-transform: uppercase;
+}
+
+.era-legend__chevron {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.era-legend__chevron[data-open="true"] {
+  transform: rotate(90deg);
+}
+
+/* Panel */
+.era-legend__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px 4px;
+  background: rgba(8, 8, 14, 0.88);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  min-width: 188px;
+}
+
+.era-legend__row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  transition: background 0.12s ease;
+}
+
+.era-legend__row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.era-legend__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+.era-legend__era-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.75);
+  flex: 1;
+}
+
+.era-legend__period {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.32);
+  white-space: nowrap;
 }

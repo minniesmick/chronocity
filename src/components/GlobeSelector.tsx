@@ -2,13 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import * as THREE from "three";
-import { CITY_LIST } from "@/data/cities";
+import { CITY_LIST, CITIES } from "@/data/cities";
 import { useStore } from "@/store/useStore";
 import DayNightToggle from "@/components/DayNightToggle";
 import GlobeIcon from "@/components/icons/globe-icon";
 import PlayerIcon from "@/components/icons/player-icon";
 import type { AnimatedIconHandle } from "@/components/icons/types";
 import type { CityMeta } from "@/types";
+
+function hexToGlowRgba(hex: string, alpha = 0.14): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 
 function latLonToVec3(lat: number, lon: number, r = 1): THREE.Vector3 {
   const phi = (lon + 180) * (Math.PI / 180);
@@ -294,7 +301,15 @@ export default function GlobeSelector() {
       ref={containerRef}
     >
       <canvas ref={canvasRef} className="globe-selector__canvas" style={{ cursor: "grab" }} />
-      <div className="globe-selector__glow" aria-hidden="true" />
+      <div
+        className="globe-selector__glow"
+        aria-hidden="true"
+        style={{
+          '--glow-color': hoveredCity && CITIES[hoveredCity as keyof typeof CITIES]
+            ? hexToGlowRgba(CITIES[hoveredCity as keyof typeof CITIES].color, 0.14)
+            : 'rgba(245,158,11,0.09)',
+        } as React.CSSProperties}
+      />
 
       {/* Lüks şehir etiket kartları */}
       <div className="globe-labels" aria-hidden="true">
