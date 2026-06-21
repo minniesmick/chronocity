@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { GeoJsonLayer } from "@deck.gl/layers";
+import { BitmapLayer, GeoJsonLayer } from "@deck.gl/layers";
+import { TileLayer } from "@deck.gl/geo-layers";
 import {
   AmbientLight,
   DirectionalLight,
@@ -95,8 +96,32 @@ export default function MapCanvas({ city }: { city: CityId }) {
   }, []); // sadece mount'ta — city prop değişmez (unmount → remount)
 
   const layers = useMemo(() => {
-    if (!data) return [];
+    const satelliteLayer = new TileLayer({
+      id: "satellite",
+      data: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      minZoom: 0,
+      maxZoom: 19,
+      tileSize: 256,
+      opacity: isDayMode ? 1.0 : 0.35,
+      renderSubLayers: (props) => {
+        const { boundingBox } = props.tile;
+        return new BitmapLayer({
+          ...props,
+          data: undefined,
+          image: props.data,
+          bounds: [
+            boundingBox[0][0],
+            boundingBox[0][1],
+            boundingBox[1][0],
+            boundingBox[1][1],
+          ],
+        });
+      },
+    });
+
+    if (!data) return [satelliteLayer];
     return [
+      satelliteLayer,
       new GeoJsonLayer<BuildingProperties>({
         id: `buildings-${city}`,
         data,
@@ -147,7 +172,7 @@ export default function MapCanvas({ city }: { city: CityId }) {
         controller={true}
         effects={[isDayMode ? dayLighting : nightLighting]}
         layers={layers}
-        style={{ background: "transparent" }}
+        style={{ background: "#0a0a0f" }}
         onClick={(info) => {
           if (!info.object) setActiveBuilding(null);
         }}
