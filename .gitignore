@@ -30,3 +30,14 @@ pnpm-debug.log*
 # Large raw geo source (sadece işlenmiş buildings.geojson commit edilir)
 public/cities/**/*_raw.json
 *.osm.pbf
+
+# ML model files (large binaries — regenerate with train_model.py)
+backend/era_model.pkl
+backend/era_model_mlp.pt
+backend/era_model_xgb.json
+
+# ML data (D:/PROJELER/ml_data/ — too large for git)
+*.parquet
+
+# GHSL raw rasters (D:/PROJELER/ghsl_raw/ — ~700MB)
+*.tif

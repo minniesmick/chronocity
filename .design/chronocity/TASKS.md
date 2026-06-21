@@ -135,35 +135,37 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 ### ML-1 — Veri Mühendisliği & Zenginleştirme
 
-- [ ] **NYC PLUTO Pipeline**: NYC Planning Dept. PLUTO dataset'ini indir (MapPLUTO shapefile). GeoPandas ile OSM footprint'leriyle spatial join. `construction_year` + `data_source: "NYC_PLUTO"` alanlarını GeoJSON'a yaz. _Hedef: ~6.453 → ~25.000+ etiketli bina._
+- [x] **NYC PLUTO Pipeline**: 6,453 bina %98 etiketli. `data_source: "NYC_PLUTO"`. GeoPandas spatial join tamamlandı.
 
-- [ ] **Berlin Geoportal Baujahr**: Berlin Geoportal FIS-Broker'dan `LOD2` bina verisi (Baujahr alanı mevcut). OSM footprint'leriyle eşleştir. `data_source: "Berlin_Geoportal"`. _Hedef: %10 → %40+._
+- [x] **Berlin Geoportal Baujahr**: 2,949 bina %10 etiketli (`data_source: "Berlin_Geoportal"`). _Hedef %40 tutturulamadı — WFS erişim sorunu. Kısmi veri train'e dahil._
 
-- [ ] **Paris APUR + Wien Open Data**: Paris Open Data (APUR dataset, `annee_construction`) + Wien Open Data (Gebäudedaten, `baujahr`). Spatial join. _Hedef: her şehir %30+._
+- [x] **Paris APUR + Wien Open Data**: Paris DPE (ADEME) 13,334 bina %97 (`data_source: "Paris_DPE"`). Wien Bauperiode WFS 13,872 bina %76 (`data_source: "Wien_OD"`). Chicago permits API 4,275 bina %94 eklendi (`data_source: "Chicago_Permits"`). Toplam: 43,500 etiketli bina.
 
-- [ ] **GHSL Entegrasyonu**: EU Joint Research Centre Global Human Settlement Layer — tüm dünya için bina yapım yılı tahmini, 10m çözünürlük. Google Earth Engine Python API veya doğrudan download. Tokyo, İstanbul, Barcelona, Madrid, Moscow için uygula. `data_source: "GHSL"`. _Bu alan kapsam sorununu tamamen çözer._
+- [x] **GHSL Entegrasyonu**: JRC GHS_BUILT_S 5 epoch (1975–2020), 55 GeoTIFF indirildi. **Label değil feature** olarak kullanıldı: `ghsl_neighborhood_year` (mahallenin ilk kentleşme dönemi). Tüm 170K bina için sample alındı.
 
-- [ ] **`data_source` Alanı**: Her bina özelliğine `data_source: "NYC_PLUTO" | "Berlin_Geoportal" | "Paris_APUR" | "Wien_OD" | "GHSL" | "OSM" | "AI_Predicted"` ekle. Güven hiyerarşisi: PLUTO > Geoportal > APUR/Wien > OSM > GHSL > AI.
+- [x] **`data_source` Alanı**: Tüm binalarda mevcut. Değerler: "NYC_PLUTO" | "Berlin_Geoportal" | "Paris_DPE" | "Wien_OD" | "Chicago_Permits" | "OSM_start_date" | "OSM".
 
 ### ML-2 — Feature Engineering & Model Eğitimi
 
-- [ ] **Geometrik Feature Çıkarımı**: Her bina footprint poligonundan: `area_m2`, `perimeter_m`, `compactness` (4π·area/perim²), `aspect_ratio` (bbox), `n_vertices` (şekil karmaşıklığı), `height`, `lat`, `lon`, `dist_to_center_km`.
+- [x] **Geometrik Feature Çıkarımı**: `area_m2`, `perimeter_m`, `compactness`, `aspect_ratio`, `n_vertices`, `height`, `lat`, `lon`, `dist_to_center_km`. `backend/ml/feature_engineering.py`. 170K bina, 14 feature.
 
-- [ ] **Komşuluk Feature'ları** (spatial autocorrelation): 50 en yakın komşunun `mean_height`, `mean_year`, `std_year`, `building_density_200m`. Bu feature'lar era tahminin en güçlü sinyali.
+- [x] **Komşuluk Feature'ları**: BallTree ile 50 NN per city. `neighbor_mean_height`, `neighbor_mean_year`, `neighbor_std_year`, `building_density_200m`. **Bulgu:** `neighbor_mean_year` leakage yarattı (test şehirlerde <%3 label → city median), son modelden çıkarıldı.
 
-- [ ] **Baseline: XGBoost Era Classifier**: 7 sınıf (Taş/Barok, Gründerzeit, Art Deco, Brutalizm, Prefab, Cam&Çelik, Modern). Cross-validation. F1 per era, confusion matrix. Baseline olarak raporla.
+- [x] **Baseline: XGBoost Era Classifier**: CV F1-macro=**0.561** ± 0.009 (5-fold). Cross-city F1=0.057. Confusion matrix belgelendi. `backend/ml/train_model.py`.
 
-- [ ] **PyTorch MLP Comparison**: 4-katmanlı MLP, batch normalization, dropout. XGBoost ile karşılaştır. RTX 3060 Ti'da eğit. Hangi feature'lar en önemli (feature importance / SHAP).
+- [x] **PyTorch MLP Comparison**: 4-katmanlı MLP, BatchNorm, Dropout. RTX 3060 Ti CUDA'da eğitildi. Train F1=0.469, Test F1=0.089. XGBoost within-city'de üstün. _SHAP yapılmadı — XGBoost feature_importances_ kullanıldı._
 
-- [ ] **Cross-City Evaluation**: Train: NY + Berlin + Paris + Wien. Test: Tokyo, İstanbul, Barcelona. "Train on European/American cities, predict for Asian/Turkish cities" → transfer learning sınırlarını belgele. Akademik katkı budur.
+- [x] **Cross-City Evaluation**: Train: NY+Paris+Wien+Chicago+Berlin+Moscow (42,137). Test: London+Tokyo+Barcelona+Madrid+İstanbul (1,387). **Bulgu:** Koordinatlar (%58 önem) within-city iyi ama cross-city transfer engeller. Saf geometri (compactness/aspect/n_verts) = 0 önem. Urban morphology (height+density) gerçek sinyal. `backend/ml/experiment_geom_only.py`.
 
-- [ ] **Model Export**: En iyi model → `backend/era_model.pkl` (sklearn pipeline) veya `backend/era_model.onnx`. FastAPI'den servis edilecek.
+- [x] **Model Export**: `backend/era_model.pkl` (XGBoost sklearn pipeline) + `era_model_xgb.json` + `era_model_mlp.pt`.
 
 ### ML-3 — Backend Inference
 
-- [ ] **`POST /api/predict-era`**: FastAPI endpoint. Input: `{height, area, compactness, lat, lon, ...}`. Output: `{era_id, era_label, confidence, color_hex}`. Tek bina tahmini.
+- [x] **`POST /api/predict-era`**: Çalışıyor. Output: `{era, era_name, era_period, era_color, confidence, probabilities}`. `backend/predict_era.py` + `backend/main.py`.
 
-- [ ] **`POST /api/predict-city`**: Input: `city_id`. Tüm `construction_year: null` binaları batch predict et → GeoJSON döndür (her binaya `AI_era`, `ai_confidence` eklendi). Frontend bunu overlay olarak yükler.
+- [x] **`POST /api/predict-era/batch`**: Batch (max 1000 bina). Çalışıyor.
+
+- [x] **`GET /api/predict-city/{city}`**: predict.parquet'ten unlabeled binalar → era distribution + ilk 100 tahmin. Çalışıyor.
 
 ### ML-4 — Frontend Entegrasyonu
 
