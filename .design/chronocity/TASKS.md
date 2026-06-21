@@ -129,19 +129,73 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 ---
 
-## SDP2 — Analitik Motor (CS Bitirme Derinliği)
+## CAPSTONE ML — Bina Era Tahmin Sistemi (Bitirme Projesi 1 Çekirdeği)
 
-> SDP1 temeli: 3D görselleştirme + zaman motoru. SDP2: üstüne analitik beyin eklenir — şehir artık karar veriyor, sadece göstermiyor. Jüri "ee ne işimize yaradı?" diyemez.
+> **Araştırma sorusu:** Bina geometrik özellikleri (footprint şekli, alan, yükseklik, komşuluk bağlamı, konum) kullanılarak yapım dönemi tahmin edilebilir mi? Eğitim: NY + Berlin. Test: Tokyo, İstanbul, Barcelona. Katkı: çok şehirli açık tarihi bina yaşı veri seti.
 
-- [ ] **Güneş/Gölge Analiz Motoru**: Bina yükseklikleri mevcut (construction_year + height) → ray-casting + polygon-ışın kesişim + quadtree spatial index. Sorular: "Hangi çatı güneş paneline uygun?", "Bu daire sabah güneşi alır mı?". deck.gl SunLight entegrasyonu + GPU compute. _Hesaplamalı geometri. Depends on: BuildingLayer._
+### ML-1 — Veri Mühendisliği & Zenginleştirme
 
-- [ ] **Çok-Amaçlı Rota Motoru**: OSM road network'ten graf kur → A*/Dijkstra + Pareto çok-kriterli optimizasyon. Kriterler: mesafe, gürültü skoru, güneş maruziyeti, yeşil alan. Rota 3D sahneye PathLayer ile çizilir. _Graf algoritmaları + Pareto optimizasyon. Novel hedef: klasik mesafe değil konfor/kalite metrikleri. Depends on: MapCanvas._
+- [ ] **NYC PLUTO Pipeline**: NYC Planning Dept. PLUTO dataset'ini indir (MapPLUTO shapefile). GeoPandas ile OSM footprint'leriyle spatial join. `construction_year` + `data_source: "NYC_PLUTO"` alanlarını GeoJSON'a yaz. _Hedef: ~6.453 → ~25.000+ etiketli bina._
 
-- [ ] **Kentsel Büyüme ML Modeli**: `construction_year` etiketli 6.550 NYC binası → time-series + spatial ML → "şehir nereye doğru yoğunlaşacak?". Bina-komşuluk grafında GNN ile büyüme tahmini. Heatmap overlay ile görselleştir. _ML + spatial analysis. Depends on: BuildingLayer, FluidHeatmap._
+- [ ] **Berlin Geoportal Baujahr**: Berlin Geoportal FIS-Broker'dan `LOD2` bina verisi (Baujahr alanı mevcut). OSM footprint'leriyle eşleştir. `data_source: "Berlin_Geoportal"`. _Hedef: %10 → %40+._
 
-- [ ] **Doğal Dil Mekânsal Sorgu Ajanı**: "Su kenarında 1920 öncesi 50m+ binaları göster" → anlık spatial sorgu + haritada highlight. PostGIS veya yerleşik spatial index + LLM tool-use + RAG + ajan pipeline. Tüm veri ve sahneyi birleştiren konuşma arayüzü. _LLM ajan + mekânsal DB. Depends on: BuildingLayer, EventMarker._
+- [ ] **Paris APUR + Wien Open Data**: Paris Open Data (APUR dataset, `annee_construction`) + Wien Open Data (Gebäudedaten, `baujahr`). Spatial join. _Hedef: her şehir %30+._
 
-- [ ] **Canlı Trafik/Kalabalık Simülasyonu** _(stretch goal)_: Agent-based model veya sayısal simülasyon (Navier-Stokes türevi) + GPU compute shader. Canlı API verisiyle kalibrasyon. "30 dk sonra burası tıkanır mı?" sorusunu cevaplar. Teknik tavan en yüksek SDP2 maddesi. _Sayısal simülasyon + GPU compute. Depends on: FluidHeatmap._
+- [ ] **GHSL Entegrasyonu**: EU Joint Research Centre Global Human Settlement Layer — tüm dünya için bina yapım yılı tahmini, 10m çözünürlük. Google Earth Engine Python API veya doğrudan download. Tokyo, İstanbul, Barcelona, Madrid, Moscow için uygula. `data_source: "GHSL"`. _Bu alan kapsam sorununu tamamen çözer._
+
+- [ ] **`data_source` Alanı**: Her bina özelliğine `data_source: "NYC_PLUTO" | "Berlin_Geoportal" | "Paris_APUR" | "Wien_OD" | "GHSL" | "OSM" | "AI_Predicted"` ekle. Güven hiyerarşisi: PLUTO > Geoportal > APUR/Wien > OSM > GHSL > AI.
+
+### ML-2 — Feature Engineering & Model Eğitimi
+
+- [ ] **Geometrik Feature Çıkarımı**: Her bina footprint poligonundan: `area_m2`, `perimeter_m`, `compactness` (4π·area/perim²), `aspect_ratio` (bbox), `n_vertices` (şekil karmaşıklığı), `height`, `lat`, `lon`, `dist_to_center_km`.
+
+- [ ] **Komşuluk Feature'ları** (spatial autocorrelation): 50 en yakın komşunun `mean_height`, `mean_year`, `std_year`, `building_density_200m`. Bu feature'lar era tahminin en güçlü sinyali.
+
+- [ ] **Baseline: XGBoost Era Classifier**: 7 sınıf (Taş/Barok, Gründerzeit, Art Deco, Brutalizm, Prefab, Cam&Çelik, Modern). Cross-validation. F1 per era, confusion matrix. Baseline olarak raporla.
+
+- [ ] **PyTorch MLP Comparison**: 4-katmanlı MLP, batch normalization, dropout. XGBoost ile karşılaştır. RTX 3060 Ti'da eğit. Hangi feature'lar en önemli (feature importance / SHAP).
+
+- [ ] **Cross-City Evaluation**: Train: NY + Berlin + Paris + Wien. Test: Tokyo, İstanbul, Barcelona. "Train on European/American cities, predict for Asian/Turkish cities" → transfer learning sınırlarını belgele. Akademik katkı budur.
+
+- [ ] **Model Export**: En iyi model → `backend/era_model.pkl` (sklearn pipeline) veya `backend/era_model.onnx`. FastAPI'den servis edilecek.
+
+### ML-3 — Backend Inference
+
+- [ ] **`POST /api/predict-era`**: FastAPI endpoint. Input: `{height, area, compactness, lat, lon, ...}`. Output: `{era_id, era_label, confidence, color_hex}`. Tek bina tahmini.
+
+- [ ] **`POST /api/predict-city`**: Input: `city_id`. Tüm `construction_year: null` binaları batch predict et → GeoJSON döndür (her binaya `AI_era`, `ai_confidence` eklendi). Frontend bunu overlay olarak yükler.
+
+### ML-4 — Frontend Entegrasyonu
+
+- [ ] **BuildingPopup Provenance Badge**: `data_source`'a göre renkli badge: Altın "NYC PLUTO ✓" / Gümüş "OSM" / Bronz "GHSL" / Mor "AI Tahmini". Kendi işlediğin veriyi kullanıcıya göster.
+
+- [ ] **AI Predicted Binalar Görsel Farkı**: `AI_Predicted` binalar düşük opaklık + nokta desen dokusu veya kenarlık ile gösterilir. Üstüne hover → "AI tahmini: %73 Brutalizm" badge.
+
+- [ ] **Veri Kaynağı Filtre Paneli**: Toggle layer: "Sadece doğrulanmış", "AI tahminleri dahil", "Hepsini göster". LayerPanel veya MapCanvas legend olarak.
+
+- [ ] **Şehir Karşılaştırma Analitik Paneli** _(stretch)_: "Berlin vs NYC: savaş sonrası yeniden yapılanma karşılaştırması" — era dağılım bar chart, iki şehirde ortalama bina yüksekliği dekada göre. Recharts veya D3.
+
+---
+
+## CAPSTONE NLP — AI Şehir Rehberi
+
+> **Mimari:** Llama 3.1 8B local (Ollama) + RAG (bina/event dataset üzerinde) + function calling (uygulama state kontrolü). LLM eğitilmiyor — kullanılıyor. ML katkısı era tahmin modeli; NLP katkısı domain-specific RAG + agent.
+
+- [ ] **Ollama Kurulum + Llama 3.1 8B**: Ollama Docker veya binary kur, `llama3.1:8b` model indir. FastAPI üzerinden `/api/chat` endpoint (Ollama Python client). RTX 3060 Ti'da ~6 token/s.
+
+- [ ] **RAG Pipeline**: Building + event verilerini chunk'la (şehir × era × event). Embedding: `nomic-embed-text` (Ollama, ücretsiz). Vector DB: ChromaDB local. Query: kullanıcı sorusu → top-k retrieval → context + Llama.
+
+- [ ] **Function Definitions**: LLM'in çağırabileceği tool'lar:
+  ```json
+  set_city(city_id), set_year(year), set_era(era_id),
+  highlight_buildings(era_id), show_event(event_id),
+  compare_cities(city_a, city_b), filter_by_source(source)
+  ```
+  FastAPI function call handler → WebSocket/SSE ile frontend'e uygulama komutu gönder.
+
+- [ ] **Chat UI Komponenti**: Sağ kenar açılır panel. Mesaj input + send. Streaming response (SSE). Bot mesajlarında "Şehri değiştiriyorum..." animasyonu + haritada değişim eş zamanlı. _Depends on: Ollama, FastAPI, RAG._
+
+- [ ] **Örnek Guided Tour**: "Bana Berlin'in 1945 sonrası dönüşümünü göster" → bot `set_city("berlin")` → `set_year(1945)` → `highlight_buildings("Brutalizm")` → 3 paragraflık anlatı üretir. Demo için scriptlendi.
 
 ---
 
@@ -162,29 +216,36 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 ## Kritik Path (Sıra Şaşmaz)
 
 ```
-[SDP1 — devam ediyor]
-Tokens → Scaffold → MapCanvas → BuildingLayer → TimeUniform  ✅ S0+S1 tamam
-    ↓
-GlobeSelector → IntroScene → CityLoadingScreen               ← SPRINT 2 (şu an burada)
-    ↓
-TimelineBar → EventMarker → EventPopup
-    ↓
-EraAudioEngine → FrequencyVisualizer
-    ↓
-CityDataLoader → FlyTo → Multi-City Data
-    ↓
-FluidHeatmap → LayerPanel
-    ↓
-WebSocket → GeminiReportDrawer
-    ↓
-PWA → Responsive → Accessibility → Test
+[SDP1 — TAMAMLANDI ✅]
+Tokens → Scaffold → MapCanvas → BuildingLayer → TimeUniform ✅
+GlobeSelector → IntroScene → CityLoadingScreen ✅
+TimelineBar → EventMarker → EventPopup ✅
+EraAudioEngine → FrequencyVisualizer ✅
+CityDataLoader → FlyTo → BuildingPopup → eraColors → Globe day/night → Bayraklar ✅
 
-[SDP2 — SDP1 üstüne, bağımsız analitik katman]
-BuildingLayer (mevcut veri) → SunShadowEngine
-BuildingLayer + OSM Graf    → MultiCriteriaRouter
-BuildingLayer (construction_year) → UrbanGrowthML
-Tüm veri + LLM              → NLSpatialAgent
-FluidHeatmap temel           → TrafficSimulation (stretch)
+[CAPSTONE ML — Sıradaki]
+PLUTO pipeline (GeoPandas spatial join)
+    ↓
+GHSL entegrasyonu (Tokyo/İstanbul/Barcelona)
+    ↓
+Feature engineering (footprint geom + komşuluk istatistikleri)
+    ↓
+XGBoost baseline → PyTorch MLP → Cross-city evaluation
+    ↓
+FastAPI /predict-era + /predict-city
+    ↓
+Frontend: AI predicted buildings + data provenance badges
+
+[CAPSTONE NLP — ML ile paralel başlanabilir]
+Ollama kurulum + Llama 3.1 8B
+    ↓
+RAG pipeline (ChromaDB + nomic-embed-text)
+    ↓
+Function calling definitions + FastAPI handler
+    ↓
+Chat UI komponenti + SSE streaming
+    ↓
+Guided tour demo scripti
 ```
 
 ## Görev Dağılımı Özeti
@@ -196,12 +257,14 @@ FluidHeatmap temel           → TrafficSimulation (stretch)
 | S2 ✅ | Globe + Intro + Loading | Wikidata event veri çekimi |
 | S3 ✅ | Timeline + Events + EventPopup + ReplayButton | Event JSON doldurma (30–50 / şehir) |
 | S4 ✅ | EraAudioEngine + FrequencyVisualizer | MP3 test + browser ses testi |
-| S5 ✅ | CityDataLoader cache + FlyTo + BuildingPopup + eraColors + Globe day/night + lüks kartlar | NYC/Chicago GeoJSON temizleme |
-| S6 | Fluid Heatmap + Layers | IBB API endpoint testi |
-| S7 | WebSocket + Gemini | API response test senaryoları |
-| S8 | Onboarding + StreetView | UX test: ilk kullanıcı deneyimi |
-| S9 | PWA + Responsive | Cross-browser + mobile test |
-| S10 | Design review + demo | Teknik rapor + bug report |
-| **SDP2** | **Güneş/Gölge + Router + ML + NL Ajan** | **SDP2 test senaryoları + teknik rapor bölümü** |
+| S5 ✅ | CityDataLoader cache + FlyTo + BuildingPopup + eraColors + Globe day/night + lüks kartlar + bayraklar | NYC/Chicago GeoJSON temizleme |
+| **ML-1** | **PLUTO + Geoportal spatial join pipeline (GeoPandas)** | **GHSL entegrasyonu + veri kalite kontrolü** |
+| **ML-2** | **Feature engineering + XGBoost + PyTorch MLP eğitimi** | **Cross-city evaluation + confusion matrix raporu** |
+| **ML-3** | **FastAPI /predict-era + /predict-city endpoint** | **Endpoint test + batch prediction doğrulama** |
+| **ML-4** | **Frontend: provenance badge + AI predicted görsel** | **Filter panel UX + şehir karşılaştırma chart** |
+| **NLP-1** | **Ollama kurulum + RAG pipeline (ChromaDB)** | **RAG quality test + domain veri chunk'lama** |
+| **NLP-2** | **Function calling agent + FastAPI handler** | **Function call senaryoları test (10+ use case)** |
+| **NLP-3** | **Chat UI komponenti + SSE streaming** | **Guided tour scriptleri + demo akışı** |
+| S10 | Design review + final polish + demo | Teknik rapor (mimari + ML metodoloji + sonuçlar) |
 
-> **Durum özeti (2026-06-19):** SDP1 S0+S1+S2+S3+S4+S5(kısmi) tamamlandı. 11 şehir verisi, era renk sistemi, pulse animasyon, Three.js globe (UV-aligned lat/lon + drag-rotate + atmosphere rim + earth-night.jpg texture), React Router + AnimatePresence, IntroScene, CityLoadingScreen, TimelineBar (keyboard + auto-play + era pill), EventMarker (click-based, proximity fade, pulse, useCityEvents), EventPopup (glassmorphism, FM animate prop, ESC/X/dışarı), ReplayButton (amber floating, RefreshIcon), EraAudioEngine (Web Audio API singleton, A/B crossfade, autoplay-safe), FrequencyVisualizer (AnalyserNode 64-bin, Canvas 2D 32-bar amber, mix-blend-mode screen) ✅. Berlin + İstanbul event verisi (9'ar olay). 31 animated icon entegre. PRODUCT.md + DESIGN.md hazır. Sıradaki: S5 CityDataLoader + FlyTo.
+> **Durum özeti (2026-06-21):** SDP1 S0–S5 **TAMAMEN** tamamlandı. UI altyapısı bitirme projesi için hazır. Şehirler: 11 (NY/Chicago/Berlin/Vienna/Paris/London/Barcelona/Madrid/Tokyo/Moscow/İstanbul). Veri analizi: NY %98 year, Berlin %10, diğerleri <%6 — PLUTO+GHSL ile zenginleştirilecek. **Yeni vizyon onaylandı (2026-06-21):** Çok şehirli bina era tahmin ML modeli (XGBoost/MLP, tabular geometrik features) + Llama 3.1 8B local RAG chatbot (function calling ile app state kontrolü) + data provenance katmanı (PLUTO/Geoportal/GHSL/AI badge'leri). Danışman: 3 ML/AI geçmişli hoca, Amerika geçmişli — akademik rigor bekleniyor. Sıradaki: ML-1 veri mühendisliği (PLUTO pipeline).
