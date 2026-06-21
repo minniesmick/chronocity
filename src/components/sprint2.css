@@ -126,25 +126,25 @@
   inset: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
 }
 
-/* Atmosfer: globe altında amber parıltı hâlesi */
+/* Atmosfer parıltı hâlesi */
 .globe-selector__glow {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 70%;
-  height: 55%;
+  width: 80%;
+  height: 60%;
   background: radial-gradient(
     ellipse 80% 60% at 50% 100%,
-    var(--glow-color, rgba(245, 158, 11, 0.09)),
+    var(--glow-color, rgba(245, 158, 11, 0.07)),
     transparent 70%
   );
   pointer-events: none;
   z-index: 0;
   animation: globe-glow-breathe 6s ease-in-out infinite;
-  transition: --glow-color 0.6s ease;
 }
 
 @keyframes globe-glow-breathe {
@@ -152,74 +152,64 @@
   50%       { opacity: 1; }
 }
 
-/* Wordmark — sol üst köşe */
-.globe-wordmark {
+/* ---- TOP BAR ---- */
+.globe-top-bar {
   position: absolute;
-  top: var(--space-3);
-  left: var(--space-3);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  background: linear-gradient(to bottom, rgba(10, 10, 15, 0.80) 0%, transparent 100%);
   z-index: var(--z-overlay-ui);
+  pointer-events: none;
+}
+
+.globe-top-bar > * { pointer-events: auto; }
+
+.globe-top-bar__spacer {
+  flex: 1;
+}
+
+/* ---- BOTTOM BAR ---- */
+.globe-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  background: linear-gradient(to top, rgba(10, 10, 15, 0.80) 0%, transparent 100%);
+  z-index: var(--z-overlay-ui);
+  pointer-events: none;
+}
+
+.globe-bottom-bar > * { pointer-events: auto; }
+
+.globe-bottom-bar__spacer {
+  flex: 1;
+}
+
+/* ---- WORDMARK ---- */
+.globe-wordmark {
   display: flex;
   align-items: baseline;
   gap: 0.18em;
   font-family: var(--font-heading);
   font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  pointer-events: none;
-  animation: fade-in-wordmark 1.4s var(--ease-cinematic) both;
+  letter-spacing: 0.16em;
+  user-select: none;
 }
-.globe-wordmark__chrono {
-  color: var(--color-text);
-}
-.globe-wordmark__city {
-  color: var(--color-accent);
-}
-@keyframes fade-in-wordmark {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+.globe-wordmark__chrono { color: var(--color-text); }
+.globe-wordmark__city   { color: var(--color-accent); }
 
-.globe-selector__hint {
-  position: absolute;
-  bottom: var(--space-5);
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-wider);
-  color: var(--color-text-faint);
-  pointer-events: none;
-  animation: pulse-hint 3s ease-in-out infinite;
-}
-
-@keyframes pulse-hint {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.9; }
-}
-
-/* --- Labels katmanı --- */
-.globe-labels {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-/* Globe sağ üst kontroller (DayNightToggle) */
-.globe-selector__controls {
-  position: absolute;
-  top: var(--space-5);
-  right: var(--space-5);
-  z-index: 10;
-}
-
-/* Globe sol alt: rotasyon toggle */
-.globe-selector__controls-bottom {
-  position: absolute;
-  bottom: var(--space-5);
-  left: var(--space-5);
-  z-index: 10;
-}
-
+/* ---- SPIN BUTTON ---- */
 .globe-spin-btn {
   display: flex;
   align-items: center;
@@ -227,7 +217,7 @@
   padding: 5px 12px 5px 9px;
   background: rgba(8, 8, 14, 0.72);
   border: 0.5px solid rgba(255, 255, 255, 0.07);
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
   backdrop-filter: blur(14px) saturate(160%);
   -webkit-backdrop-filter: blur(14px) saturate(160%);
   font-family: var(--font-mono);
@@ -237,110 +227,303 @@
   cursor: pointer;
   transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
-
 .globe-spin-btn:hover {
   color: rgba(255, 255, 255, 0.85);
   border-color: rgba(255, 255, 255, 0.14);
   background: rgba(12, 12, 20, 0.88);
 }
-
-.globe-spin-btn[data-rotating="true"] {
-  color: rgba(255, 255, 255, 0.55);
-}
-
+.globe-spin-btn[data-rotating="true"]  { color: rgba(255, 255, 255, 0.55); }
 .globe-spin-btn[data-rotating="false"] {
-  color: rgba(245, 158, 11, 0.75);
-  border-color: rgba(245, 158, 11, 0.15);
+  color: rgba(245, 158, 11, 0.8);
+  border-color: rgba(245, 158, 11, 0.18);
 }
 
-/* ---- Lüks şehir kart etiketi ---- */
-.globe-city-card {
+/* ---- CITY COUNTER ---- */
+.globe-city-counter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-faint);
+}
+.globe-city-counter__sep {
+  color: rgba(255, 255, 255, 0.12);
+}
+
+/* ---- HINT ---- */
+.globe-selector__hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-faint);
+  pointer-events: none;
+  margin: 0;
+  animation: pulse-hint 3s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+@keyframes pulse-hint {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.75; }
+}
+
+/* ---- SVG CONNECTOR LAYER ---- */
+.globe-svg-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible;
+}
+
+.globe-svg-layer line {
+  stroke-dasharray: 5 4;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.globe-svg-layer line[data-visible="true"] {
+  opacity: 0.55;
+}
+
+/* ---- 2D CITY DOTS ---- */
+.city-dot {
   position: absolute;
   top: 0;
   left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--city-color, #f59e0b);
+  box-shadow:
+    0 0 6px var(--city-color, #f59e0b),
+    0 0 14px color-mix(in srgb, var(--city-color, #f59e0b) 50%, transparent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.city-dot[data-hovered="true"] {
+  transform: translate(-50%, -50%) scale(1.9);
+  box-shadow:
+    0 0 12px var(--city-color, #f59e0b),
+    0 0 28px color-mix(in srgb, var(--city-color, #f59e0b) 60%, transparent);
+}
+
+.city-dot[data-selected="true"] {
+  transform: translate(-50%, -50%) scale(1.5);
+  box-shadow:
+    0 0 16px var(--city-color, #f59e0b),
+    0 0 32px color-mix(in srgb, var(--city-color, #f59e0b) 50%, transparent),
+    0 0 0 2px rgba(255,255,255,0.08);
+}
+
+/* Pulsing ring */
+.city-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--city-color, #f59e0b);
+  animation: dot-ring-pulse 2.8s ease-out infinite;
+  opacity: 0;
+}
+
+@keyframes dot-ring-pulse {
+  0%   { transform: scale(0.85); opacity: 0.65; }
+  100% { transform: scale(3.8);  opacity: 0; }
+}
+
+/* ---- CITY INFO CARD ---- */
+.city-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 170px;
+  max-width: 220px;
+  background: rgba(8, 10, 18, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1.5px solid var(--city-color, #f59e0b);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  padding: var(--space-2) var(--space-2);
+  z-index: 15;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  will-change: opacity, transform;
+}
+
+.city-card[data-selected="true"] {
+  border-color: rgba(255,255,255,0.08);
+  border-top-color: var(--city-color, #f59e0b);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.55),
+    0 0 24px color-mix(in srgb, var(--city-color, #f59e0b) 20%, transparent);
+}
+
+.city-card__header {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 12px 7px 10px;
-  background: rgba(6, 6, 12, 0.88);
-  border: 0.5px solid rgba(255, 255, 255, 0.07);
-  border-left: 2px solid var(--city-color, #f59e0b);
-  border-radius: 0 8px 8px 0;
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  cursor: pointer;
-  pointer-events: none;
-  opacity: 0;
-  white-space: nowrap;
-  will-change: transform, opacity;
-  transition:
-    opacity 0.18s ease,
-    box-shadow 0.18s ease;
+  padding: 4px 2px;
 }
 
-/* Downward pointer triangle — dot'a işaret eder */
-.globe-city-card::after {
-  content: '';
-  position: absolute;
-  bottom: -7px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 7px solid var(--city-color, #f59e0b);
-  opacity: 0.7;
-}
-
-.globe-city-card[data-hovered="true"] {
-  box-shadow:
-    0 0 20px color-mix(in srgb, var(--city-color, #f59e0b) 40%, transparent),
-    0 0 40px color-mix(in srgb, var(--city-color, #f59e0b) 15%, transparent);
-}
-
-.gcc__flag {
-  width: 20px;
-  height: 15px;
+.city-card__flag {
+  width: 18px;
+  height: 14px;
   border-radius: 2px;
   flex-shrink: 0;
-  object-fit: cover;
   display: inline-block;
 }
 
-.gcc__body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.city-card__titles {
+  flex: 1;
+  min-width: 0;
 }
 
-.gcc__name {
+.city-card__name {
   font-family: var(--font-heading);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(226, 232, 240, 0.92);
-  line-height: 1;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  color: var(--color-text);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.gcc__country {
-  font-family: var(--font-heading);
+.city-card__country {
+  font-family: var(--font-mono);
   font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--city-color, #f59e0b);
-  opacity: 0.65;
-  line-height: 1;
+  opacity: 0.75;
+  line-height: 1.4;
 }
 
-.globe-city-card[data-hovered="true"] .gcc__name {
-  color: #ffffff;
+.city-card__close {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--color-text-faint);
+  background: rgba(255,255,255,0.06);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.city-card__close:hover {
+  background: rgba(255,255,255,0.12);
+  color: var(--color-text);
 }
 
-.globe-city-card[data-hovered="true"] .gcc__country {
+/* Expandable detail */
+.city-card__detail {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    max-height 0.38s var(--ease-cinematic),
+    opacity 0.28s ease;
+}
+
+.city-card__detail[data-open="true"] {
+  max-height: 200px;
   opacity: 1;
+  pointer-events: auto;
+}
+
+.city-card__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 2px 6px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 4px;
+}
+
+.city-card__stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.city-card__stat span:first-child {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  color: var(--color-text-faint);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.city-card__stat span:last-child {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text);
+  text-align: right;
+}
+
+.city-card__milestones {
+  padding: 0 2px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.city-card__milestone {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+  padding-left: 8px;
+  border-left: 1.5px solid var(--city-color, #f59e0b);
+  opacity: 0.65;
+  line-height: 1.4;
+}
+
+.city-card__fly {
+  display: block;
+  width: 100%;
+  padding: 7px 0;
+  background: var(--city-color, #f59e0b);
+  color: rgba(0, 0, 0, 0.85);
+  font-family: var(--font-heading);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-align: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  margin-top: 2px;
+}
+.city-card__fly:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+.city-card__fly:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* ============================================================

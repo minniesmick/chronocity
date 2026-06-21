@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import * as THREE from "three";
@@ -32,39 +32,73 @@ export default function GlobeSelector() {
   const isDayMode = useStore((s) => s.isDayMode);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const labelRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [hoveredCity, setHoveredCity] = useState<string | null>(null);
-
-  // Glob rotasyon kontrolü
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [isRotating, setIsRotating] = useState(true);
-  const pausedByUserRef = useRef(false);
-  const globeIconRef = useRef<AnimatedIconHandle>(null);
 
-  // Three.js refs — ikinci useEffect'ten erişmek için
+  // DOM refs — updated directly in RAF (no React re-renders)
+  const dotRefs  = useRef<Record<string, HTMLDivElement | null>>({});
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const lineRefs = useRef<Record<string, SVGLineElement | null>>({});
+  const svgRef   = useRef<SVGSVGElement>(null);
+
+  // Refs for RAF closure access without stale state
+  const selectedRef      = useRef<string | null>(null);
+  const hoveredRef       = useRef<string | null>(null);
+  const pausedByUserRef  = useRef(false);
+  const autoPausedRef    = useRef(false);
+  const globeIconRef     = useRef<AnimatedIconHandle>(null);
+
+  // Three.js refs
   const globeMatRef = useRef<THREE.MeshPhongMaterial | null>(null);
   const texCacheRef = useRef<{ night: THREE.Texture | null; day: THREE.Texture | null }>({ night: null, day: null });
   const ambientRef  = useRef<THREE.AmbientLight | null>(null);
   const sunRef      = useRef<THREE.DirectionalLight | null>(null);
   const atmMatRef   = useRef<THREE.MeshBasicMaterial | null>(null);
-  const isDayRef    = useRef(isDayMode); // başlangıç değeri texture yükleme kararı için
+  const isDayRef    = useRef(isDayMode);
 
   useEffect(() => { isDayRef.current = isDayMode; }, [isDayMode]);
-
-  // Mount'ta globe icon'u döndürmeye başla
   useEffect(() => { globeIconRef.current?.startAnimation(); }, []);
+  useEffect(() => { selectedRef.current = selectedCity; }, [selectedCity]);
+  useEffect(() => { hoveredRef.current = hoveredCity; }, [hoveredCity]);
 
-  const toggleRotation = () => {
+  const pauseGlobe = useCallback(() => {
+    if (!pausedByUserRef.current) {
+      pausedByUserRef.current = true;
+      autoPausedRef.current = true;
+      setIsRotating(false);
+      globeIconRef.current?.stopAnimation();
+    }
+  }, []);
+
+  const resumeGlobe = useCallback(() => {
+    if (autoPausedRef.current) {
+      pausedByUserRef.current = false;
+      autoPausedRef.current = false;
+      setIsRotating(true);
+      globeIconRef.current?.startAnimation();
+    }
+  }, []);
+
+  const toggleRotation = useCallback(() => {
+    // Manual toggle overrides auto-pause
+    autoPausedRef.current = false;
     const willPause = !pausedByUserRef.current;
     pausedByUserRef.current = willPause;
     setIsRotating(!willPause);
     if (willPause) globeIconRef.current?.stopAnimation();
     else globeIconRef.current?.startAnimation();
-  };
+  }, []);
+
+  const closeSelected = useCallback(() => {
+    setSelectedCity(null);
+    resumeGlobe();
+  }, [resumeGlobe]);
 
   // --- Ana sahne ---
   useEffect(() => {
     const container = containerRef.current!;
-    const canvas = canvasRef.current!;
+    const canvas    = canvasRef.current!;
     const w = container.clientWidth;
     const h = container.clientHeight;
 
@@ -77,11 +111,10 @@ export default function GlobeSelector() {
     }
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-    camera.position.set(0, 0.4, 5.2);
+    const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 100);
+    camera.position.set(0, 0.15, 6.4); // zoomed out — cards fit
     camera.lookAt(0, 0, 0);
 
-    // Işıklar (refs ile güncellenir)
     const ambient = new THREE.AmbientLight(0xffffff, 0.6);
     ambientRef.current = ambient;
     scene.add(ambient);
@@ -95,7 +128,6 @@ export default function GlobeSelector() {
     fill.position.set(-4, -1, -2);
     scene.add(fill);
 
-    // Globe mesh
     const GLOBE_R = 2;
     const globeMat = new THREE.MeshPhongMaterial({
       color: 0x5e6f86,
@@ -113,7 +145,7 @@ export default function GlobeSelector() {
     atmMatRef.current = atmMat;
     globe.add(new THREE.Mesh(new THREE.SphereGeometry(GLOBE_R * 1.06, 64, 64), atmMat));
 
-    // Grid (atmosfer hissi)
+    // Grid
     globe.add(new THREE.Mesh(
       new THREE.SphereGeometry(GLOBE_R * 1.003, 24, 16),
       new THREE.MeshBasicMaterial({ color: 0x1e3a5f, wireframe: true, transparent: true, opacity: 0.10 }),
@@ -128,46 +160,39 @@ export default function GlobeSelector() {
       globeMat.color.set(0xffffff);
       globeMat.needsUpdate = true;
     };
-
     loader.load("/textures/earth-night.jpg", (tex) => {
       texCacheRef.current.night = tex;
       if (!isDayRef.current) applyTex(tex);
       else globeMat.color.setHex(0x0d1b2a);
     }, undefined, () => { globeMat.color.setHex(0x0d1b2a); });
-
     loader.load("/textures/earth-day.jpg", (tex) => {
       texCacheRef.current.day = tex;
       if (isDayRef.current) applyTex(tex);
     });
 
-    // Şehir noktaları — lüks dot (büyük + parlak)
-    const dotGeo  = new THREE.SphereGeometry(0.06, 16, 16);
-    const ringGeo = new THREE.SphereGeometry(0.10, 16, 16);
+    // Şehir noktaları — nearly invisible, sadece raycasting için
+    const dotGeo = new THREE.SphereGeometry(0.09, 16, 16);
     const dots: { city: CityMeta; mesh: THREE.Mesh }[] = [];
 
     CITY_LIST.forEach((city) => {
       const [lon, lat] = city.center;
       const pos = latLonToVec3(lat, lon, GLOBE_R * 1.015);
-      const mesh = new THREE.Mesh(dotGeo, new THREE.MeshBasicMaterial({ color: city.color }));
+      const mesh = new THREE.Mesh(
+        dotGeo,
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.001 }),
+      );
       mesh.position.copy(pos);
-      // Halo ring — şehir rengi, yarı şeffaf
-      mesh.add(new THREE.Mesh(
-        ringGeo,
-        new THREE.MeshBasicMaterial({ color: city.color, transparent: true, opacity: 0.3 }),
-      ));
       mesh.userData.cityId = city.id;
       globe.add(mesh);
       dots.push({ city, mesh });
     });
 
-    // Drag + Raycaster state
+    // Drag & raycaster
     const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2(-99, -99);
+    const mouse   = new THREE.Vector2(-99, -99);
+    const dotMeshes = dots.map((d) => d.mesh);
     let hoveredId: string | null = null;
     let dragging = false, lastX = 0, lastY = 0, moved = 0, autoPause = 0;
-    const dotMeshes = dots.map((d) => d.mesh);
-
-    canvas.style.cursor = "grab";
 
     const onMove = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -183,9 +208,21 @@ export default function GlobeSelector() {
         canvas.style.cursor = "grabbing";
       }
     };
-    const onDown = (e: PointerEvent) => { dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY; };
-    const onUp   = () => {
-      if (dragging && moved < 6 && hoveredId) navigate(`/city/${hoveredId}`);
+    const onDown = (e: PointerEvent) => {
+      dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY;
+    };
+    const onUp = () => {
+      if (dragging && moved < 6 && hoveredId) {
+        const cur = selectedRef.current;
+        if (cur === hoveredId) {
+          // second click = deselect
+          setSelectedCity(null);
+          resumeGlobe();
+        } else {
+          setSelectedCity(hoveredId);
+          pauseGlobe();
+        }
+      }
       dragging = false;
       canvas.style.cursor = hoveredId ? "pointer" : "grab";
     };
@@ -210,44 +247,99 @@ export default function GlobeSelector() {
       if (autoPause > 0) autoPause--;
       else if (!pausedByUserRef.current) globe.rotation.y += 0.0008;
 
+      // Raycasting — hover detection
       raycaster.setFromCamera(mouse, camera);
       const hits = dragging ? [] : raycaster.intersectObjects(dotMeshes);
       const newHovered = hits.length > 0
-        ? (hits[0].object.parent?.userData.cityId as string ?? null) : null;
+        ? (hits[0].object.userData.cityId as string ?? null) : null;
       if (newHovered !== hoveredId) {
         hoveredId = newHovered;
         setHoveredCity(newHovered);
         if (!dragging) canvas.style.cursor = newHovered ? "pointer" : "grab";
       }
 
-      dots.forEach(({ city, mesh }) => {
-        const t = hoveredId === city.id ? 1.7 : 1.0;
-        mesh.scale.lerp(new THREE.Vector3(t, t, t), 0.15);
-      });
-
-      // Label card konumları
+      // Project cities → 2D, update HTML dots / SVG lines / cards
       const cw = container.clientWidth;
       const ch = container.clientHeight;
+      const cx = cw / 2;
+      const cy = ch / 2;
       const camDir = camera.position.clone().normalize();
 
       dots.forEach(({ city, mesh }) => {
-        const el = labelRefs.current[city.id];
-        if (!el) return;
-        mesh.getWorldPosition(worldPos);
+        const dotEl  = dotRefs.current[city.id];
+        const line   = lineRefs.current[city.id];
+        const card   = cardRefs.current[city.id];
 
-        const isFront = worldPos.clone().normalize().dot(camDir) > 0.05;
-        if (!isFront) { el.style.opacity = "0"; el.style.pointerEvents = "none"; return; }
+        mesh.getWorldPosition(worldPos);
+        const isFront = worldPos.clone().normalize().dot(camDir) > 0.08;
+
+        const isHov = hoveredId === city.id;
+        const isSel = selectedRef.current === city.id;
+
+        if (!isFront) {
+          if (dotEl)  { dotEl.style.opacity = "0"; }
+          if (line)   { line.style.opacity = "0"; }
+          if (card)   { card.style.opacity = "0"; card.style.pointerEvents = "none"; }
+          return;
+        }
 
         const ndc = worldPos.clone().project(camera);
         const x = (ndc.x * 0.5 + 0.5) * cw;
         const y = (-ndc.y * 0.5 + 0.5) * ch;
-        const hov = hoveredId === city.id;
 
-        // Kartın alt kenarı doğrudan dot üstüne gelsin (translateY -100% -10px)
-        el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -100%) translateY(-10px) scale(${hov ? 1.05 : 1})`;
-        el.style.opacity = "1";
-        el.style.pointerEvents = "auto";
-        el.dataset.hovered = String(hov);
+        // Outward direction (from globe center → city point)
+        const dx = x - cx, dy = y - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const nx = dx / dist, ny = dy / dist;
+        const lineLen = isSel ? 110 : isHov ? 95 : 80;
+        let lx2 = x + nx * lineLen;
+        let ly2 = y + ny * lineLen;
+
+        // Dot
+        if (dotEl) {
+          dotEl.style.left = `${x}px`;
+          dotEl.style.top  = `${y}px`;
+          dotEl.style.opacity = "1";
+          dotEl.dataset.hovered  = String(isHov);
+          dotEl.dataset.selected = String(isSel);
+          (dotEl.style as any)["--city-color"] = city.color;
+        }
+
+        // Card viewport clamp — prevent cards from leaving screen
+        const CARD_W = 220, CARD_H_MIN = 56;
+        const isRight = x > cx + 30;
+        const isLeft  = x < cx - 30;
+        const m = 14; // margin from viewport edge
+
+        if (isRight)  lx2 = Math.min(lx2, cw - CARD_W - m - 14);
+        else if (isLeft) lx2 = Math.max(lx2, CARD_W + m + 14);
+        // Vertical clamp: card centered at ly2, so clamp by half height
+        ly2 = Math.max(CARD_H_MIN / 2 + 60 + m, Math.min(ly2, ch - CARD_H_MIN / 2 - m - 64));
+
+        // SVG line
+        if (line) {
+          line.setAttribute("x1", String(x));
+          line.setAttribute("y1", String(y));
+          line.setAttribute("x2", String(lx2));
+          line.setAttribute("y2", String(ly2));
+          line.setAttribute("stroke", city.color);
+          line.dataset.visible = String(isHov || isSel);
+        }
+
+        // Card
+        if (card) {
+          let tx = "0px", ty = "-50%";
+          if (isRight)     tx = "14px";
+          else if (isLeft) tx = "calc(-100% - 14px)";
+          else             tx = "-50%";
+
+          card.style.left      = `${lx2}px`;
+          card.style.top       = `${ly2}px`;
+          card.style.transform = `translate(${tx}, ${ty})`;
+          card.style.opacity   = (isHov || isSel) ? "1" : "0";
+          card.style.pointerEvents = (isHov || isSel) ? "auto" : "none";
+          card.dataset.selected = String(isSel);
+        }
       });
 
       renderer.render(scene, camera);
@@ -270,16 +362,14 @@ export default function GlobeSelector() {
       ro.disconnect();
       renderer.dispose();
     };
-  }, [navigate]);
+  }, [navigate, pauseGlobe, resumeGlobe]);
 
-  // Gündüz/Gece toggle — texture + ışık swap
+  // Gündüz/Gece texture + ışık swap
   useEffect(() => {
     const mat = globeMatRef.current;
     if (!mat) return;
-
     const tex = isDayMode ? texCacheRef.current.day : texCacheRef.current.night;
     if (tex) { mat.map = tex; mat.color.set(0xffffff); mat.needsUpdate = true; }
-
     if (ambientRef.current) ambientRef.current.intensity = isDayMode ? 1.0 : 0.6;
     if (sunRef.current) {
       sunRef.current.intensity = isDayMode ? 0.9 : 0.45;
@@ -291,6 +381,12 @@ export default function GlobeSelector() {
     }
   }, [isDayMode]);
 
+  const glowColor = hoveredCity && CITIES[hoveredCity as keyof typeof CITIES]
+    ? hexToGlowRgba(CITIES[hoveredCity as keyof typeof CITIES].color, 0.14)
+    : selectedCity && CITIES[selectedCity as keyof typeof CITIES]
+    ? hexToGlowRgba(CITIES[selectedCity as keyof typeof CITIES].color, 0.10)
+    : "rgba(245,158,11,0.07)";
+
   return (
     <motion.div
       className="globe-selector"
@@ -299,63 +395,139 @@ export default function GlobeSelector() {
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       ref={containerRef}
+      onClick={closeSelected}
     >
       <canvas ref={canvasRef} className="globe-selector__canvas" style={{ cursor: "grab" }} />
+
+      {/* Ambient glow — dinamik renk */}
       <div
         className="globe-selector__glow"
         aria-hidden="true"
-        style={{
-          '--glow-color': hoveredCity && CITIES[hoveredCity as keyof typeof CITIES]
-            ? hexToGlowRgba(CITIES[hoveredCity as keyof typeof CITIES].color, 0.14)
-            : 'rgba(245,158,11,0.09)',
-        } as React.CSSProperties}
+        style={{ "--glow-color": glowColor } as React.CSSProperties}
       />
 
-      {/* Lüks şehir etiket kartları */}
-      <div className="globe-labels" aria-hidden="true">
+      {/* SVG connector lines */}
+      <svg ref={svgRef} className="globe-svg-layer" aria-hidden="true">
         {CITY_LIST.map((city) => (
+          <line
+            key={city.id}
+            ref={(el) => { lineRefs.current[city.id] = el; }}
+            strokeWidth="1"
+            strokeLinecap="round"
+            strokeDasharray="5 4"
+          />
+        ))}
+      </svg>
+
+      {/* 2D city dots */}
+      {CITY_LIST.map((city) => (
+        <div
+          key={city.id}
+          ref={(el) => { dotRefs.current[city.id] = el; }}
+          className="city-dot"
+          style={{ "--city-color": city.color } as React.CSSProperties}
+          aria-hidden="true"
+        />
+      ))}
+
+      {/* City info cards */}
+      {CITY_LIST.map((city) => {
+        const stats = city.stats;
+        const isSel = selectedCity === city.id;
+        return (
           <div
             key={city.id}
-            ref={(el) => { labelRefs.current[city.id] = el; }}
-            className="globe-city-card"
-            data-hovered={hoveredCity === city.id}
-            onClick={() => navigate(`/city/${city.id}`)}
+            ref={(el) => { cardRefs.current[city.id] = el; }}
+            className="city-card"
             style={{ "--city-color": city.color } as React.CSSProperties}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isSel) { closeSelected(); } else { setSelectedCity(city.id); pauseGlobe(); }
+            }}
           >
-            <span className={`fi fi-${city.countryCode} gcc__flag`} aria-label={city.country} />
-            <div className="gcc__body">
-              <div className="gcc__name">{city.name}</div>
-              <div className="gcc__country">{city.country}</div>
+            <div className="city-card__header">
+              <span className={`fi fi-${city.countryCode} city-card__flag`} aria-label={city.country} />
+              <div className="city-card__titles">
+                <div className="city-card__name">{city.name}</div>
+                <div className="city-card__country">{city.country}</div>
+              </div>
+              {isSel && (
+                <button
+                  className="city-card__close"
+                  onClick={(e) => { e.stopPropagation(); closeSelected(); }}
+                  aria-label="Kapat"
+                >✕</button>
+              )}
+            </div>
+
+            <div className="city-card__detail" data-open={isSel}>
+              {stats && (
+                <div className="city-card__stats">
+                  <div className="city-card__stat">
+                    <span>NÜFUS</span>
+                    <span>{stats.population}</span>
+                  </div>
+                  <div className="city-card__stat">
+                    <span>KURULUŞ</span>
+                    <span>{stats.founded}</span>
+                  </div>
+                </div>
+              )}
+              {stats?.milestones && (
+                <div className="city-card__milestones">
+                  {stats.milestones.slice(0, 2).map((m) => (
+                    <div key={m} className="city-card__milestone">{m}</div>
+                  ))}
+                </div>
+              )}
+              <button
+                className="city-card__fly"
+                onClick={(e) => { e.stopPropagation(); navigate(`/city/${city.id}`); }}
+                disabled={!city.hasBuildingData}
+                title={!city.hasBuildingData ? "Bina verisi henüz yok" : undefined}
+              >
+                FLY TO {city.name.toUpperCase()} ›
+              </button>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
 
-      {/* Sağ üst: gündüz/gece toggle */}
-      <div className="globe-selector__controls">
+      {/* TOP BAR */}
+      <header className="globe-top-bar" onClick={(e) => e.stopPropagation()}>
+        <div className="globe-wordmark" aria-label="ChronoCity">
+          <span className="globe-wordmark__chrono">CHRONO</span>
+          <span className="globe-wordmark__city">CITY</span>
+        </div>
+        <div className="globe-top-bar__spacer" />
         <DayNightToggle />
-      </div>
+      </header>
 
-      {/* Sol alt: rotasyon durdur/devam et */}
-      <div className="globe-selector__controls-bottom">
+      {/* BOTTOM BAR */}
+      <footer className="globe-bottom-bar" onClick={(e) => e.stopPropagation()}>
         <button
           className="globe-spin-btn"
           onClick={toggleRotation}
           aria-label={isRotating ? "Küreyi durdur" : "Küreyi döndür"}
           data-rotating={isRotating}
         >
-          <GlobeIcon ref={globeIconRef} size={15} color="currentColor" />
+          <GlobeIcon ref={globeIconRef} size={14} color="currentColor" />
           <span>{isRotating ? "Durdur" : "Döndür"}</span>
           {!isRotating && <PlayerIcon size={10} color="currentColor" />}
         </button>
-      </div>
 
-      <div className="globe-wordmark" aria-label="ChronoCity">
-        <span className="globe-wordmark__chrono">CHRONO</span>
-        <span className="globe-wordmark__city">CITY</span>
-      </div>
+        <div className="globe-city-counter" aria-label="11 şehir, 170 bin üzeri bina">
+          <span>11 şehir</span>
+          <span className="globe-city-counter__sep" aria-hidden="true">·</span>
+          <span>170K+ bina</span>
+        </div>
 
-      <p className="globe-selector__hint">Sürükle · Döndür · Bir şehre tıkla</p>
+        <div className="globe-bottom-bar__spacer" />
+
+        <p className="globe-selector__hint" aria-hidden="true">
+          Sürükle · Döndür · Bir şehre tıkla
+        </p>
+      </footer>
     </motion.div>
   );
 }
