@@ -64,7 +64,8 @@ ChronoCity; New York, Chicago, Berlin, Viyana ve İstanbul'un kentsel dokusunu z
   - NYC 6.5K bina 3.4MB | Berlin 27.5K 12MB | Vienna 18K 8.3MB | Chicago 4.5K 1.6MB
   - İstanbul 5K 1.4MB | Paris 13.7K 6MB | London 26.9K 9.5MB | Tokyo 26K 7.4MB
   - Madrid 14.2K 6.2MB | Barcelona 19.5K 8.4MB | Moscow 8.2K 3.2MB
-- **Sıradaki**: S3 → EventPopup + ReplayButton. S4 → EraAudioEngine.
+- **Veri analizi (construction_year doluluk):** NY=%98, Berlin=%10, Moscow=%6, Paris=%4, diğerleri<%2. Height=%99-100 hepsinde. → PLUTO+Geoportal+GHSL ile zenginleştirilecek.
+- **Sıradaki**: CAPSTONE ML-1 → PLUTO spatial join pipeline. Bbox genişletme ML-1 sonrasına bırakıldı (pipeline önce küçük datasette doğrulanacak).
 
 ## User Flow (Ekran Sırası)
 
@@ -177,11 +178,10 @@ Veri kaynağı: Wikidata API (yarı otomatik çekim) → manuel düzenleme → J
 | StreetViewBlend | S8 | Street View + shader morph overlay |
 | CompareMode | S8 | İki şehri / iki dönemi split-screen |
 | PWAShell | S9 | Offline cache, install prompt, mobile layout |
-| **SunShadowEngine** | **SDP2** | **Ray-casting + quadtree spatial index. "Çatı panele uygun mu?" / "Sabah güneşi alır mı?" hesaplamalı geometri.** |
-| **MultiCriteriaRouter** | **SDP2** | **OSM graf + A*/Dijkstra + Pareto çok-kriterli optimizasyon. En sessiz/güneşli/yeşil yürüyüş rotası.** |
-| **UrbanGrowthML** | **SDP2** | **construction_year etiketli veri → spatial ML → "şehir nereye yoğunlaşacak?" GNN bina-komşuluk grafı.** |
-| **NLSpatialAgent** | **SDP2** | **"Su kenarında 1920 öncesi 50m+ bina göster" → spatial sorgu. LLM tool-use + RAG + mekânsal DB.** |
-| **TrafficSimulation** | **SDP2 stretch** | **Agent-based simülasyon + GPU compute. "30dk sonra burası tıkanır mı?" Teknik tavan en yüksek.** |
+| **EraMLPredictor** | **ML-2/3** | **XGBoost + PyTorch MLP. Girdi: footprint area/compactness/height/komşuluk stats. Çıktı: era sınıfı + confidence. FastAPI /predict-era endpoint.** |
+| **ProvenanceBadge** | **ML-4** | **BuildingPopup'ta data_source badge: Altın=PLUTO, Gümüş=OSM, Bronz=GHSL, Mor=AI_Predicted.** |
+| **DataSourceFilter** | **ML-4** | **Layer toggle: "Sadece doğrulanmış" / "AI dahil" / "Hepsini göster". MapCanvas legend.** |
+| **AIChatGuide** | **NLP-3** | **Sağ kenar açılır panel. Llama 3.1 8B local + RAG (ChromaDB) + function calling (set_city, set_year, highlight_era). SSE streaming.** |
 
 ## Key Interactions
 
