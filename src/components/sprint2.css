@@ -152,6 +152,33 @@
   50%       { opacity: 1; }
 }
 
+/* Wordmark — sol üst köşe */
+.globe-wordmark {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: var(--z-overlay-ui);
+  display: flex;
+  align-items: baseline;
+  gap: 0.18em;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  pointer-events: none;
+  animation: fade-in-wordmark 1.4s var(--ease-cinematic) both;
+}
+.globe-wordmark__chrono {
+  color: var(--color-text);
+}
+.globe-wordmark__city {
+  color: var(--color-accent);
+}
+@keyframes fade-in-wordmark {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .globe-selector__hint {
   position: absolute;
   bottom: var(--space-5);

@@ -44,7 +44,7 @@
   /* ---- Tipografi ---- */
   --font-heading: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "Space Grotesk", ui-monospace, "Cascadia Code", monospace;
+  --font-mono: "JetBrains Mono", "Cascadia Code", ui-monospace, monospace;
 
   --text-xs: 0.75rem; /* 12px — etiket */
   --text-sm: 0.875rem; /* 14px */

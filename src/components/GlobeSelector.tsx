@@ -350,6 +350,11 @@ export default function GlobeSelector() {
         </button>
       </div>
 
+      <div className="globe-wordmark" aria-label="ChronoCity">
+        <span className="globe-wordmark__chrono">CHRONO</span>
+        <span className="globe-wordmark__city">CITY</span>
+      </div>
+
       <p className="globe-selector__hint">Sürükle · Döndür · Bir şehre tıkla</p>
     </motion.div>
   );

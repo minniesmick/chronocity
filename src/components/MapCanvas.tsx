@@ -119,7 +119,7 @@ export default function MapCanvas({ city }: { city: CityId }) {
       maxZoom: 19,
       tileSize: 256,
       extent: cityBbox,  // only load tiles covering this city's bbox
-      opacity: isDayMode ? 1.0 : 0.45,
+      opacity: isDayMode ? 0.80 : 0.45,
       renderSubLayers: (props) => {
         const { boundingBox } = props.tile;
         return new BitmapLayer({
@@ -153,8 +153,8 @@ export default function MapCanvas({ city }: { city: CityId }) {
           return colorByEra(year, !isDayMode);
         },
         material: {
-          ambient: 0.5,
-          diffuse: 0.6,
+          ambient: 0.72,
+          diffuse: 0.45,
           shininess: 32,
           specularColor: [60, 50, 40],
         },

@@ -17,11 +17,11 @@ const ERA_BANDS: Array<{ until: number; day: [number, number, number] }> = [
  */
 export function colorByEra(year: number, night = false): RGBA {
   const band = ERA_BANDS.find((b) => year < b.until) ?? ERA_BANDS[ERA_BANDS.length - 1];
-  const mul = night ? 0.55 : 1.0;
+  const mul = night ? 0.55 : 1.25;
   return [
-    Math.round(band.day[0] * mul),
-    Math.round(band.day[1] * mul),
-    Math.round(band.day[2] * mul),
+    Math.min(255, Math.round(band.day[0] * mul)),
+    Math.min(255, Math.round(band.day[1] * mul)),
+    Math.min(255, Math.round(band.day[2] * mul)),
     220,
   ];
 }
