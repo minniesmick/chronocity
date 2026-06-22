@@ -171,7 +171,7 @@ export default function GlobeSelector() {
     });
 
     // Şehir noktaları — nearly invisible, sadece raycasting için
-    const dotGeo = new THREE.SphereGeometry(0.09, 16, 16);
+    const dotGeo = new THREE.SphereGeometry(0.22, 16, 16);
     const dots: { city: CityMeta; mesh: THREE.Mesh }[] = [];
 
     CITY_LIST.forEach((city) => {
@@ -192,6 +192,7 @@ export default function GlobeSelector() {
     const mouse   = new THREE.Vector2(-99, -99);
     const dotMeshes = dots.map((d) => d.mesh);
     let hoveredId: string | null = null;
+    let clickedId: string | null = null;
     let dragging = false, lastX = 0, lastY = 0, moved = 0, autoPause = 0;
 
     const onMove = (e: PointerEvent) => {
@@ -210,20 +211,27 @@ export default function GlobeSelector() {
     };
     const onDown = (e: PointerEvent) => {
       dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY;
+      clickedId = hoveredId; // capture before RAF clears it during drag
     };
     const onUp = () => {
-      if (dragging && moved < 6 && hoveredId) {
-        const cur = selectedRef.current;
-        if (cur === hoveredId) {
-          // second click = deselect
+      if (dragging && moved < 6) {
+        const target = clickedId;
+        if (target) {
+          const cur = selectedRef.current;
+          if (cur === target) {
+            setSelectedCity(null);
+            resumeGlobe();
+          } else {
+            setSelectedCity(target);
+            pauseGlobe();
+          }
+        } else if (selectedRef.current) {
           setSelectedCity(null);
           resumeGlobe();
-        } else {
-          setSelectedCity(hoveredId);
-          pauseGlobe();
         }
       }
       dragging = false;
+      clickedId = null;
       canvas.style.cursor = hoveredId ? "pointer" : "grab";
     };
 
@@ -279,7 +287,7 @@ export default function GlobeSelector() {
         if (!isFront) {
           if (dotEl)  { dotEl.style.opacity = "0"; }
           if (line)   { line.style.opacity = "0"; }
-          if (card)   { card.style.opacity = "0"; card.style.pointerEvents = "none"; }
+          if (card)   { card.classList.remove('city-card--visible'); }
           return;
         }
 
@@ -336,8 +344,7 @@ export default function GlobeSelector() {
           card.style.left      = `${lx2}px`;
           card.style.top       = `${ly2}px`;
           card.style.transform = `translate(${tx}, ${ty})`;
-          card.style.opacity   = (isHov || isSel) ? "1" : "0";
-          card.style.pointerEvents = (isHov || isSel) ? "auto" : "none";
+          card.classList.toggle('city-card--visible', isHov || isSel);
           card.dataset.selected = String(isSel);
         }
       });
@@ -397,7 +404,7 @@ export default function GlobeSelector() {
       ref={containerRef}
       onClick={closeSelected}
     >
-      <canvas ref={canvasRef} className="globe-selector__canvas" style={{ cursor: "grab" }} />
+      <canvas ref={canvasRef} className="globe-selector__canvas" style={{ cursor: "grab" }} onClick={(e) => e.stopPropagation()} />
 
       {/* Ambient glow — dinamik renk */}
       <div

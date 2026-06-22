@@ -48,7 +48,9 @@ export default function MapCanvas({ city }: { city: CityId }) {
   const { data, loading, error } = useCityBuildings(city);
   const t = useStore((s) => s.t);
   const isDayMode = useStore((s) => s.isDayMode);
+  const cameraResetKey = useStore((s) => s.cameraResetKey);
   const setActiveBuilding = useStore((s) => s.setActiveBuilding);
+  const setCurrentZoom = useStore((s) => s.setCurrentZoom);
   const currentYear = yearFromT(t);
 
   // Pulse animasyonu için ~20fps RAF sayacı
@@ -97,6 +99,23 @@ export default function MapCanvas({ city }: { city: CityId }) {
     return () => clearTimeout(id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // sadece mount'ta — city prop değişmez (unmount → remount)
+
+  // Kamera sıfırla — store'dan tetiklenir
+  useEffect(() => {
+    if (cameraResetKey === 0) return;
+    setViewState({
+      longitude: center[0],
+      latitude: center[1],
+      zoom: 14.5,
+      pitch: 50,
+      bearing: -20,
+      minZoom: 12,
+      maxPitch: 75,
+      transitionDuration: 900,
+      transitionInterpolator: new FlyToInterpolator({ speed: 1.6 }),
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cameraResetKey]);
 
   const cityBbox = CITIES[city].bbox;
 
@@ -189,9 +208,9 @@ export default function MapCanvas({ city }: { city: CityId }) {
           const newZoom = newVs.zoom ?? 0;
           const prevZoom = prevZoomRef.current;
           prevZoomRef.current = newZoom;
-          // Sınıra ilk değdiği anda göster
           if (newZoom <= 12 && prevZoom > 12) triggerZoomHint('min');
           if (newZoom >= 18.8 && prevZoom < 18.8) triggerZoomHint('max');
+          setCurrentZoom(newZoom);
           setViewState(newVs);
         }}
         controller={true}
@@ -202,11 +221,6 @@ export default function MapCanvas({ city }: { city: CityId }) {
           if (!info.object) setActiveBuilding(null);
         }}
       />
-      {/* Kalıcı zoom seviye göstergesi */}
-      <div className="map-zoom-level">
-        {viewState.zoom?.toFixed(1)} ×
-      </div>
-
       <AnimatePresence>
         {zoomHint && (
           <motion.div

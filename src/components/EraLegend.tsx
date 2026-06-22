@@ -19,6 +19,7 @@ function rgbStr(rgb: readonly [number, number, number], mul = 1) {
 export default function EraLegend() {
   const [open, setOpen] = useState(false);
   const isDayMode = useStore((s) => s.isDayMode);
+  const currentZoom = useStore((s) => s.currentZoom);
   const mul = isDayMode ? 1 : 0.55;
 
   return (
@@ -29,6 +30,10 @@ export default function EraLegend() {
         aria-expanded={open}
         aria-label="Era renk legend"
       >
+        <span className="era-legend__zoom" aria-label={`Zoom ${currentZoom.toFixed(1)}`}>
+          {currentZoom.toFixed(1)}<span className="era-legend__zoom-x">×</span>
+        </span>
+        <span className="era-legend__divider" aria-hidden="true" />
         <span className="era-legend__dot-row" aria-hidden="true">
           {ERAS.map((e) => (
             <span

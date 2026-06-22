@@ -80,13 +80,10 @@ export default function TimelineBar() {
   }, [onKey]);
 
   return (
-    <motion.div
+    <div
       className="timeline"
       role="region"
       aria-label="Zaman çizelgesi"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Sol: play/pause + yıl */}
       <div className="timeline__left">
@@ -113,6 +110,7 @@ export default function TimelineBar() {
 
       {/* Merkez: track-area (event noktaları + range) + tick'ler */}
       <div className="timeline__track-wrap">
+        <div className="timeline__era-strip" aria-hidden="true" />
         <div className="timeline__track-area">
           <EventMarker
             events={events}
@@ -148,6 +146,9 @@ export default function TimelineBar() {
             </span>
           ))}
         </div>
+        <div className="timeline__shortcut-hint" aria-hidden="true">
+          SPACE oynat · ← / → yıl · SHIFT+← / → ×10
+        </div>
       </div>
 
       {/* Sağ: müzik era radio pill'leri */}
@@ -166,6 +167,6 @@ export default function TimelineBar() {
           </button>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }

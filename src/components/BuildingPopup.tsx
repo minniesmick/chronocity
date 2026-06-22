@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { eraByYear } from "@/lib/eraColors";
@@ -11,14 +11,25 @@ export default function BuildingPopup() {
   const setActiveBuilding = useStore((s) => s.setActiveBuilding);
   const closeRef = useRef<HTMLButtonElement>(null);
 
+  // Escape ile kapat
+  useEffect(() => {
+    if (!ab) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveBuilding(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [ab, setActiveBuilding]);
+
   return (
     <AnimatePresence>
       {ab && (() => {
         const p = ab.properties;
-        const era = eraByYear(p.construction_year);
-        const heightPct = Math.min(100, Math.round((p.height / 280) * 100));
+        const hasYear = p.construction_year != null;
+        const era = eraByYear(hasYear ? p.construction_year! : null);
+        // Cap at 500m (tallest buildings ~500m range, not 280)
+        const heightPct = Math.min(100, Math.round((p.height / 500) * 100));
 
-        // Viewport clamp — popup yukarı-sola açılır, kenara dayandı mı kontrol et
         const margin = 16;
         let px = ab.x + 14;
         let py = ab.y - POPUP_H - 14;
@@ -48,9 +59,7 @@ export default function BuildingPopup() {
               ✕
             </button>
 
-            <div className="bpop__name">
-              {p.name ?? "Yapı"}
-            </div>
+            <div className="bpop__name">{p.name ?? "Yapı"}</div>
 
             <div className="bpop__divider" />
 
@@ -69,11 +78,15 @@ export default function BuildingPopup() {
             </div>
 
             <div className="bpop__meta">
-              <span className="bpop__year">
-                {p.construction_year ?? "—"}
-              </span>
-              <span className="bpop__sep">◆</span>
-              <span className="bpop__era">{era.label}</span>
+              {hasYear ? (
+                <>
+                  <span className="bpop__year">{p.construction_year}</span>
+                  <span className="bpop__sep">◆</span>
+                  <span className="bpop__era">{era.label}</span>
+                </>
+              ) : (
+                <span className="bpop__year bpop__year--unknown">Yapım yılı bilinmiyor</span>
+              )}
             </div>
           </motion.div>
         );

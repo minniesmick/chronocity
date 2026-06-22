@@ -6,6 +6,7 @@ import { CITIES } from "@/data/cities";
 import type { CityId } from "@/types";
 import MapCanvas from "@/components/MapCanvas";
 import ArrowNarrowLeftIcon from "@/components/icons/arrow-narrow-left-icon";
+import LocateIcon from "@/components/icons/locate-icon";
 import TimelineBar from "@/components/TimelineBar";
 import DayNightToggle from "@/components/DayNightToggle";
 import CityLoadingScreen from "@/components/CityLoadingScreen";
@@ -22,6 +23,7 @@ export default function CityExperience() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isDayMode = useStore((s) => s.isDayMode);
+  const triggerCameraReset = useStore((s) => s.triggerCameraReset);
 
   const city = id as CityId;
   const meta = CITIES[city];
@@ -67,15 +69,31 @@ export default function CityExperience() {
           {meta.name}
         </span>
         <span className="city-exp__spacer" />
+        <button
+          className="city-exp__recenter"
+          onClick={triggerCameraReset}
+          aria-label="Kamerayı sıfırla"
+          title="Kamerayı sıfırla"
+        >
+          <LocateIcon size={15} color="currentColor" />
+        </button>
         <DayNightToggle />
       </motion.header>
 
-      <TimelineBar />
       <FrequencyVisualizer />
-      <EraLegend />
       <BuildingPopup />
       <EventPopup />
-      <ReplayButton />
+
+      <motion.div
+        className="bottom-hud"
+        initial={{ opacity: 0, y: 28 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.42, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <EraLegend />
+        <TimelineBar />
+        <ReplayButton />
+      </motion.div>
 
       {/* Loading screen overlay — AnimatePresence ile smooth exit */}
       <AnimatePresence>

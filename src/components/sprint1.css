@@ -162,7 +162,7 @@
 /* ---- Zoom sınır bildirimi ---- */
 .map-zoom-hint {
   position: absolute;
-  bottom: 108px; /* timeline üstü */
+  bottom: 90px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -303,24 +303,74 @@
 }
 
 /* ============================================================
-   TIMELINE BAR (Sprint 3) — DevTimeScrubber'ın yerini alır
+   BOTTOM HUD — tam genişlik sabit alt bar
    ============================================================ */
-.timeline {
-  position: absolute;
-  left: 50%;
-  bottom: var(--space-5);
-  transform: translateX(-50%);
+.bottom-hud {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: var(--z-panel);
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  width: min(820px, 92vw);
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-panel-translucent);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(14px);
-  box-shadow: var(--shadow-panel);
+  padding: 10px 20px 14px;
+  background: rgba(6, 8, 16, 0.90);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+}
+
+/* HUD bağlamında yıl göstergesi küçülür — track'e yer açar */
+.bottom-hud .timeline__year {
+  font-size: var(--text-xl);
+  letter-spacing: 0.02em;
+}
+
+/* Era pill'ler 2×2 wrap — yatay genişliği sınırla */
+.bottom-hud .timeline__era {
+  flex-wrap: wrap;
+  max-width: 128px;
+  align-content: center;
+}
+
+/* Kısayol ipucu tek satır */
+.bottom-hud .timeline__shortcut-hint {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dar viewport: era pill + replay gizle, legend compakt */
+@media (max-width: 680px) {
+  .bottom-hud .timeline__era { display: none; }
+  .bottom-hud .replay-btn { display: none; }
+  .bottom-hud .timeline__shortcut-hint { display: none; }
+  .bottom-hud .era-legend { max-width: 130px; }
+  .bottom-hud .era-legend__zoom { display: none; }
+  .bottom-hud .era-legend__divider { display: none; }
+}
+
+/* HUD içindeki divider: era-legend ile timeline arasında */
+.bottom-hud .era-legend {
+  padding-right: var(--space-2);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Replay butonu sol sınır */
+.bottom-hud .replay-btn {
+  margin-left: var(--space-1);
+}
+
+/* ============================================================
+   TIMELINE BAR (Sprint 3) — DevTimeScrubber'ın yerini alır
+   ============================================================ */
+.timeline {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .timeline__left {
@@ -485,9 +535,10 @@
 /* Era müzik radio pill'leri */
 .timeline__era {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 4px;
   flex-shrink: 0;
+  align-items: center;
 }
 
 .timeline__era-pill {
@@ -518,13 +569,76 @@
   color: var(--era-color, var(--color-text-muted));
 }
 
+/* Era renk şeridi — track'in altında çok ince renkli bant */
+.timeline__era-strip {
+  height: 3px;
+  border-radius: var(--radius-pill);
+  opacity: 0.45;
+  background: linear-gradient(to right,
+    rgb(180, 150, 100)   0%,    rgb(180, 150, 100)  31%,
+    rgb(190, 120,  80)  31%,    rgb(190, 120,  80)  52.2%,
+    rgb(200, 165,  60)  52.2%,  rgb(200, 165,  60)  64.2%,
+    rgb(140, 150, 160)  64.2%,  rgb(140, 150, 160)  75.2%,
+    rgb(175, 175, 155)  75.2%,  rgb(175, 175, 155)  84.1%,
+    rgb(130, 175, 150)  84.1%,  rgb(130, 175, 150)  92.9%,
+    rgb(100, 170, 215)  92.9%,  rgb(100, 170, 215) 100%
+  );
+}
+
+/* Klavye kısayol ipucu */
+.timeline__shortcut-hint {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+  text-align: center;
+  user-select: none;
+  pointer-events: none;
+  margin-top: 1px;
+}
+
+/* Kamera sıfırla butonu */
+.city-exp__recenter {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: var(--color-panel-translucent);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(10px);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+  flex-shrink: 0;
+}
+.city-exp__recenter:hover {
+  background: var(--color-bg-elevated);
+  color: var(--color-accent-bright);
+  border-color: var(--color-accent-dim);
+}
+
+/* Yapım yılı bilinmiyor */
+.bpop__year--unknown {
+  font-style: italic;
+  color: var(--color-text-faint);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
 /* ============================================================
    EVENT POPUP (Sprint 3)
    ============================================================ */
 /* Wrapper: centering + pozisyon. FM animasyonu içerideki .event-popup'a uygulanır */
 .event-popup-anchor {
   position: absolute;
-  bottom: 110px;
+  bottom: 90px;
   left: 0;
   right: 0;
   display: flex;
@@ -624,7 +738,7 @@
    ============================================================ */
 .freq-viz {
   position: absolute;
-  bottom: 116px; /* timeline + padding üstü */
+  bottom: 88px;
   left: var(--space-5);
   z-index: var(--z-overlay-ui);
   pointer-events: none;
@@ -637,10 +751,8 @@
    REPLAY BUTTON (Sprint 3)
    ============================================================ */
 .replay-btn {
-  position: absolute;
-  bottom: 110px;
-  right: var(--space-5);
-  z-index: var(--z-panel);
+  flex-shrink: 0;
+  align-self: center;
   width: 40px;
   height: 40px;
   display: flex;
@@ -734,14 +846,9 @@
 
 /* ══ Era Legend ═══════════════════════════════════════════════════════════ */
 .era-legend {
-  position: absolute;
-  bottom: 160px;  /* zoom göstergesi üstü, timeline dışı */
-  left: var(--space-3);
-  z-index: 25;    /* z-panel(20) + 5 */
-  display: flex;
-  flex-direction: column-reverse;  /* toggle altta, panel yukarı açılır */
-  align-items: flex-start;
-  gap: 4px;
+  position: relative;
+  flex-shrink: 0;
+  align-self: center;
 }
 
 .era-legend__toggle {
@@ -765,6 +872,27 @@
 .era-legend__toggle:hover {
   color: rgba(255, 255, 255, 0.85);
   border-color: rgba(255, 255, 255, 0.14);
+}
+
+.era-legend__zoom {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1;
+  white-space: nowrap;
+}
+.era-legend__zoom-x {
+  font-size: 8px;
+  opacity: 0.65;
+  margin-left: 1px;
+}
+
+.era-legend__divider {
+  width: 1px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
 }
 
 .era-legend__dot-row {
@@ -796,14 +924,18 @@
   transform: rotate(90deg);
 }
 
-/* Panel */
+/* Panel — HUD üstünde açılır */
 .era-legend__panel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: var(--z-popup);
   display: flex;
   flex-direction: column;
   gap: 0;
   padding: 8px 4px;
-  background: rgba(8, 8, 14, 0.88);
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 8, 14, 0.92);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
