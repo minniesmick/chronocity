@@ -35,7 +35,17 @@ export default function CityExperience() {
   }, [city, setActiveCity]);
 
   const [showLoading, setShowLoading] = useState(true);
+  const [showShortcuts, setShowShortcuts] = useState(() => !localStorage.getItem('cc-shortcuts'));
   useEraAudio();
+
+  useEffect(() => {
+    if (!showShortcuts) return;
+    const t = setTimeout(() => {
+      setShowShortcuts(false);
+      localStorage.setItem('cc-shortcuts', '1');
+    }, 4500);
+    return () => clearTimeout(t);
+  }, [showShortcuts]);
 
   if (!meta) {
     navigate("/globe");
@@ -94,6 +104,29 @@ export default function CityExperience() {
         <TimelineBar />
         <ReplayButton />
       </motion.div>
+
+      {/* Klavye kısayol overlay — ilk ziyarette 4.5sn */}
+      <AnimatePresence>
+        {showShortcuts && (
+          <motion.div
+            className="shortcut-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            onClick={() => { setShowShortcuts(false); localStorage.setItem('cc-shortcuts', '1'); }}
+            aria-label="Klavye kısayolları"
+          >
+            <div className="shortcut-overlay__card">
+              <div className="shortcut-overlay__row"><kbd>SPACE</kbd><span>Oynat / Durdur</span></div>
+              <div className="shortcut-overlay__row"><kbd>Sol</kbd><kbd>Sag</kbd><span>Yıl değiştir</span></div>
+              <div className="shortcut-overlay__row"><kbd>SHIFT</kbd><span>×10 hız</span></div>
+              <div className="shortcut-overlay__row"><kbd>ESC</kbd><span>Bina bilgisi kapat</span></div>
+              <p className="shortcut-overlay__dismiss">Herhangi bir yere tıkla</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Loading screen overlay — AnimatePresence ile smooth exit */}
       <AnimatePresence>

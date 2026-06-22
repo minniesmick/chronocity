@@ -656,3 +656,13 @@
   box-shadow: 0 0 10px var(--color-accent-glow);
   transition: width 50ms linear;
 }
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .city-dot::after          { animation: none; }
+  .city-loading__bar-fill   { transition: none; }
+  *                         { transition-duration: 0.01ms !important;
+                              animation-duration:  0.01ms !important; }
+}

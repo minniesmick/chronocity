@@ -35,6 +35,7 @@ export default function GlobeSelector() {
   const [hoveredCity, setHoveredCity] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [isRotating, setIsRotating] = useState(true);
+  const [showHint, setShowHint] = useState(() => !localStorage.getItem('cc-hint'));
 
   // DOM refs — updated directly in RAF (no React re-renders)
   const dotRefs  = useRef<Record<string, HTMLDivElement | null>>({});
@@ -58,6 +59,14 @@ export default function GlobeSelector() {
   const isDayRef    = useRef(isDayMode);
 
   useEffect(() => { isDayRef.current = isDayMode; }, [isDayMode]);
+  useEffect(() => {
+    if (!showHint) return;
+    const t = setTimeout(() => {
+      setShowHint(false);
+      localStorage.setItem('cc-hint', '1');
+    }, 4000);
+    return () => clearTimeout(t);
+  }, [showHint]);
   useEffect(() => { globeIconRef.current?.startAnimation(); }, []);
   useEffect(() => { selectedRef.current = selectedCity; }, [selectedCity]);
   useEffect(() => { hoveredRef.current = hoveredCity; }, [hoveredCity]);
@@ -111,7 +120,7 @@ export default function GlobeSelector() {
     }
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(36, w / h, 0.1, 100);
     camera.position.set(0, 0.15, 6.4); // zoomed out — cards fit
     camera.lookAt(0, 0, 0);
 
@@ -531,9 +540,11 @@ export default function GlobeSelector() {
 
         <div className="globe-bottom-bar__spacer" />
 
-        <p className="globe-selector__hint" aria-hidden="true">
-          Sürükle · Döndür · Bir şehre tıkla
-        </p>
+        {showHint && (
+          <p className="globe-selector__hint" aria-hidden="true">
+            Sürükle · Döndür · Bir şehre tıkla
+          </p>
+        )}
       </footer>
     </motion.div>
   );
