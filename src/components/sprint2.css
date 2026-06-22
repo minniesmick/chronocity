@@ -658,11 +658,23 @@
 }
 
 /* ============================================================
+   CONNECTOR LINE ANIMATION — glob'dan karta enerji akışı
+   ============================================================ */
+@keyframes dash-flow {
+  to { stroke-dashoffset: -9; }
+}
+
+.globe-svg-layer line[data-visible="true"] {
+  animation: dash-flow 0.45s linear infinite;
+}
+
+/* ============================================================
    REDUCED MOTION
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .city-dot::after          { animation: none; }
-  .city-loading__bar-fill   { transition: none; }
+  .city-dot::after                        { animation: none; }
+  .globe-svg-layer line[data-visible="true"] { animation: none; }
+  .city-loading__bar-fill                 { transition: none; }
   *                         { transition-duration: 0.01ms !important;
                               animation-duration:  0.01ms !important; }
 }

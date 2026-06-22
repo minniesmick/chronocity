@@ -121,7 +121,7 @@ export default function GlobeSelector() {
 
     const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(36, w / h, 0.1, 100);
-    camera.position.set(0, 0.15, 6.4); // zoomed out — cards fit
+    camera.position.set(0.8, 0.5, 30); // galaxy start — intro zooms to z=18
     camera.lookAt(0, 0, 0);
 
     const ambient = new THREE.AmbientLight(0xffffff, 0.6);
@@ -150,7 +150,7 @@ export default function GlobeSelector() {
     scene.add(globe);
 
     // Atmosfer rim
-    const atmMat = new THREE.MeshBasicMaterial({ color: 0x2b6fb0, transparent: true, opacity: 0.10, side: THREE.BackSide });
+    const atmMat = new THREE.MeshBasicMaterial({ color: 0x2b6fb0, transparent: true, opacity: 0.20, side: THREE.BackSide });
     atmMatRef.current = atmMat;
     globe.add(new THREE.Mesh(new THREE.SphereGeometry(GLOBE_R * 1.06, 64, 64), atmMat));
 
@@ -159,6 +159,37 @@ export default function GlobeSelector() {
       new THREE.SphereGeometry(GLOBE_R * 1.003, 24, 16),
       new THREE.MeshBasicMaterial({ color: 0x1e3a5f, wireframe: true, transparent: true, opacity: 0.10 }),
     ));
+
+    // Starfield — küresel dağılım, kamera far=100 içinde
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 1800;
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      const r = 32 + Math.random() * 62;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const theta = Math.random() * Math.PI * 2;
+      starPos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
+      starPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      starPos[i * 3 + 2] = r * Math.cos(phi);
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.42, sizeAttenuation: true });
+    scene.add(new THREE.Points(starGeo, starMat));
+
+    // Samanyolu bandı — galaksi hissi için mavi tonlu yıldızlar
+    const mwGeo = new THREE.BufferGeometry();
+    const mwCount = 380;
+    const mwPos = new Float32Array(mwCount * 3);
+    for (let j = 0; j < mwCount; j++) {
+      const r = 34 + Math.random() * 58;
+      const theta = Math.random() * Math.PI * 2;
+      mwPos[j * 3]     = r * Math.cos(theta) * 1.3;
+      mwPos[j * 3 + 1] = (Math.random() - 0.5) * r * 0.22;
+      mwPos[j * 3 + 2] = r * Math.sin(theta) * 0.38;
+    }
+    mwGeo.setAttribute('position', new THREE.BufferAttribute(mwPos, 3));
+    const mwMat = new THREE.PointsMaterial({ color: 0x8899ff, size: 0.09, transparent: true, opacity: 0.30, sizeAttenuation: true });
+    scene.add(new THREE.Points(mwGeo, mwMat));
 
     // Texture yükle
     const loader = new THREE.TextureLoader();
@@ -248,12 +279,24 @@ export default function GlobeSelector() {
     canvas.addEventListener("pointerdown", onDown);
     window.addEventListener("pointerup", onUp);
 
-    let rafId = 0, mountFrame = 0;
+    let rafId = 0, mountFrame = 0, introFrame = 0;
+    const INTRO_FRAMES = 105; // ~1.75s at 60fps
     const MOUNT_FRAMES = 80;
     const worldPos = new THREE.Vector3();
 
     const animate = () => {
       rafId = requestAnimationFrame(animate);
+
+      // Galaksi → Dünya intro zoom (ease-out cubic, 1.75s)
+      if (introFrame < INTRO_FRAMES) {
+        introFrame++;
+        const t = introFrame / INTRO_FRAMES;
+        const ez = 1 - Math.pow(1 - t, 3);
+        camera.position.z = 30 + (18 - 30) * ez; // 30 → 18
+        camera.position.x = 0.8 * (1 - ez);
+        camera.position.y = 0.5 * (1 - ez) + 0.15 * ez;
+        camera.lookAt(0, 0, 0);
+      }
 
       if (mountFrame < MOUNT_FRAMES) {
         const eased = 1 - Math.pow(1 - mountFrame / MOUNT_FRAMES, 3);
@@ -358,6 +401,13 @@ export default function GlobeSelector() {
         }
       });
 
+      // Subtle camera parallax — mouse x/y drifts camera ±0.14 units
+      if (!dragging && introFrame >= INTRO_FRAMES) {
+        camera.position.x += (mouse.x * 0.14 - camera.position.x) * 0.04;
+        camera.position.y += (0.15 + mouse.y * 0.06 - camera.position.y) * 0.04;
+        camera.lookAt(0, 0, 0);
+      }
+
       renderer.render(scene, camera);
     };
     animate();
@@ -376,6 +426,10 @@ export default function GlobeSelector() {
       canvas.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointerup", onUp);
       ro.disconnect();
+      starGeo.dispose();
+      starMat.dispose();
+      mwGeo.dispose();
+      mwMat.dispose();
       renderer.dispose();
     };
   }, [navigate, pauseGlobe, resumeGlobe]);
@@ -393,7 +447,7 @@ export default function GlobeSelector() {
     }
     if (atmMatRef.current) {
       atmMatRef.current.color.setHex(isDayMode ? 0x5ba8d4 : 0x2b6fb0);
-      atmMatRef.current.opacity = isDayMode ? 0.06 : 0.10;
+      atmMatRef.current.opacity = isDayMode ? 0.10 : 0.22;
     }
   }, [isDayMode]);
 

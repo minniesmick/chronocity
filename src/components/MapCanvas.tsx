@@ -137,8 +137,8 @@ export default function MapCanvas({ city }: { city: CityId }) {
       minZoom: 0,
       maxZoom: 19,
       tileSize: 256,
-      extent: cityBbox,  // only load tiles covering this city's bbox
-      opacity: isDayMode ? 0.80 : 0.45,
+      extent: cityBbox,
+      opacity: isDayMode ? 0.45 : 0.28,
       renderSubLayers: (props) => {
         const { boundingBox } = props.tile;
         return new BitmapLayer({
@@ -237,6 +237,9 @@ export default function MapCanvas({ city }: { city: CityId }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <div className="map-vignette" aria-hidden="true" />
+      <div className="city-year-bg" aria-hidden="true">{currentYear}</div>
 
       {loading && <div className="map-canvas__status">binalar yükleniyor…</div>}
       {error && (

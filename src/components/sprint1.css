@@ -144,6 +144,32 @@
   outline: none;
 }
 
+/* Vignette — harita kenarlarını karartır, gözü merkeze çeker */
+.map-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 75% at 50% 50%, transparent 48%, rgba(10, 10, 15, 0.62) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Büyük dekoratif yıl göstergesi */
+.city-year-bg {
+  position: absolute;
+  right: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: clamp(4.5rem, 9vw, 8rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
+  line-height: 1;
+}
+
 .map-canvas__status {
   position: absolute;
   top: 50%;
