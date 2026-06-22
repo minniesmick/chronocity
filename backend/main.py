@@ -7,26 +7,29 @@ Endpoints:
 - POST /api/cities/{city}/search      → NLP-based building search
 - GET  /api/cities/{city}/insights    → AI-style city insights
 - GET  /api/cities/{city}/suggestions → ready-to-use search suggestions
+- POST /api/cities/{city}/ask         → LLM-ready city assistant
 - POST /api/predict-era               → single building era prediction
-- POST /api/predict-era/batch         → batch prediction (up to 1000 buildings)
+- POST /api/predict-era/batch         → batch prediction up to 1000 buildings
 - GET  /api/predict-city/{city}       → predict all unlabeled buildings in a city
-- WS   /ws                            → ephemeral broadcast (SoundNotePin — SPRINT 7)
+- WS   /ws                            → ephemeral broadcast
 """
 from __future__ import annotations
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from typing import Optional
+
+import numpy as np
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional
-import numpy as np
 
-from city_data import load_city_buildings, list_available_cities
-from city_analytics import calculate_city_stats
-from nlp_search import parse_query, filter_buildings, build_search_answer
 from ai_insights import build_city_insights, build_search_suggestions
+from city_analytics import calculate_city_stats
+from city_assistant import build_city_answer
+from city_data import list_available_cities, load_city_buildings
+from nlp_search import build_search_answer, filter_buildings, parse_query
 
 
-app = FastAPI(title="ChronoCity API", version="0.5.0")
+app = FastAPI(title="ChronoCity API", version="0.6.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,6 +42,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# ── Health + City Registry ────────────────────────────────────────────────────
 
 @app.get("/api/health")
 async def health() -> dict[str, str]:
@@ -59,6 +64,10 @@ async def get_available_cities():
 
 class SearchRequest(BaseModel):
     query: str
+
+
+class AskRequest(BaseModel):
+    question: str
 
 
 @app.get("/api/cities/{city_id}/stats")
@@ -128,7 +137,22 @@ async def get_city_suggestions(city_id: str):
     }
 
 
-# ── ML-3: Era Prediction ───────────────────────────────────────────────────────
+@app.post("/api/cities/{city_id}/ask")
+async def ask_city_assistant(city_id: str, payload: AskRequest):
+    """
+    LLM-ready city assistant endpoint.
+
+    This endpoint currently generates a rule-based AI answer from city statistics
+    and insights. Later, the same context can be sent to Gemini/OpenAI/OpenRouter.
+    """
+    buildings = load_city_buildings(city_id)
+    stats = calculate_city_stats(city_id, buildings)
+    insights = build_city_insights(stats)
+
+    return build_city_answer(payload.question, stats, insights)
+
+
+# ── ML-3: Era Prediction ──────────────────────────────────────────────────────
 
 class BuildingFeatures(BaseModel):
     city: str
@@ -172,7 +196,10 @@ async def predict_era(feat: BuildingFeatures):
         return result
 
     except FileNotFoundError:
-        raise HTTPException(503, "Model not loaded — run train_model.py first")
+        raise HTTPException(
+            status_code=503,
+            detail="Model not loaded — run train_model.py first",
+        )
 
 
 @app.post("/api/predict-era/batch")
@@ -188,31 +215,41 @@ async def predict_era_batch(payload: BuildingBatch):
         }
 
     except FileNotFoundError:
-        raise HTTPException(503, "Model not loaded — run train_model.py first")
+        raise HTTPException(
+            status_code=503,
+            detail="Model not loaded — run train_model.py first",
+        )
 
 
 @app.get("/api/predict-city/{city}")
 async def predict_city(city: str, limit: int = 5000):
-    """Predict era for unlabeled buildings in a city."""
+    """
+    Predict era for unlabeled buildings in a city.
+
+    Existing ML endpoint from the original project.
+    """
     try:
         import pandas as pd
         from pathlib import Path
         from predict_era import predict_batch
 
-        # TODO: move this to project-relative path later
+        # TODO: Move this to a project-relative path later.
         predict_path = Path(r"D:\PROJELER\ml_data\predict.parquet")
 
         if not predict_path.exists():
             raise HTTPException(
-                404,
-                "predict.parquet not found — run feature_engineering.py",
+                status_code=404,
+                detail="predict.parquet not found — run feature_engineering.py",
             )
 
         df = pd.read_parquet(predict_path)
         city_df = df[df["city"] == city].head(limit)
 
         if len(city_df) == 0:
-            raise HTTPException(404, f"No unlabeled buildings for city: {city}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"No unlabeled buildings for city: {city}",
+            )
 
         city_df = city_df.where(city_df.notna(), other=None)
         buildings = city_df.to_dict("records")
@@ -220,15 +257,15 @@ async def predict_city(city: str, limit: int = 5000):
 
         era_counts = {}
 
-        for r in results:
-            era_name = r["predicted_era_name"]
+        for result in results:
+            era_name = result["predicted_era_name"]
             era_counts[era_name] = era_counts.get(era_name, 0) + 1
 
         slim = [
             {
-                k: v
-                for k, v in r.items()
-                if k
+                key: value
+                for key, value in result.items()
+                if key
                 in (
                     "lon",
                     "lat",
@@ -239,7 +276,7 @@ async def predict_city(city: str, limit: int = 5000):
                     "confidence",
                 )
             }
-            for r in results
+            for result in results
         ]
 
         return {
@@ -250,13 +287,16 @@ async def predict_city(city: str, limit: int = 5000):
         }
 
     except FileNotFoundError:
-        raise HTTPException(503, "Model not loaded — run train_model.py first")
+        raise HTTPException(
+            status_code=503,
+            detail="Model not loaded — run train_model.py first",
+        )
 
     except Exception as e:
-        raise HTTPException(500, str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-# ── WebSocket Broadcast ────────────────────────────────────────────────────────
+# ── WebSocket Broadcast ───────────────────────────────────────────────────────
 
 class ConnectionManager:
     """Aktif WebSocket bağlantılarını tutar, ephemeral broadcast yapar."""
@@ -272,7 +312,11 @@ class ConnectionManager:
         if ws in self.active:
             self.active.remove(ws)
 
-    async def broadcast(self, message: dict, exclude: WebSocket | None = None) -> None:
+    async def broadcast(
+        self,
+        message: dict,
+        exclude: WebSocket | None = None,
+    ) -> None:
         for conn in list(self.active):
             if conn is exclude:
                 continue
