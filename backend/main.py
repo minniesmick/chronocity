@@ -1,11 +1,12 @@
 """ChronoCity backend — FastAPI.
 
 Endpoints:
-- GET  /api/health            → health check
-- POST /api/predict-era       → single building era prediction
-- POST /api/predict-era/batch → batch prediction (up to 1000 buildings)
+- GET  /api/health              → health check
+- GET  /api/cities/{city}/stats → city building analytics
+- POST /api/predict-era         → single building era prediction
+- POST /api/predict-era/batch   → batch prediction (up to 1000 buildings)
 - GET  /api/predict-city/{city} → predict all unlabeled buildings in a city
-- WS   /ws                    → ephemeral broadcast (SoundNotePin — SPRINT 7)
+- WS   /ws                      → ephemeral broadcast (SoundNotePin — SPRINT 7)
 """
 from __future__ import annotations
 
@@ -14,6 +15,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional
 import numpy as np
+
+from city_data import load_city_buildings
+from city_analytics import calculate_city_stats
+
 
 app = FastAPI(title="ChronoCity API", version="0.2.0")
 
@@ -32,6 +37,19 @@ app.add_middleware(
 @app.get("/api/health")
 async def health() -> dict[str, str]:
     return {"status": "ok", "service": "chronocity"}
+
+
+# ── City Analytics ─────────────────────────────────────────────────────────────
+
+@app.get("/api/cities/{city_id}/stats")
+async def get_city_stats(city_id: str):
+    """
+    Returns building statistics for a selected city.
+    Example:
+    /api/cities/new-york/stats
+    """
+    buildings = load_city_buildings(city_id)
+    return calculate_city_stats(city_id, buildings)
 
 
 # ── ML-3: Era Prediction ───────────────────────────────────────────────────────
@@ -60,16 +78,23 @@ class BuildingBatch(BaseModel):
 async def predict_era(feat: BuildingFeatures):
     try:
         from predict_era import predict_single
+
         result = predict_single(
-            city=feat.city, lon=feat.lon, lat=feat.lat,
-            area_m2=feat.area_m2, perimeter_m=feat.perimeter_m,
-            compactness=feat.compactness, aspect_ratio=feat.aspect_ratio,
-            n_vertices=feat.n_vertices, height=feat.height,
+            city=feat.city,
+            lon=feat.lon,
+            lat=feat.lat,
+            area_m2=feat.area_m2,
+            perimeter_m=feat.perimeter_m,
+            compactness=feat.compactness,
+            aspect_ratio=feat.aspect_ratio,
+            n_vertices=feat.n_vertices,
+            height=feat.height,
             ghsl_neighborhood_year=feat.ghsl_neighborhood_year,
             neighbor_mean_height=feat.neighbor_mean_height,
             building_density_200m=feat.building_density_200m,
         )
         return result
+
     except FileNotFoundError:
         raise HTTPException(503, "Model not loaded — run train_model.py first")
 
@@ -78,8 +103,14 @@ async def predict_era(feat: BuildingFeatures):
 async def predict_era_batch(payload: BuildingBatch):
     try:
         from predict_era import predict_batch
+
         buildings = [b.model_dump() for b in payload.buildings]
-        return {"city": payload.city, "predictions": predict_batch(buildings, payload.city)}
+
+        return {
+            "city": payload.city,
+            "predictions": predict_batch(buildings, payload.city),
+        }
+
     except FileNotFoundError:
         raise HTTPException(503, "Model not loaded — run train_model.py first")
 
@@ -90,14 +121,19 @@ async def predict_city(city: str, limit: int = 5000):
     try:
         import pandas as pd
         from pathlib import Path
-        from predict_era import predict_batch, ERA_LABELS
+        from predict_era import predict_batch
 
         predict_path = Path(r"D:\PROJELER\ml_data\predict.parquet")
+
         if not predict_path.exists():
-            raise HTTPException(404, "predict.parquet not found — run feature_engineering.py")
+            raise HTTPException(
+                404,
+                "predict.parquet not found — run feature_engineering.py",
+            )
 
         df = pd.read_parquet(predict_path)
         city_df = df[df["city"] == city].head(limit)
+
         if len(city_df) == 0:
             raise HTTPException(404, f"No unlabeled buildings for city: {city}")
 
@@ -107,23 +143,40 @@ async def predict_city(city: str, limit: int = 5000):
         results = predict_batch(buildings, city)
 
         era_counts = {}
+
         for r in results:
             era_name = r["predicted_era_name"]
             era_counts[era_name] = era_counts.get(era_name, 0) + 1
 
-        # Strip non-serializable fields (geometry, raw floats) from response
-        slim = [{k: v for k, v in r.items()
-                 if k in ("lon","lat","height","predicted_era","predicted_era_name","predicted_era_color","confidence")}
-                for r in results]
+        # Strip non-serializable fields from response
+        slim = [
+            {
+                k: v
+                for k, v in r.items()
+                if k
+                in (
+                    "lon",
+                    "lat",
+                    "height",
+                    "predicted_era",
+                    "predicted_era_name",
+                    "predicted_era_color",
+                    "confidence",
+                )
+            }
+            for r in results
+        ]
 
         return {
             "city": city,
             "count": len(results),
             "era_distribution": era_counts,
-            "buildings": slim[:100],  # cap response size; full data in parquet
+            "buildings": slim[:100],
         }
+
     except FileNotFoundError:
         raise HTTPException(503, "Model not loaded — run train_model.py first")
+
     except Exception as e:
         raise HTTPException(500, str(e))
 
@@ -146,8 +199,10 @@ class ConnectionManager:
         for conn in list(self.active):
             if conn is exclude:
                 continue
+
             try:
                 await conn.send_json(message)
+
             except Exception:
                 self.disconnect(conn)
 
@@ -158,11 +213,13 @@ manager = ConnectionManager()
 @app.websocket("/ws")
 async def ws_endpoint(ws: WebSocket) -> None:
     await manager.connect(ws)
+
     try:
         while True:
             data = await ws.receive_json()
             # SPRINT 7: SoundNotePin payload {lat, lon, audio} broadcast edilir
             await manager.broadcast(data, exclude=ws)
+
     except WebSocketDisconnect:
         manager.disconnect(ws)
 
