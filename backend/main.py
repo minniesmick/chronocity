@@ -27,7 +27,7 @@ from city_analytics import calculate_city_stats
 from city_assistant import build_city_answer
 from city_data import list_available_cities, load_city_buildings
 from nlp_search import build_search_answer, filter_buildings, parse_query
-
+from city_timeline import build_city_timeline
 
 app = FastAPI(title="ChronoCity API", version="0.6.0")
 
@@ -124,6 +124,17 @@ async def get_city_insights(city_id: str):
     buildings = load_city_buildings(city_id)
     stats = calculate_city_stats(city_id, buildings)
     return build_city_insights(stats)
+
+@app.get("/api/cities/{city_id}/timeline")
+async def get_city_timeline(city_id: str):
+    """
+    Returns decade-based city growth timeline data.
+    This endpoint is designed for frontend timeline and chart components.
+    """
+    buildings = load_city_buildings(city_id)
+    stats = calculate_city_stats(city_id, buildings)
+
+    return build_city_timeline(stats)
 
 
 @app.get("/api/cities/{city_id}/suggestions")
