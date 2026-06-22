@@ -153,6 +153,30 @@ async def get_city_timeline(city_id: str):
 
     return build_city_timeline(stats)
 
+@app.get("/api/cities/{city_id}/dashboard")
+async def get_city_dashboard(city_id: str):
+    """
+    Returns all main dashboard data for a selected city in one response.
+
+    This endpoint is designed for frontend dashboard pages.
+    It prevents the frontend from making multiple separate API calls.
+    """
+    buildings = load_city_buildings(city_id)
+    stats = calculate_city_stats(city_id, buildings)
+    insights = build_city_insights(stats)
+    timeline = build_city_timeline(stats)
+    suggestions = build_search_suggestions(city_id)
+
+    return {
+        "city": city_id,
+        "stats": stats,
+        "insights": insights,
+        "timeline": timeline,
+        "suggestions": suggestions,
+        "note": "Dashboard data combines analytics, AI insights, timeline, and search suggestions.",
+    }
+
+
 
 @app.get("/api/cities/{city_id}/suggestions")
 async def get_city_suggestions(city_id: str):
