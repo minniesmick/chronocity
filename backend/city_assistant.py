@@ -24,13 +24,86 @@ def detect_question_intent(question: str) -> str:
     return "general_summary"
 
 
+def calculate_intent_confidence(question: str, intent: str) -> dict:
+    """
+    Calculates a simple confidence score for detected intent.
+
+    This is not a machine learning probability.
+    It is a rule-based confidence score that explains how strongly
+    the question matched known intent keywords.
+    """
+
+    text = question.lower().strip()
+
+    intent_keywords = {
+        "growth_explanation": [
+            "growth",
+            "develop",
+            "development",
+            "changed",
+            "evolved",
+            "evolution",
+        ],
+        "height_explanation": [
+            "tall",
+            "height",
+            "skyline",
+            "vertical",
+            "skyscraper",
+        ],
+        "historical_explanation": [
+            "old",
+            "historic",
+            "historical",
+            "before",
+            "heritage",
+        ],
+        "modern_explanation": [
+            "modern",
+            "new",
+            "after 2000",
+            "recent",
+        ],
+        "general_summary": [
+            "summary",
+            "summarize",
+            "overview",
+            "explain",
+        ],
+    }
+
+    keywords = intent_keywords.get(intent, [])
+    matched_keywords = [word for word in keywords if word in text]
+
+    if len(matched_keywords) >= 2:
+        confidence = 0.95
+        label = "high"
+    elif len(matched_keywords) == 1:
+        confidence = 0.82
+        label = "high"
+    elif intent == "general_summary":
+        confidence = 0.65
+        label = "medium"
+    else:
+        confidence = 0.45
+        label = "low"
+
+    return {
+        "score": confidence,
+        "label": label,
+        "matched_keywords": matched_keywords,
+    }
+
+
 def build_city_answer(question: str, stats: dict, insights: dict) -> dict:
     """
     Builds an assistant-style answer using city stats and insights.
+
     This is LLM-ready: the same stats/insights can later be passed to an LLM prompt.
     """
 
     intent = detect_question_intent(question)
+    confidence = calculate_intent_confidence(question, intent)
 
     city_name = insights.get("city_name") or stats.get("city") or "This city"
     summary = insights.get("summary")
@@ -54,7 +127,10 @@ def build_city_answer(question: str, stats: dict, insights: dict) -> dict:
 
         if top_growth_decades:
             top_list = ", ".join(
-                [f"{item['decade']} ({item['building_count']} buildings)" for item in top_growth_decades[:3]]
+                [
+                    f"{item['decade']} ({item['building_count']} buildings)"
+                    for item in top_growth_decades[:3]
+                ]
             )
             answer += f"The top growth decades are {top_list}. "
 
@@ -97,6 +173,9 @@ def build_city_answer(question: str, stats: dict, insights: dict) -> dict:
         "city_name": city_name,
         "question": question,
         "intent": intent,
+        "confidence": confidence["score"],
+        "confidence_label": confidence["label"],
+        "matched_keywords": confidence["matched_keywords"],
         "answer": answer,
         "source": "rule-based-ai",
         "llm_ready": True,
