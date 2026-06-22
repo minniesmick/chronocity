@@ -12,7 +12,7 @@
 
 **Travel through 11 cities across 226 years of urban history — in real time, in 3D.**
 
-![Version](https://img.shields.io/badge/version-0.2.0-f59e0b?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.3.0-f59e0b?style=flat-square)
 ![Platform](https://img.shields.io/badge/platform-Web-3b82f6?style=flat-square)
 ![Stack](https://img.shields.io/badge/stack-React%2019%20%2B%20deck.gl%20%2B%20FastAPI-8b5cf6?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-e0aaff?style=flat-square)
@@ -76,9 +76,15 @@ The project has two tracks:
 | Cam & Çelik | 1980–2000 | Steel Blue |
 | Modern | ≥ 2000 | Green |
 
+### Globe & Intro
+- Galaxy intro animation: camera flies from deep space (z=30) to Earth (z=18) over 105 frames, cubic ease-out
+- 1800 white stars + 380 Milky Way blue-tinted stars (Three.js `Points`)
+- NASA Blue Marble (2.4 MB) and NASA Black Marble 2016 city-lights (7.7 MB) HD textures
+- Animated SVG connector lines (dash-flow) from globe to city cards
+
 ### Day / Night Mode
 - Warm daylight ↔ cool night with 800 ms CSS transition
-- Three.js globe swaps earth texture; deck.gl lighting synced
+- Three.js globe swaps NASA earth texture; deck.gl lighting synced
 
 ### Multi-City
 - 11 cities: New York, Paris, Vienna, Chicago, Berlin, Moscow, London, Barcelona, Madrid, Tokyo, Istanbul
@@ -325,6 +331,7 @@ chronocity/
 - [x] S3 — Timeline: scrubber bar, event markers, event popups, replay button
 - [x] S4 — Audio: era MP3 crossfade (Web Audio API), frequency visualizer
 - [x] S5 — Multi-city: 11 cities, lazy data loader, fly-to animation, building popup
+- [x] S6 — Visual polish: NASA HD textures, galaxy intro, starfield, city map vignette, year watermark, connector animations
 - [x] ML-1 — Data: 43,500 labeled buildings, 6 open data sources, GHSL neighborhood feature
 - [x] ML-2 — Model: XGBoost (CV F1=0.561) + PyTorch MLP (CUDA), cross-city evaluation
 - [x] ML-3 — API: `/api/predict-era`, `/api/predict-era/batch`, `/api/predict-city/{city}`

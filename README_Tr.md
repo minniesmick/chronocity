@@ -10,16 +10,16 @@
 
 # ChronoCity
 
-**5 şehirde 226 yıllık kentsel tarihi gerçek zamanlı ve 3 boyutlu olarak keşfet.**
+**11 şehirde 226 yıllık kentsel tarihi gerçek zamanlı ve 3 boyutlu olarak keşfet.**
 
-![Sürüm](https://img.shields.io/badge/sürüm-0.1.0-f59e0b?style=flat-square)
+![Sürüm](https://img.shields.io/badge/sürüm-0.3.0-f59e0b?style=flat-square)
 ![Platform](https://img.shields.io/badge/platform-Web-3b82f6?style=flat-square)
-![Stack](https://img.shields.io/badge/stack-React%20%2B%20deck.gl%20%2B%20Three.js-8b5cf6?style=flat-square)
+![Stack](https://img.shields.io/badge/stack-React%2019%20%2B%20deck.gl%20%2B%20FastAPI-8b5cf6?style=flat-square)
 ![Lisans](https://img.shields.io/badge/lisans-MIT-e0aaff?style=flat-square)
 ![Node](https://img.shields.io/badge/node-18%2B-10b981?style=flat-square)
 ![Python](https://img.shields.io/badge/python-3.11%2B-ef4444?style=flat-square)
 
-> ChronoCity; İstanbul, New York, Chicago, Berlin ve Viyana'nın mimari evrimini canlı bir 3D deneyim olarak render eder. 1800–2026 arasındaki zaman çizelgesini sürükle, binaların gerçek zamanlı yükselişini izle. Yükseklik, renk ve ortam müziği tek bir `t` parametresiyle birlikte morph eder. Bilgisayar Mühendisliği bitirme projesi olarak inşa edildi (SDP1 + SDP2).
+> ChronoCity, 11 dünya şehrinin mimari evrimini canlı bir 3D deneyim olarak render eder. 1800–2026 arasındaki zaman çizelgesini sürükle — binalar gerçek zamanlı yükselir, dönem müziği çalar ve XGBoost/MLP modeli her binanın inşa dönemini geometri ve kentsel bağlamdan tahmin eder. Bilgisayar Mühendisliği bitirme projesi (Bitirme Projesi 1 + 2) olarak geliştirildi.
 
 </div>
 
@@ -29,16 +29,13 @@
 
 - [Genel Bakış](#genel-bakış)
 - [Özellikler](#özellikler)
-- [Ekran Görüntüleri](#ekran-görüntüleri)
+- [ML Capstone](#ml-capstone)
 - [Teknoloji Stack'i](#teknoloji-stacki)
-- [Gereksinimler](#gereksinimler)
 - [Hızlı Başlangıç](#hızlı-başlangıç)
-- [Yapılandırma](#yapılandırma)
-- [Geliştirme](#geliştirme)
-- [Build ve Paketleme](#build-ve-paketleme)
+- [ML Kurulumu](#ml-kurulumu)
+- [API Referansı](#api-referansı)
 - [Proje Yapısı](#proje-yapısı)
 - [Yol Haritası](#yol-haritası)
-- [Katkı](#katkı)
 - [Yazar](#yazar)
 - [Lisans](#lisans)
 
@@ -46,59 +43,112 @@
 
 ## Genel Bakış
 
-ChronoCity, tarayıcı tabanlı bir 3D kentsel zaman yolculuğu deneyimidir. Açık coğrafi verilerden gerçek bina footprint'leri ve yükseklikleri render eder, her binayı inşa yılına göre kapılar ve kullanıcı zamanı gezdirirken tüm silueti morph eder. 3D geometri, ortam müziği ve parçacık overlay'leri — her duyusal katman tek bir normalize edilmiş `t` değeriyle (0.0 = 1800, 1.0 = 2026) sürülür; bu da sistemi yeni şehir ve veri kaynaklarına kolayca genişletilebilir kılar.
+ChronoCity, tarayıcı tabanlı bir 3D kentsel zaman yolculuğu deneyimidir. Açık coğrafi verilerden gerçek bina footprint'leri ve yükseklikleri render eder, her binayı inşa yılına göre kapılar ve kullanıcı zamanı gezdirirken tüm silueti morph eder. 3D geometri, ortam müziği ve parçacık overlay'leri — her duyusal katman tek bir normalize edilmiş `t` değeriyle (0.0 = 1800, 1.0 = 2026) sürülür.
 
-Proje iki akademik dönemde yürütülür: SDP1 görselleştirme motorunu kurar, SDP2 hesaplamalı analitik katman ekler (gölge analizi, çok-kriterli rota, mekânsal ML, doğal dil sorgu ajanı).
+Proje iki izden oluşur:
+
+- **SDP1 (S0–S5)** — 3D görselleştirme motoru: küre seçici, zaman çizelgesi, ses, çok-şehirli
+- **Capstone ML** — Dönem tahmini: 11 şehirde 43.500 etiketli bina, XGBoost + PyTorch MLP, FastAPI çıkarım uç noktaları
 
 ---
 
 ## Özellikler
 
 ### 3D Şehir Motoru
-- Gerçek GeoJSON footprint'lerinden extrude edilmiş bina geometrisi (NYC: 6.550 bina, Midtown/Flatiron)
-- `construction_year` kapısı — her bina yalnızca aktif yıl kendi inşa tarihine ulaşınca belirir
-- deck.gl aracılığıyla GPU hızlandırmalı geçişler (yükseklik + renk, 400 ms)
-- Sinematik kamera varsayılanları: pitch 50°, bearing −20°, zoom 14.5, maxPitch 75°
+- Gerçek GeoJSON footprint'lerinden extrude edilmiş bina geometrisi — 11 şehirde **170.000+ bina**
+- `construction_year` kapısı: her bina yalnızca aktif yıl kendi inşa tarihine ulaşınca belirir
+- GPU hızlandırmalı geçişler (yükseklik + renk, 400 ms) deck.gl aracılığıyla
+- Sinematik kamera varsayılanları: pitch 50°, bearing −20°, zoom 14.5
+
+### Küre ve Giriş Animasyonu
+- Galaksi giriş animasyonu: kamera derin uzaydan (z=30) Dünya'ya (z=18) 105 karede cubic ease-out ile uçar
+- 1800 beyaz yıldız + 380 Samanyolu mavi tonlu yıldız (Three.js `Points`)
+- NASA Blue Marble (2.4 MB) ve NASA Black Marble 2016 şehir ışıkları (7.7 MB) HD dokular
+- Küre'den şehir kartlarına animasyonlu SVG konektör çizgileri (dash-flow)
 
 ### Zaman Morphing
 - Tek `t` parametresi (0.0–1.0) lineer olarak 1800–2026 yıllarına eşlenir
-- Tüm katmanlar (geometri, ışıklandırma, ses, parçacıklar) senkronize kalır
-- İleri/geri kaydır — binalar gerçek zamanlı yükselir ve solar
-- Timeline otomatik oynatma modu (isPlaying state)
+- Klavye: `←/→` = 1 yıl, `Shift+←/→` = 10 yıl, `Space` = oynat/duraklat
+- Otomatik oynatma 180 ms/yıl hızında (~40 sn tam yolculuk)
+
+### 7 Dönem Renk Sistemi
+| Dönem | Yıllar | Renk |
+|-------|--------|------|
+| Taş/Barok | < 1870 | Kahverengi |
+| Gründerzeit | 1870–1918 | Tan |
+| Art Deco | 1918–1945 | Altın |
+| Brutalizm | 1945–1965 | Kurşuni |
+| Prefabrik | 1965–1980 | Peru |
+| Cam & Çelik | 1980–2000 | Çelik Mavisi |
+| Modern | ≥ 2000 | Yeşil |
 
 ### Gece / Gündüz Modu
-- Sıcak gündüz: AmbientLight 1.1 + DirectionalLight 1.4 (soft sarı)
-- Serin gece: AmbientLight 0.5 + DirectionalLight 0.7 (mavi-beyaz)
-- deck.gl ışıklandırma değişimiyle senkronize 800 ms CSS arka plan geçişi
-- Gece modunda kısa binalar kararır, amber kor efekti ön plana çıkar
+- Sıcak gündüz ↔ serin gece, 800 ms CSS geçişiyle
+- Three.js küre NASA dokusunu değiştirir; deck.gl ışıklandırması senkronize
 
-### Çok Şehirli Mimari
-- `hasBuildingData` flag'iyle şehir kaydı — verisi olmayan şehirler seçilebilir ama hiçbir şey render etmez (graceful no-op)
-- Şehir başına lazy GeoJSON fetch; ilk yükleme sonrası cache'lenir
-- Şehre özel renk kimliği: İstanbul amber, NYC mavi, Chicago mor, Berlin yeşil, Viyana kırmızı
+### Çok Şehirli
+- 11 şehir: New York, Paris, Viyana, Chicago, Berlin, Moskova, Londra, Barselona, Madrid, Tokyo, İstanbul
+- Şehir başına lazy GeoJSON fetch; modül düzeyinde cache (yeniden fetch yok)
+- Şehre özel renk kimliği ve küre kartı
 
-### Ortam Ses Motoru *(Sprint 4 — planlandı)*
-- Web Audio API + Tone.js: era MP3'leri arasında crossfade (1960s / 1980s / 2000s / modern)
-- Timeline duraklatılsa bile ses devam eder
-- Frekans visualizer halkası (AnalyserNode → FFT → Canvas)
+### Ses Motoru
+- Web Audio API native crossfade dönem MP3'leri arasında (1.5 sn linearRamp)
+- Frekans visualizer: AnalyserNode (fftSize=128) → Canvas 32 çubuk spektrum
 
-### Tarihsel Olaylar *(Sprint 3 — planlandı)*
+### Tarihsel Olaylar
 - Zaman çizelgesinde olay işaretleri (pozitif / negatif / nötr)
-- Tıklayınca detay popup açılır; "Daha fazla" Gemini akışlı rapor tetikler
-
-### SDP2 Analitik Katman *(planlandı)*
-- **Güneş/gölge motoru** — ray-casting + quadtree spatial index; "hangi çatı güneş paneline uygun?" sorusunu yanıtlar
-- **Çok-kriterli rota motoru** — A\*/Dijkstra + Pareto optimizasyonu; en sessiz/güneşli yürüyüş rotasını bulur
-- **Kentsel büyüme ML** — construction_year verisi üzerinde mekânsal ML; yoğunlaşma yönünü tahmin eder
-- **Doğal dil mekânsal ajanı** — "Su kenarında 1920 öncesi 50m+ binaları göster" → anında sorgu
+- Tıkla → glassmorphism popup + Wikipedia bağlantısı
 
 ---
 
-## Ekran Görüntüleri
+## ML Capstone
 
-> Ekran görüntüleri yakında — şimdilik uygulamayı yerel olarak çalıştırın.
+> Araştırma sorusu: *Bina inşa dönemi geometrik footprint özelliklerinden ve kentsel bağlamdan tahmin edilebilir mi?*
 
-Sprint 1 doğrulandı: NYC 2026 tam siluet, NYC 1900 seyrek siluet, gündüz sıcak ışık, gece koyu amber kor.
+### Veri (ML-1)
+
+6 açık veri kaynağından **43.500 etiketli bina**:
+
+| Kaynak | Şehir | Bina | Kapsam |
+|--------|-------|------|--------|
+| NYC PLUTO | New York | 6.453 | %98 |
+| ADEME DPE | Paris | 13.334 | %97 |
+| Wien Bauperiode WFS | Viyana | 13.872 | %76 |
+| Chicago Building Permits API | Chicago | 4.275 | %94 |
+| Berlin Geoportal | Berlin | 2.949 | %10 |
+| OSM start_date + Overpass | Tüm şehirler | ~2.700 | kısmi |
+
+GHSL (Global Human Settlement Layer, JRC) — 5 epoch 1975–2020, 55 GeoTIFF tile — `ghsl_neighborhood_year` **girdi özelliği** olarak kullanıldı (mahalle kentleşme epochu), inşa yılı etiketi olarak değil.
+
+### Özellikler (ML-2)
+
+Bina başına 14 özellik:
+
+| Özellik | Açıklama |
+|---------|---------|
+| `area_m2`, `perimeter_m` | Footprint boyutu (Web Mercator) |
+| `compactness` | 4π·alan/çevre² |
+| `aspect_ratio` | Sınırlayıcı kutu uzunluğu |
+| `n_vertices` | Şekil karmaşıklığı |
+| `height` | Bina yüksekliği metre cinsinden |
+| `dist_to_center_km` | Şehir merkezinden Haversine mesafesi |
+| `ghsl_neighborhood_year` | GHSL ilk kentleşme epochu |
+| `neighbor_mean_height` | 50 en yakın komşunun ortalama yüksekliği |
+| `building_density_200m` | 200 m yarıçap içindeki bina sayısı |
+| `lat`, `lon` | Centroid koordinatları |
+
+### Sonuçlar
+
+| Model | Şehir içi CV F1 | Çapraz şehir F1 |
+|-------|----------------|----------------|
+| XGBoost (n=500, depth=6) | **0.561** ± 0.009 | 0.057 |
+| PyTorch MLP (4 katman, CUDA) | 0.469 | 0.089 |
+
+**Temel bulgular:**
+- Coğrafi koordinatlar özellik öneminin **%58'ini** oluşturuyor — şehir içi sinyal güçlü ama aktarılamaz
+- Footprint şekil özellikleri (compactness, aspect_ratio, n_vertices, alan) **sıfır önem** — şekil dönemi kodlamıyor
+- Gerçek sinyal: **yükseklik + komşu yüksekliği + bina yoğunluğu** (kentsel morfoloji)
+- Alan adaptasyonu olmadan çapraz şehir transferi başarısız — akademik katkı olarak belgelendi
 
 ---
 
@@ -106,151 +156,96 @@ Sprint 1 doğrulandı: NYC 2026 tam siluet, NYC 1900 seyrek siluet, gündüz sı
 
 | Katman | Teknoloji | Sürüm |
 |--------|-----------|-------|
-| Frontend framework | React | 18.3 |
+| Frontend framework | React | 19 |
 | Build aracı | Vite | 5.4 |
 | Dil | TypeScript | 5.6 |
 | 3D harita motoru | deck.gl | 9.0 |
 | 3D küre | Three.js | 0.169 |
-| Harita tile | MapLibre GL | 4.7 |
 | State yönetimi | Zustand | 5.0 |
-| Animasyon (UI) | Framer Motion | 11 |
-| Animasyon (kamera) | GSAP | 3.12 |
-| Ses motoru | Tone.js | 15 |
-| Backend | FastAPI | güncel |
-| Gerçek zamanlı | WebSocket (FastAPI /ws) | — |
-| Routing | React Router | 6 |
-
-**İletişim:** Frontend (Vite :5173), `/api` ve `/ws` isteklerini FastAPI'ye (:8000) proxy eder. Sprint 1 için Google Maps veya Mapbox API anahtarı gerekmez — deck.gl koyu arka plan üzerinde standalone render eder.
-
----
-
-## Gereksinimler
-
-| Gereksinim | Sürüm | Not |
-|------------|-------|-----|
-| Node.js | 18+ | LTS önerilir |
-| npm | 9+ | Node ile gelir |
-| Python | 3.11+ | FastAPI backend için |
-| pip | 23+ | — |
-| Git | herhangi | — |
-
-3D şehir görünümü için Google Maps veya Mapbox API anahtarı gerekmez.
+| Animasyon | Framer Motion | 11 |
+| Backend | FastAPI | 0.138 |
+| ML | XGBoost 3.2 + PyTorch 2.12 (CUDA) | — |
+| Uzamsal | GeoPandas, pyproj, scikit-learn | — |
 
 ---
 
 ## Hızlı Başlangıç
 
 ```bash
-# 1. Repoyu klonla
+# 1. Klonla
 git clone https://github.com/minniesmick/chronocity.git
 cd chronocity
 
-# 2. Frontend bağımlılıklarını kur
+# 2. Frontend
 npm install
-
-# 3. Frontend dev server'ı başlat
 npm run dev
 # → http://localhost:5173
-```
 
-```bash
-# 4. (Opsiyonel) FastAPI backend'i başlat (ayrı terminal)
+# 3. Backend (ayrı terminal)
 cd backend
-python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
-
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 # → http://localhost:8000
 ```
 
-[http://localhost:5173](http://localhost:5173)'i aç, **New York**'u tıkla (tek verili şehir), zaman scrubber'ını sürükle.
+> ML modeli (`era_model.pkl`) git'e commit edilmez (büyük binary).
+> Oluşturmak için: `python ml/train_model.py --model xgb`
 
 ---
 
-## Yapılandırma
+## ML Kurulumu
 
-### Vite proxy (`vite.config.ts`)
+Zenginleştirilmiş `buildings.geojson` dosyaları (repoda mevcut) ve GHSL rasterları (`D:/PROJELER/ghsl_raw/`) gerekir.
 
-```typescript
-server: {
-  proxy: {
-    '/api': 'http://localhost:8000',
-    '/ws':  { target: 'ws://localhost:8000', ws: true }
-  }
+```bash
+cd backend
+
+# 1. Özellik mühendisliği — 14 özellik çıkarır, KNN komşuluk istatistikleri hesaplar
+python ml/feature_engineering.py
+
+# 2. XGBoost + PyTorch MLP eğit
+python ml/train_model.py --model both
+
+# 3. API başlat
+uvicorn main:app --port 8000
+```
+
+---
+
+## API Referansı
+
+### `GET /api/health`
+```json
+{ "status": "ok", "service": "chronocity" }
+```
+
+### `POST /api/predict-era`
+Tek bina için dönem tahmini.
+
+```json
+// İstek
+{
+  "city": "vienna",
+  "lon": 16.370, "lat": 48.208,
+  "height": 18.0,
+  "area_m2": 600, "building_density_200m": 15
+}
+
+// Yanıt
+{
+  "era": 1,
+  "era_name": "Gründerzeit",
+  "era_period": "1870–1918",
+  "era_color": "#C19A6B",
+  "confidence": 0.590
 }
 ```
 
-### Yeni şehir ekleme
+### `POST /api/predict-era/batch`
+1000 binaya kadar toplu tahmin.
 
-1. `public/cities/{sehir-id}/` altına `buildings.geojson` ekle. Property formatı: `{ height: number, construction_year: number | null, name: string | null }`
-2. `src/data/cities.ts`'e `hasBuildingData: true` ile şehri kaydet
-3. `src/styles/tokens.css`'den şehir rengi seç ya da yeni token ekle
-
-### Global state (`src/store/useStore.ts`)
-
-| Anahtar | Tip | Varsayılan | Açıklama |
-|---------|-----|-----------|---------|
-| `t` | `number` | `1` | Normalize zaman 0.0–1.0 → yıl 1800–2026 |
-| `activeCity` | `CityId \| null` | `null` | Seçili şehir |
-| `era` | `EraId` | `"modern"` | Ses dönemi |
-| `isDayMode` | `boolean` | `true` | Gündüz/gece ışıklandırma |
-| `isPlaying` | `boolean` | `false` | Timeline otomatik oynatma |
-| `activeEvent` | `CityEvent \| null` | `null` | Aktif tarihsel olay |
-| `audioReady` | `boolean` | `false` | Web Audio API kilidi açıldı |
-
-### Dev otomasyonu
-
-Geliştirme ortamında `window.useStore` deterministik test için açılır:
-
-```javascript
-// NYC'yi 1902 gecesine atla
-window.useStore.setState({ t: 0.045, isDayMode: false })
-```
-
----
-
-## Geliştirme
-
-### Port haritası
-
-| Servis | Port | Başlatma komutu |
-|--------|------|----------------|
-| Vite frontend | 5173 | `npm run dev` |
-| FastAPI backend | 8000 | `uvicorn main:app --reload` |
-
-### Kodlama kuralları
-
-- Tüm renkler `src/styles/tokens.css`'teki CSS değişkenlerinden — hardcode hex yok
-- Animasyonlarda `transform`/`opacity` — asla `width`/`height` (60 fps hedef)
-- `t` tek saattir. Hiçbir duyusal katman için ayrı timer ekleme.
-- deck.gl HMR zombie instance üretebilir. Harita render etmeyi bırakırsa dev server'ı yeniden başlat.
-
-### Component ekleme
-
-1. `src/components/` içinde duplicate kontrol et
-2. İsimlendirme: `PascalCase.tsx` + eş konumlu `kebab-case.css`
-3. Aktif sprint görevini [`.design/chronocity/TASKS.md`](.design/chronocity/TASKS.md)'den bak
-4. Bitince görevi `[x]` olarak işaretle
-
----
-
-## Build ve Paketleme
-
-```bash
-# 1. Type-check + frontend build
-npm run build
-# Çıktı: dist/ (~2 MB gzip asset'ler)
-
-# 2. Production build'i yerel önizle
-npm run preview
-# → http://localhost:4173
-```
-
-Backend ayrıca deploy edilir (Railway, Render veya VPS). Frontend statik SPA'dır — Vercel, Netlify veya GitHub Pages'a hostlanabilir.
+### `GET /api/predict-city/{city}?limit=5000`
+Bir şehrin tüm etiketsiz binaları için tahmin.
 
 ---
 
@@ -258,91 +253,56 @@ Backend ayrıca deploy edilir (Railway, Render veya VPS). Frontend statik SPA'd�
 
 ```
 chronocity/
-├── .design/                    # Tasarım dokümanları ve Claude Code skill'leri
-│   └── chronocity/
-│       ├── DESIGN_BRIEF.md     # Estetik yön, component envanteri
-│       ├── TASKS.md            # Sprint görev listesi (S0–S10 + SDP2)
-│       └── SKILL_MAP.md        # Hangi işlemde hangi design skill
 ├── backend/
-│   ├── main.py                 # FastAPI: /ws WebSocket + /api/health + CORS
-│   └── requirements.txt
+│   ├── main.py                   # FastAPI: health + predict-era + predict-city
+│   ├── predict_era.py            # Model yükleme + çıkarım yardımcıları
+│   └── ml/
+│       ├── enrich_buildings.py   # ML-1: veri zenginleştirme
+│       ├── feature_engineering.py # ML-2: 14 özellik, BallTree KNN
+│       ├── train_model.py        # ML-2: XGBoost + PyTorch eğitim
+│       └── download_ghsl.py      # GHSL toplu indirici
 ├── public/
-│   └── cities/
-│       └── new-york/
-│           ├── buildings.geojson   # 6.550 bina, height + construction_year
-│           ├── events/             # Tarihsel olay JSON + kapak görselleri
-│           └── music/              # Era MP3'leri (1960s/1980s/2000s/modern)
+│   ├── cities/{şehir}/
+│   │   ├── buildings.geojson     # height + construction_year + data_source
+│   │   ├── events/info.json
+│   │   └── music/{dönem}.mp3
+│   └── textures/
+│       ├── earth-day.jpg         # NASA Blue Marble HD (2.4 MB)
+│       └── earth-night.jpg       # NASA Black Marble 2016 (7.7 MB)
+├── scripts/
+│   └── enrich_years_catastro.py  # İspanya Katastrosu ile inşa yılı zenginleştirme
 ├── src/
 │   ├── components/
-│   │   ├── MapCanvas.tsx       # deck.gl 3D çekirdek, LightingEffect, GeoJsonLayer
-│   │   ├── CityExperience.tsx  # Sprint 1 sahne kabuğu
-│   │   ├── DayNightToggle.tsx  # Segmented gündüz/gece butonu
-│   │   ├── DevTimeScrubber.tsx # Geçici dev scrubber (S3'te TimelineBar ile değişir)
-│   │   └── sprint1.css         # Sahne + UI token-driven stiller
-│   ├── data/
-│   │   └── cities.ts           # Şehir kaydı (5 şehir, hasBuildingData flag)
-│   ├── hooks/
-│   │   └── useCityBuildings.ts # Lazy GeoJSON fetch hook
+│   │   ├── GlobeSelector.tsx     # Three.js küre + galaksi giriş animasyonu
+│   │   ├── MapCanvas.tsx         # deck.gl 3D çekirdek
+│   │   ├── TimelineBar.tsx
+│   │   ├── BuildingPopup.tsx
+│   │   └── EraAudioEngine.tsx
+│   ├── data/cities.ts            # 11 şehir kaydı
 │   ├── lib/
-│   │   ├── buildingColors.ts   # Yükseklik bazlı amber/ember renk rampası
-│   │   └── time.ts             # yearFromT / tFromYear yardımcıları
-│   ├── store/
-│   │   └── useStore.ts         # Zustand global store
-│   ├── styles/
-│   │   ├── tokens.css          # Tüm CSS custom property'ler (renk, boşluk, yazı)
-│   │   └── global.css          # Reset + base
-│   ├── types.ts                # CityId, EraId, BuildingProperties, CityEvent
-│   ├── App.tsx                 # Route: null → şehir seçici, şehir → CityExperience
-│   └── main.tsx
-├── .gitattributes
-├── .gitignore
-├── index.html
-├── package.json
-├── tsconfig.json
-└── vite.config.ts
+│   │   ├── buildingColors.ts     # 7 dönem renk sistemi
+│   │   └── time.ts
+│   └── store/useStore.ts
+├── UX_advice.md                  # UX gözlemleri ve öneriler
+└── package.json
 ```
 
 ---
 
 ## Yol Haritası
 
-- [x] Sprint 0 — Scaffold: React + Vite + TS + Zustand + FastAPI + design token'lar
-- [x] Sprint 1 — 3D çekirdek: deck.gl binalar, time morph (1800–2026), gece/gündüz toggle
-- [ ] Sprint 2 — Giriş akışı: Three.js küre seçici, sinematik intro, şehir yükleme ekranı, React Router
-- [ ] Sprint 3 — Zaman çizelgesi: tam genişlik scrubber bar, olay işaretleri, olay popup'ları
-- [ ] Sprint 4 — Ses: era MP3 crossfade (Web Audio API + Tone.js), frekans visualizer
-- [ ] Sprint 5 — Çok şehir: lazy data loader + fly-to animasyonu, İstanbul / Chicago / Berlin / Viyana verisi
-- [ ] Sprint 6 — Katmanlar: fluid heatmap (Navier-Stokes parçacıklar), katman toggle paneli, bina popup
-- [ ] Sprint 7 — Gerçek zamanlı: WebSocket ses notu (pin + kayıt + broadcast), Gemini rapor drawer
-- [ ] Sprint 8 — Cila: onboarding tooltip, Street View blend, karşılaştırma modu (split-screen)
-- [ ] Sprint 9 — PWA: offline cache, kurulum prompt, mobil layout, tablet responsive
-- [ ] Sprint 10 — QA: cross-browser testi, Lighthouse audit, jüri demo scripti
-- [ ] SDP2 — Analitik: güneş/gölge motoru, çok-kriterli rota, kentsel büyüme ML, NL mekânsal ajan
-
----
-
-## Katkı
-
-Bu bir akademik bitirme projesidir. Veri, hata raporu ve öneri katkıları memnuniyetle karşılanır.
-
-```bash
-# 1. Fork et ve klonla
-git clone https://github.com/minniesmick/chronocity.git
-
-# 2. Feature branch oluştur
-git checkout -b feature/ozelligim
-
-# 3. Değişiklikleri commit et
-git commit -m "feat: ne yaptığını ve neden açıkla"
-
-# 4. Push et ve PR aç
-git push origin feature/ozelligim
-```
-
-**Projeye özel notlar:**
-- `src/styles/tokens.css`'teki token'ları kullan — hardcode renk veya piksel değeri yok
-- Önce Chromium tabanlı tarayıcıda test et (deck.gl WebGL2 davranışı motorlar arasında farklılık gösterir)
-- Yeni şehir eklerken `height` (metre) ve `construction_year` (integer) içeren işlenmiş `buildings.geojson` dahil et
+- [x] S0 — Scaffold: React 19 + Vite + TS + Zustand + FastAPI + design token'lar
+- [x] S1 — 3D çekirdek: deck.gl binalar, time morph (1800–2026), gece/gündüz toggle, dönem renkleri
+- [x] S2 — Küre: Three.js küre seçici, sinematik giriş, şehir yükleme ekranı, React Router
+- [x] S3 — Zaman çizelgesi: scrubber bar, olay işaretleri, olay popup'ları, replay butonu
+- [x] S4 — Ses: dönem MP3 crossfade (Web Audio API), frekans visualizer
+- [x] S5 — Çok şehir: 11 şehir, lazy data loader, fly-to animasyonu, bina popup
+- [x] S6 — Görsel cila: NASA HD dokular, galaksi giriş, yıldız alanı, vignette, konektör animasyonları
+- [x] ML-1 — Veri: 43.500 etiketli bina, 6 açık veri kaynağı, GHSL komşuluk özelliği
+- [x] ML-2 — Model: XGBoost (CV F1=0.561) + PyTorch MLP (CUDA), çapraz şehir değerlendirme
+- [x] ML-3 — API: `/api/predict-era`, `/api/predict-era/batch`, `/api/predict-city/{city}`
+- [ ] ML-4 — Frontend: köken rozetleri (PLUTO/OSM/AI), AI tahminli bina görselleri, filtre paneli
+- [ ] S10 — QA: cross-browser, Lighthouse, jüri demo scripti, teknik rapor
 
 ---
 
@@ -357,7 +317,7 @@ git push origin feature/ozelligim
 
 [MIT Lisansı](./LICENSE) altında lisanslanmıştır.
 
-© 2026 Alper Yusuf Yaman. İzin ücretsiz olarak verilmektedir; bu yazılımın bir kopyasını edinen herhangi bir kişi, yazılımı kopyalama, değiştirme, birleştirme, yayımlama, dağıtma, alt lisanslama ve/veya satma hakları dahil olmak üzere sınırlama olmaksızın kullanabilir.
+© 2026 Alper Yusuf Yaman.
 
 ---
 
