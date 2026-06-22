@@ -1,13 +1,15 @@
 """ChronoCity backend — FastAPI.
 
 Endpoints:
-- GET  /api/health                → health check
-- GET  /api/cities/{city}/stats   → city building analytics
-- POST /api/cities/{city}/search  → NLP-based building search
-- POST /api/predict-era           → single building era prediction
-- POST /api/predict-era/batch     → batch prediction (up to 1000 buildings)
-- GET  /api/predict-city/{city}   → predict all unlabeled buildings in a city
-- WS   /ws                        → ephemeral broadcast (SoundNotePin — SPRINT 7)
+- GET  /api/health                    → health check
+- GET  /api/cities/{city}/stats       → city building analytics
+- POST /api/cities/{city}/search      → NLP-based building search
+- GET  /api/cities/{city}/insights    → AI-style city insights
+- GET  /api/cities/{city}/suggestions → ready-to-use search suggestions
+- POST /api/predict-era               → single building era prediction
+- POST /api/predict-era/batch         → batch prediction (up to 1000 buildings)
+- GET  /api/predict-city/{city}       → predict all unlabeled buildings in a city
+- WS   /ws                            → ephemeral broadcast (SoundNotePin — SPRINT 7)
 """
 from __future__ import annotations
 
@@ -20,9 +22,10 @@ import numpy as np
 from city_data import load_city_buildings
 from city_analytics import calculate_city_stats
 from nlp_search import parse_query, filter_buildings, build_search_answer
+from ai_insights import build_city_insights, build_search_suggestions
 
 
-app = FastAPI(title="ChronoCity API", version="0.3.0")
+app = FastAPI(title="ChronoCity API", version="0.4.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,7 +44,7 @@ async def health() -> dict[str, str]:
     return {"status": "ok", "service": "chronocity"}
 
 
-# ── City Analytics + NLP Search ───────────────────────────────────────────────
+# ── City Analytics + NLP Search + AI Insights ─────────────────────────────────
 
 class SearchRequest(BaseModel):
     query: str
@@ -90,6 +93,27 @@ async def search_city_buildings(city_id: str, payload: SearchRequest):
         "matched_ids": [b["id"] for b in matched],
         "preview_buildings": preview_buildings,
         "answer": build_search_answer(filters, len(matched)),
+    }
+
+
+@app.get("/api/cities/{city_id}/insights")
+async def get_city_insights(city_id: str):
+    """
+    Returns AI-style insights generated from city statistics.
+    """
+    buildings = load_city_buildings(city_id)
+    stats = calculate_city_stats(city_id, buildings)
+    return build_city_insights(stats)
+
+
+@app.get("/api/cities/{city_id}/suggestions")
+async def get_city_suggestions(city_id: str):
+    """
+    Returns ready-to-use search suggestions for the selected city.
+    """
+    return {
+        "city": city_id,
+        "suggestions": build_search_suggestions(city_id),
     }
 
 
