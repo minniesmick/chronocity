@@ -29,6 +29,7 @@ from city_data import list_available_cities, load_city_buildings
 from nlp_search import build_search_answer, filter_buildings, parse_query
 from city_timeline import build_city_timeline
 from city_compare import build_city_comparison
+from llm_context import build_llm_context
 
 app = FastAPI(title="ChronoCity API", version="0.6.0")
 
@@ -86,6 +87,8 @@ class SearchRequest(BaseModel):
 class AskRequest(BaseModel):
     question: str
 
+class LLMContextRequest(BaseModel):
+    question: str
 
 @app.get("/api/cities/{city_id}/stats")
 async def get_city_stats(city_id: str):
@@ -202,6 +205,28 @@ async def ask_city_assistant(city_id: str, payload: AskRequest):
     insights = build_city_insights(stats)
 
     return build_city_answer(payload.question, stats, insights)
+
+
+@app.post("/api/cities/{city_id}/llm-context")
+async def get_llm_context(city_id: str, payload: LLMContextRequest):
+    """
+    Builds an LLM-ready prompt and structured context from city analytics.
+
+    This endpoint prepares the data needed for OpenAI/Gemini/OpenRouter,
+    but it does not call an external LLM yet.
+    """
+    buildings = load_city_buildings(city_id)
+    stats = calculate_city_stats(city_id, buildings)
+    insights = build_city_insights(stats)
+    timeline = build_city_timeline(stats)
+
+    return build_llm_context(
+        city_id=city_id,
+        question=payload.question,
+        stats=stats,
+        insights=insights,
+        timeline=timeline,
+    )
 
 
 # ── ML-3: Era Prediction ──────────────────────────────────────────────────────
