@@ -1,12 +1,13 @@
 """ChronoCity backend — FastAPI.
 
 Endpoints:
-- GET  /api/health              → health check
-- GET  /api/cities/{city}/stats → city building analytics
-- POST /api/predict-era         → single building era prediction
-- POST /api/predict-era/batch   → batch prediction (up to 1000 buildings)
-- GET  /api/predict-city/{city} → predict all unlabeled buildings in a city
-- WS   /ws                      → ephemeral broadcast (SoundNotePin — SPRINT 7)
+- GET  /api/health                → health check
+- GET  /api/cities/{city}/stats   → city building analytics
+- POST /api/cities/{city}/search  → NLP-based building search
+- POST /api/predict-era           → single building era prediction
+- POST /api/predict-era/batch     → batch prediction (up to 1000 buildings)
+- GET  /api/predict-city/{city}   → predict all unlabeled buildings in a city
+- WS   /ws                        → ephemeral broadcast (SoundNotePin — SPRINT 7)
 """
 from __future__ import annotations
 
@@ -18,9 +19,10 @@ import numpy as np
 
 from city_data import load_city_buildings
 from city_analytics import calculate_city_stats
+from nlp_search import parse_query, filter_buildings, build_search_answer
 
 
-app = FastAPI(title="ChronoCity API", version="0.2.0")
+app = FastAPI(title="ChronoCity API", version="0.3.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,7 +41,11 @@ async def health() -> dict[str, str]:
     return {"status": "ok", "service": "chronocity"}
 
 
-# ── City Analytics ─────────────────────────────────────────────────────────────
+# ── City Analytics + NLP Search ───────────────────────────────────────────────
+
+class SearchRequest(BaseModel):
+    query: str
+
 
 @app.get("/api/cities/{city_id}/stats")
 async def get_city_stats(city_id: str):
@@ -50,6 +56,41 @@ async def get_city_stats(city_id: str):
     """
     buildings = load_city_buildings(city_id)
     return calculate_city_stats(city_id, buildings)
+
+
+@app.post("/api/cities/{city_id}/search")
+async def search_city_buildings(city_id: str, payload: SearchRequest):
+    """
+    Natural language building search.
+    Example body:
+    {
+      "query": "Show tall buildings before 1930"
+    }
+    """
+    buildings = load_city_buildings(city_id)
+
+    filters = parse_query(payload.query)
+    matched = filter_buildings(buildings, filters)
+
+    preview_buildings = [
+        {
+            "id": b["id"],
+            "name": b["name"],
+            "height": b["height"],
+            "construction_year": b["construction_year"],
+        }
+        for b in matched[:20]
+    ]
+
+    return {
+        "city": city_id,
+        "query": payload.query,
+        "filters": filters,
+        "matched_count": len(matched),
+        "matched_ids": [b["id"] for b in matched],
+        "preview_buildings": preview_buildings,
+        "answer": build_search_answer(filters, len(matched)),
+    }
 
 
 # ── ML-3: Era Prediction ───────────────────────────────────────────────────────
@@ -117,12 +158,13 @@ async def predict_era_batch(payload: BuildingBatch):
 
 @app.get("/api/predict-city/{city}")
 async def predict_city(city: str, limit: int = 5000):
-    """Predict era for unlabeled buildings in a city (reads predict.parquet)."""
+    """Predict era for unlabeled buildings in a city."""
     try:
         import pandas as pd
         from pathlib import Path
         from predict_era import predict_batch
 
+        # TODO: move this to project-relative path later
         predict_path = Path(r"D:\PROJELER\ml_data\predict.parquet")
 
         if not predict_path.exists():
@@ -137,7 +179,6 @@ async def predict_city(city: str, limit: int = 5000):
         if len(city_df) == 0:
             raise HTTPException(404, f"No unlabeled buildings for city: {city}")
 
-        # NaN → None for JSON serialization
         city_df = city_df.where(city_df.notna(), other=None)
         buildings = city_df.to_dict("records")
         results = predict_batch(buildings, city)
@@ -148,7 +189,6 @@ async def predict_city(city: str, limit: int = 5000):
             era_name = r["predicted_era_name"]
             era_counts[era_name] = era_counts.get(era_name, 0) + 1
 
-        # Strip non-serializable fields from response
         slim = [
             {
                 k: v
@@ -180,6 +220,8 @@ async def predict_city(city: str, limit: int = 5000):
     except Exception as e:
         raise HTTPException(500, str(e))
 
+
+# ── WebSocket Broadcast ────────────────────────────────────────────────────────
 
 class ConnectionManager:
     """Aktif WebSocket bağlantılarını tutar, ephemeral broadcast yapar."""
@@ -217,7 +259,6 @@ async def ws_endpoint(ws: WebSocket) -> None:
     try:
         while True:
             data = await ws.receive_json()
-            # SPRINT 7: SoundNotePin payload {lat, lon, audio} broadcast edilir
             await manager.broadcast(data, exclude=ws)
 
     except WebSocketDisconnect:
