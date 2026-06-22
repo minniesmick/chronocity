@@ -92,3 +92,71 @@ def load_city_buildings(city_id: str) -> list[dict]:
         })
 
     return buildings
+
+def list_available_cities() -> list[dict]:
+    """
+    Lists all cities that have a public/cities/{city_id}/buildings.geojson file.
+    """
+
+    cities_root = get_project_root() / "public" / "cities"
+
+    if not cities_root.exists():
+        return []
+
+    cities = []
+
+    for city_dir in sorted(cities_root.iterdir()):
+        if not city_dir.is_dir():
+            continue
+
+        city_id = city_dir.name
+        geojson_path = city_dir / "buildings.geojson"
+
+        if not geojson_path.exists():
+            continue
+
+        try:
+            buildings = load_city_buildings(city_id)
+            total_buildings = len(buildings)
+
+            year_count = len([
+                b for b in buildings
+                if isinstance(b.get("construction_year"), int)
+            ])
+
+            if total_buildings == 0:
+                year_coverage_ratio = 0
+            else:
+                year_coverage_ratio = year_count / total_buildings
+
+            if year_coverage_ratio >= 0.7:
+                year_coverage = "strong"
+            elif year_coverage_ratio >= 0.2:
+                year_coverage = "medium"
+            elif year_coverage_ratio > 0:
+                year_coverage = "weak"
+            else:
+                year_coverage = "none"
+
+            cities.append({
+                "id": city_id,
+                "name": city_id.replace("-", " ").title(),
+                "has_building_data": True,
+                "building_count": total_buildings,
+                "buildings_with_construction_year": year_count,
+                "year_coverage_ratio": round(year_coverage_ratio, 4),
+                "year_coverage": year_coverage,
+            })
+
+        except Exception:
+            cities.append({
+                "id": city_id,
+                "name": city_id.replace("-", " ").title(),
+                "has_building_data": True,
+                "building_count": None,
+                "buildings_with_construction_year": None,
+                "year_coverage_ratio": None,
+                "year_coverage": "unknown",
+            })
+
+    return cities

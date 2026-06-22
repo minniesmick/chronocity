@@ -2,6 +2,7 @@
 
 Endpoints:
 - GET  /api/health                    → health check
+- GET  /api/cities                    → available city registry
 - GET  /api/cities/{city}/stats       → city building analytics
 - POST /api/cities/{city}/search      → NLP-based building search
 - GET  /api/cities/{city}/insights    → AI-style city insights
@@ -19,13 +20,13 @@ from pydantic import BaseModel, Field
 from typing import Optional
 import numpy as np
 
-from city_data import load_city_buildings
+from city_data import load_city_buildings, list_available_cities
 from city_analytics import calculate_city_stats
 from nlp_search import parse_query, filter_buildings, build_search_answer
 from ai_insights import build_city_insights, build_search_suggestions
 
 
-app = FastAPI(title="ChronoCity API", version="0.4.0")
+app = FastAPI(title="ChronoCity API", version="0.5.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,6 +43,16 @@ app.add_middleware(
 @app.get("/api/health")
 async def health() -> dict[str, str]:
     return {"status": "ok", "service": "chronocity"}
+
+
+@app.get("/api/cities")
+async def get_available_cities():
+    """
+    Returns available cities with building data metadata.
+    """
+    return {
+        "cities": list_available_cities()
+    }
 
 
 # ── City Analytics + NLP Search + AI Insights ─────────────────────────────────
