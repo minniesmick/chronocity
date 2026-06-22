@@ -28,6 +28,7 @@ from city_assistant import build_city_answer
 from city_data import list_available_cities, load_city_buildings
 from nlp_search import build_search_answer, filter_buildings, parse_query
 from city_timeline import build_city_timeline
+from city_compare import build_city_comparison
 
 app = FastAPI(title="ChronoCity API", version="0.6.0")
 
@@ -58,6 +59,22 @@ async def get_available_cities():
     return {
         "cities": list_available_cities()
     }
+
+@app.get("/api/compare")
+async def compare_cities(city_a: str, city_b: str):
+    """
+    Compares two cities using building analytics.
+    Example:
+    /api/compare?city_a=new-york&city_b=paris
+    """
+    buildings_a = load_city_buildings(city_a)
+    buildings_b = load_city_buildings(city_b)
+
+    stats_a = calculate_city_stats(city_a, buildings_a)
+    stats_b = calculate_city_stats(city_b, buildings_b)
+
+    return build_city_comparison(stats_a, stats_b)
+
 
 
 # ── City Analytics + NLP Search + AI Insights ─────────────────────────────────
