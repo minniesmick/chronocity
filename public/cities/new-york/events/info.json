@@ -1,0 +1,200 @@
+[
+  {
+    "date": "1811-03-22",
+    "title": "The Commissioners' Plan: Manhattan's Grid",
+    "shortDesc": "The 1811 Commissioners' Plan superimposed a uniform orthogonal grid of 155 cross streets and 12 avenues upon Manhattan's varied topography, prioritising commercial regularity over topographic or social considerations (Burrows & Wallace, 1999). This single cartographic decision governed the spatial logic of virtually all subsequent urban development on the island, determining block dimensions and infrastructure alignment for over two centuries.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [40.7831, -73.9712],
+    "wikiSlug": "Commissioners'_Plan_of_1811"
+  },
+  {
+    "date": "1825-11-04",
+    "title": "Erie Canal: The Commercial Ascent of New York",
+    "shortDesc": "The completion of the Erie Canal in 1825 established a navigable waterway linking the Hudson River to the Great Lakes basin, reducing freight costs between Buffalo and New York City by approximately 95% and positioning the port as the dominant commercial entrepôt of North America (Sheriff, 1996). The resulting surge in trade volume and population accelerated demand for warehousing, residential construction, and civic infrastructure across Manhattan.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [40.7128, -74.0060],
+    "wikiSlug": "Erie_Canal"
+  },
+  {
+    "date": "1858-04-28",
+    "title": "Central Park: The Greensward Plan",
+    "shortDesc": "The selection of Frederick Law Olmsted and Calvert Vaux's 'Greensward Plan' in 1858 established an 843-acre public landscape in central Manhattan, embodying the Romantic conception of rus in urbe as a democratic antidote to urban congestion (Rosenzweig & Blackmar, 1992). The park's construction displaced approximately 1,600 residents from Seneca Village and adjacent settlements, illustrating the coercive dimension of Progressive-era urban improvement.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [40.7829, -73.9654],
+    "wikiSlug": "Central_Park"
+  },
+  {
+    "date": "1863-07-13",
+    "title": "New York City Draft Riots",
+    "shortDesc": "The Draft Riots of July 1863—the deadliest urban insurrection in American history—claimed over 100 lives across four days and exposed profound class and racial antagonisms within the wartime metropolis (Bernstein, 1990). The violence, directed primarily against African American residents and symbols of Republican authority, reflected the dislocations produced by industrialisation, mass immigration, and the inequitable application of Civil War conscription.",
+    "type": "negative",
+    "category": "social",
+    "coordinates": [40.7586, -73.9741],
+    "wikiSlug": "New_York_City_draft_riots"
+  },
+  {
+    "date": "1883-05-24",
+    "title": "Brooklyn Bridge: Engineering a Metropolitan Region",
+    "shortDesc": "The opening of the Brooklyn Bridge on 24 May 1883 completed a 14-year engineering undertaking directed by John A. Roebling and, after his death, by his son Washington Roebling; at 1,595 feet, it was the longest suspension bridge in the world at the time (McCullough, 1972). The bridge effectively dissolved the administrative and economic separation between Manhattan and Brooklyn, restructuring commercial flows and residential mobility across the metropolitan region.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [40.7061, -73.9969],
+    "wikiSlug": "Brooklyn_Bridge"
+  },
+  {
+    "date": "1886-10-28",
+    "title": "Dedication of the Statue of Liberty",
+    "shortDesc": "The formal dedication of the Statue of Liberty on 28 October 1886—a diplomatic gift from France designed by Frédéric Auguste Bartholdi with an internal armature engineered by Gustave Eiffel—transformed New York Harbor into a symbolic threshold of American civic identity (Berenson, 2012). The monument's subsequent conflation with mass immigration endowed it with a cultural resonance substantially exceeding its original republican-fraternal intent.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [40.6892, -74.0445],
+    "wikiSlug": "Statue_of_Liberty"
+  },
+  {
+    "date": "1892-01-01",
+    "title": "Ellis Island: Federal Immigration Station",
+    "shortDesc": "The opening of the Ellis Island immigrant inspection facility on 1 January 1892 established a federalised regime for mass immigration processing at the principal gateway to the United States; over the ensuing three decades, approximately 12 million individuals were processed through its facilities (Pitkin, 1975). The institution fundamentally shaped the ethnic composition, neighbourhood geography, and labour market structure of New York City.",
+    "type": "neutral",
+    "category": "social",
+    "coordinates": [40.6993, -74.0397],
+    "wikiSlug": "Ellis_Island"
+  },
+  {
+    "date": "1898-01-01",
+    "title": "Greater New York Consolidation",
+    "shortDesc": "The municipal consolidation of 1898 merged Manhattan, Brooklyn, Queens, the Bronx, and Staten Island into a single administrative entity of approximately 3.4 million residents, creating the second-largest city in the world and the first to surpass 3 million inhabitants (Burrows & Wallace, 1999). Consolidation generated enduring tensions between centralised governance and borough-level political identities that shaped New York City's administrative culture throughout the twentieth century.",
+    "type": "positive",
+    "category": "political",
+    "coordinates": [40.7128, -74.0060],
+    "wikiSlug": "Consolidation_of_New_York_City"
+  },
+  {
+    "date": "1904-10-27",
+    "title": "IRT Subway: Reconfiguring Urban Mobility",
+    "shortDesc": "The inauguration of the Interborough Rapid Transit (IRT) subway on 27 October 1904 constituted a watershed in New York City's spatial development, enabling population dispersal from congested Lower Manhattan to upper Manhattan, the Bronx, and subsequently Brooklyn (Hood, 1993). The subway's articulation with real estate speculation catalysed the rapid formation of residential neighbourhoods at distances from the historic core that had previously been served only by elevated steam railways.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [40.7137, -74.0067],
+    "wikiSlug": "New_York_City_Subway"
+  },
+  {
+    "date": "1911-03-25",
+    "title": "Triangle Shirtwaist Factory Fire",
+    "shortDesc": "The fire at the Triangle Shirtwaist Factory on 25 March 1911 killed 146 garment workers—predominantly young immigrant women—and exposed catastrophic failures in industrial workplace safety regulation (Von Drehle, 2003). The disaster catalysed a sustained reformist response, including the establishment of the Factory Investigating Commission under Robert F. Wagner and Al Smith, which produced foundational labour safety legislation that served as a national legislative model.",
+    "type": "negative",
+    "category": "social",
+    "coordinates": [40.7298, -74.0020],
+    "wikiSlug": "Triangle_Shirtwaist_Factory_fire"
+  },
+  {
+    "date": "1913-02-02",
+    "title": "Grand Central Terminal: Remaking Midtown",
+    "shortDesc": "The opening of Grand Central Terminal on 2 February 1913—designed in the Beaux-Arts tradition by Reed & Stem and Warren & Wetmore—replaced the earlier Grand Central Depot and provided the infrastructural foundation for Midtown Manhattan's emergence as the city's preeminent commercial district (Schlichting, 2001). The terminal's air-rights development over Park Avenue established an important precedent for the vertical stacking of uses that would become characteristic of twentieth-century New York urbanism.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [40.7527, -73.9772],
+    "wikiSlug": "Grand_Central_Terminal"
+  },
+  {
+    "date": "1929-10-29",
+    "title": "Black Tuesday: The Crash of 1929",
+    "shortDesc": "The stock market collapse of 29 October 1929—known as Black Tuesday—erased an estimated $14 billion in market value in a single trading session and triggered the global economic contraction of the Great Depression (Galbraith, 1954). In New York City, the crash abruptly terminated the skyscraper construction boom of the 1920s and produced mass unemployment concentrated in the outer-borough working-class communities formed around the subway network.",
+    "type": "negative",
+    "category": "economic",
+    "coordinates": [40.7069, -74.0089],
+    "wikiSlug": "Wall_Street_Crash_of_1929"
+  },
+  {
+    "date": "1931-05-01",
+    "title": "Empire State Building: The Vertical Apogee",
+    "shortDesc": "The Empire State Building, completed on 1 May 1931 at 1,454 feet including its antenna mast, surpassed the Chrysler Building to become the tallest structure in the world—a distinction it retained for 41 years (Tauranac, 1995). Erected in 410 days during the deepening Great Depression, its efficient steel-frame construction and setback massing exemplified the normative skyscraper typology codified under New York City's landmark 1916 Zoning Resolution.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [40.7484, -73.9857],
+    "wikiSlug": "Empire_State_Building"
+  },
+  {
+    "date": "1939-04-30",
+    "title": "World's Fair: 'The World of Tomorrow'",
+    "shortDesc": "The 1939 New York World's Fair, held in Flushing Meadows–Corona Park, attracted approximately 44 million visitors across two seasons and presented a techno-optimist vision of modernity organised around the private automobile, the superhighway, and suburban dispersal (Gelernter, 1995). General Motors' 'Futurama' exhibit—depicting a hypothetical 1960 urban landscape of decongested expressways—proved enormously influential on subsequent federal highway and urban renewal policy.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [40.7463, -73.8462],
+    "wikiSlug": "1939_New_York_World's_Fair"
+  },
+  {
+    "date": "1963-10-28",
+    "title": "Demolition of Pennsylvania Station",
+    "shortDesc": "The demolition of McKim, Mead & White's Pennsylvania Station—a monumental Beaux-Arts structure opened in 1910—provoked a public crisis of architectural conscience and directly catalysed the historic preservation movement in New York City (Tung, 2001). The resulting public outcry precipitated the Landmarks Preservation Law of 1965, which established a legal framework for protecting architecturally and historically significant structures from market-driven demolition.",
+    "type": "negative",
+    "category": "architecture",
+    "coordinates": [40.7503, -73.9967],
+    "wikiSlug": "Pennsylvania_Station_(1910–1963)"
+  },
+  {
+    "date": "1969-06-28",
+    "title": "Stonewall Uprising: Gay Liberation",
+    "shortDesc": "The uprising at the Stonewall Inn in Greenwich Village on 28 June 1969—in which patrons resisted a police raid—is widely identified as the catalytic event of the modern gay liberation movement in the United States (Carter, 2004). The multi-night protests galvanised a nascent political consciousness and led directly to the formation of advocacy organisations, including the Gay Liberation Front, that fundamentally transformed the landscape of civil rights activism in the subsequent decade.",
+    "type": "positive",
+    "category": "social",
+    "coordinates": [40.7335, -74.0027],
+    "wikiSlug": "Stonewall_riots"
+  },
+  {
+    "date": "1973-04-04",
+    "title": "World Trade Center: Twin Towers Completed",
+    "shortDesc": "The completion of the World Trade Center's Twin Towers—the North Tower in 1972 and the South Tower in 1973—made the complex briefly the tallest buildings in the world at 1,368 and 1,362 feet respectively, establishing Lower Manhattan as a commanding node in the emerging global financial system (Glanz & Lipton, 2003). The project displaced an established electronics retail district known as 'Radio Row,' representing a large-scale application of the mid-century urban renewal paradigm.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [40.7118, -74.0131],
+    "wikiSlug": "World_Trade_Center_(1973–2001)"
+  },
+  {
+    "date": "1975-10-30",
+    "title": "New York City Fiscal Crisis",
+    "shortDesc": "New York City's near-default in 1975, precipitated by structural budgetary imbalances, capital market withdrawal, and long-term fiscal mismanagement, necessitated emergency state intervention and the creation of the Municipal Assistance Corporation under Felix Rohatyn (Cannato, 2001). The austerity measures imposed by the Emergency Financial Control Board reduced the municipal workforce by approximately 60,000 positions, signalling the decisive contraction of the post-war public-sector welfare state.",
+    "type": "negative",
+    "category": "economic",
+    "coordinates": [40.7128, -74.0060],
+    "wikiSlug": "New_York_City_fiscal_crisis_(1970s)"
+  },
+  {
+    "date": "2001-09-11",
+    "title": "September 11 Attacks",
+    "shortDesc": "The coordinated terrorist attacks of 11 September 2001 destroyed the Twin Towers of the World Trade Center and resulted in 2,977 fatalities, constituting the deadliest terrorist incident in recorded history and causing an estimated $55 billion in insured losses (National Commission on Terrorist Attacks, 2004). The attacks fundamentally reconfigured Lower Manhattan's built environment, precipitated two decades of geopolitical conflict, and catalysed sweeping changes to domestic security architecture whose urban consequences continue to shape New York City.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [40.7118, -74.0131],
+    "wikiSlug": "September_11_attacks"
+  },
+  {
+    "date": "2009-06-09",
+    "title": "The High Line: Adaptive Reuse and Urban Revitalisation",
+    "shortDesc": "The opening of Phase 1 of the High Line on 9 June 2009 transformed a disused 1930s elevated freight railway on Manhattan's West Side into a linear public park, becoming an internationally influential model for the adaptive reuse of obsolete industrial infrastructure (David & Hammond, 2011). Scholars have simultaneously documented the project's role in accelerating residential and commercial gentrification in the surrounding Chelsea and West Village neighbourhoods, raising questions about the distributional equity of amenity-driven urban revitalisation.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [40.7480, -74.0048],
+    "wikiSlug": "High_Line"
+  },
+  {
+    "date": "2012-10-29",
+    "title": "Hurricane Sandy: Urban Climate Vulnerability",
+    "shortDesc": "Hurricane Sandy's landfall on 29 October 2012 caused an estimated $19 billion in damage to New York City's infrastructure, flooding subway tunnels, electrical substations, and low-lying residential neighbourhoods across all five boroughs (Horton et al., 2015). The storm exposed structural vulnerabilities in the city's coastal built environment and catalysed the development of a post-Sandy resilience planning framework that sought to integrate flood protection into urban design at a metropolitan scale.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [40.6501, -73.9496],
+    "wikiSlug": "Hurricane_Sandy"
+  },
+  {
+    "date": "2014-11-03",
+    "title": "One World Trade Center: Memorial and Rebirth",
+    "shortDesc": "The opening of One World Trade Center on 3 November 2014—the tallest building in the Western Hemisphere at 1,776 feet, a height selected to correspond to the year of American independence—completed the first phase of the September 11 memorial site redevelopment (Sagalyn, 2016). The protracted planning process, involving competing claims from commercial, memorial, and governmental stakeholders, exemplified the governance complexities of large-scale urban redevelopment in a post-disaster context.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [40.7127, -74.0134],
+    "wikiSlug": "One_World_Trade_Center"
+  }
+]
