@@ -1,0 +1,83 @@
+[
+  {
+    "date": "1857-12-20",
+    "title": "Ringstrasse Decree: The Ring Road of Empire",
+    "shortDesc": "Emperor Franz Joseph's Imperial Rescript of 20 December 1857 ordered the demolition of Vienna's medieval fortifications and the construction of the Ringstrasse, a monumental 4-kilometre boulevard encircling the Inner City and lined with purpose-built institutions—the Opera, Parliament, Rathaus, Burgtheater, and twin court museums (Schorske, 1980). The Ringstrasse project, largely complete by 1890, constituted the definitive expression of bourgeois liberal urbanism and transformed Vienna into one of Europe's foremost imperial showcases.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [48.2082, 16.3738],
+    "wikiSlug": "Ringstrasse"
+  },
+  {
+    "date": "1897-04-03",
+    "title": "Vienna Secession: Art Against Tradition",
+    "shortDesc": "The founding of the Vienna Secession in 1897 by Gustav Klimt, Koloman Moser, Josef Hoffmann, and Josef Maria Olbrich represented a deliberate rupture with the historicism of the Ringstrasse era, asserting Gesamtkunstwerk—the synthesis of fine and applied arts—as the governing principle of a modern Austrian aesthetic (Schorske, 1980). The Secession building, completed by Olbrich in 1898 with its gilded laurel-leaf dome, became an enduring symbol of Viennese cultural modernity and influenced the European Jugendstil movement.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [48.2003, 16.3696],
+    "wikiSlug": "Vienna_Secession"
+  },
+  {
+    "date": "1918-11-12",
+    "title": "End of the Habsburg Empire",
+    "shortDesc": "The proclamation of the Republic of German-Austria on 12 November 1918, following Emperor Karl I's abdication, ended six centuries of Habsburg imperial rule and transformed Vienna from the capital of a multi-national empire of 52 million into the administrative centre of a small state of 6.5 million (Beller, 2006). The resulting disproportionality—a metropolis of nearly 2 million governing a diminished state—shaped Vienna's economic and political trajectory throughout the interwar period.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [48.2082, 16.3738],
+    "wikiSlug": "Republic_of_German-Austria"
+  },
+  {
+    "date": "1927-07-15",
+    "title": "Red Vienna: Palace of the Workers",
+    "shortDesc": "Between 1919 and 1934, the Social Democratic administration of 'Red Vienna' constructed approximately 64,000 municipal apartments in large communal housing blocks—Gemeindebauten—funded through a progressive luxury tax, establishing one of the most ambitious social housing programmes in European history (Blau, 1999). The Karl-Marx-Hof, completed in 1930, with its 1,382 apartments housing approximately 5,000 residents within a 1.1-kilometre superblock, remains the emblematic monument of municipal socialist urbanism.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [48.2326, 16.3639],
+    "wikiSlug": "Red_Vienna"
+  },
+  {
+    "date": "1938-03-12",
+    "title": "Anschluss: Annexation by Germany",
+    "shortDesc": "The German Wehrmacht's entry into Austria on 12 March 1938 and the subsequent proclamation of Anschluss—the annexation of Austria into the German Reich—was accompanied in Vienna by spontaneous mass celebrations and an immediate wave of antisemitic violence that drove the city's Jewish population, numbering approximately 200,000, into emigration, deportation, and death (Bukey, 2000). Vienna lost approximately 90% of its Jewish community—among them Sigmund Freud, Karl Popper, and Gustav Mahler's heirs—in one of the most concentrated cultural depletions in modern European history.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [48.2082, 16.3738],
+    "wikiSlug": "Anschluss"
+  },
+  {
+    "date": "1945-04-13",
+    "title": "Soviet Liberation and Four-Power Occupation",
+    "shortDesc": "Soviet forces entered Vienna on 13 April 1945 after ten days of intense urban combat that caused substantial damage to the historic city fabric, including the burning of the Burgtheater, the Staatsoper, and sections of the Ringstrasse (Rathkolb, 2010). Austria was subsequently divided into four occupation zones administered by the Allied powers until 1955, with Vienna's First District under quadripartite control in an arrangement that informed the Cold War division of Berlin.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [48.2082, 16.3738],
+    "wikiSlug": "Vienna_Offensive"
+  },
+  {
+    "date": "1955-05-15",
+    "title": "Austrian State Treaty: Sovereignty Restored",
+    "shortDesc": "The Austrian State Treaty, signed at the Belvedere Palace on 15 May 1955 by the four Allied foreign ministers and Austrian Chancellor Julius Raab, restored full sovereignty to Austria and prohibited future union with Germany, in exchange for Austria's permanent neutrality (Rathkolb, 2010). The treaty's conclusion ended a decade of quadripartite occupation and enabled Austria's subsequent prosperity, European integration, and role as a neutral diplomatic venue during the Cold War.",
+    "type": "positive",
+    "category": "political",
+    "coordinates": [48.1914, 16.3812],
+    "wikiSlug": "Austrian_State_Treaty"
+  },
+  {
+    "date": "1979-08-23",
+    "title": "Vienna International Centre: UN City",
+    "shortDesc": "The inauguration of the Vienna International Centre on 23 August 1979 established Vienna as the third seat of the United Nations, alongside New York and Geneva, housing the International Atomic Energy Agency, UNIDO, and several other international organisations on a campus designed by Johann Staber (Beller, 2006). The Centre reinforced Vienna's postwar identity as a neutral diplomatic capital and contributed to the city's emergence as a venue for East-West negotiations during the final decades of the Cold War.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [48.2356, 16.3997],
+    "wikiSlug": "Vienna_International_Centre"
+  },
+  {
+    "date": "2001-12-02",
+    "title": "Vienna Historic Centre: UNESCO World Heritage",
+    "shortDesc": "The inscription of Vienna's Historic Centre on the UNESCO World Heritage List in December 2001 formally recognised the city's exceptional concentration of Baroque, Biedermeier, Historicist, and Jugendstil architecture and its role as a centre of European musical and intellectual culture (UNESCO, 2001). The inscription has since generated ongoing tensions between heritage conservation mandates and contemporary development pressures, most notably regarding high-rise projects along the Donaukanal.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [48.2082, 16.3738],
+    "wikiSlug": "Historic_Centre_of_Vienna"
+  }
+]

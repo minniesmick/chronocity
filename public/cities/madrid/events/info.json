@@ -1,0 +1,74 @@
+[
+  {
+    "date": "1808-05-02",
+    "title": "Dos de Mayo: Uprising Against Napoleon",
+    "shortDesc": "The popular uprising of 2 May 1808 in Madrid against Napoleon's forces—immortalised in Francisco de Goya's paintings The Second of May 1808 and The Third of May 1808—marked the beginning of the Peninsular War and inaugurated the first modern popular resistance movement against Napoleonic hegemony in Europe (Fraser, 2008). The subsequent six-year guerrilla conflict, which the word 'guerrilla' entered international vocabulary to describe, extracted an enormous human cost from the peninsula and accelerated the dissolution of Spain's Atlantic empire.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [40.4155, -3.7074],
+    "wikiSlug": "Dos_de_Mayo_Uprising"
+  },
+  {
+    "date": "1851-02-09",
+    "title": "First Spanish Railway: Madrid–Aranjuez Line",
+    "shortDesc": "The inauguration of the Madrid–Aranjuez railway on 9 February 1851—the first line to connect the Spanish capital to the national network—initiated Madrid's integration into the industrial transportation infrastructure that would underpin its nineteenth-century urban expansion (Ringrose, 1983). The line's construction, financed by José de Salamanca, established the legal and financial frameworks for the subsequent rapid extension of the Spanish rail network and the opening of the new Salamanca quarter in Madrid's eastern Ensanche.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [40.4069, -3.6919],
+    "wikiSlug": "Madrid–Aranjuez_railway"
+  },
+  {
+    "date": "1919-10-17",
+    "title": "Madrid Metro: Underground Urbanism",
+    "shortDesc": "The inauguration of the Madrid Metropolitan Railway on 17 October 1919—connecting Cuatro Caminos to the Puerta del Sol in a 3.48-kilometre tunnel and ranking among the earliest urban metro systems in the world—transformed intra-city mobility and provided the infrastructural basis for the densification of Madrid's working-class northern neighbourhoods (Cayuela Fernández, 2019). The Metro's subsequent expansion through the twentieth century extended the city's functional urban area, enabling the development of peripheral housing estates that absorbed postwar rural-to-urban migration.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [40.4165, -3.7026],
+    "wikiSlug": "Madrid_Metro"
+  },
+  {
+    "date": "1936-11-08",
+    "title": "Siege of Madrid: Capital of the Republic",
+    "shortDesc": "The Nationalist offensive against Madrid, which began in earnest with the assault on the Ciudad Universitaria on 8 November 1936, subjected the city to a siege that lasted until March 1939—the longest in the history of the Spanish Civil War—and established the Republican capital as an international symbol of antifascist resistance, attracting thousands of International Brigade volunteers (Beevor, 2006). The defence of Madrid, encapsulated in the slogan '¡No pasarán!', demonstrated the capacity of a civilian urban population to withstand sustained military attack and shaped subsequent thinking about urban defence and civilian resilience.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [40.4527, -3.7212],
+    "wikiSlug": "Siege_of_Madrid"
+  },
+  {
+    "date": "1975-11-20",
+    "title": "Death of Franco: Transition to Democracy",
+    "shortDesc": "The death of General Francisco Franco in Madrid on 20 November 1975 ended 36 years of authoritarian dictatorship and initiated the Transición—a negotiated transition to parliamentary democracy managed by King Juan Carlos I and Prime Minister Adolfo Suárez through the Political Reform Law of 1977 and the Constitution of 1978 (Preston, 1993). Madrid's transformation from the capital of a Francoist state into the seat of a democratic government and the cultural motor of the Movida Madrileña—an explosion of artistic and social freedom in the early 1980s—constituted one of the most remarkable political and cultural metamorphoses of the late twentieth century.",
+    "type": "positive",
+    "category": "political",
+    "coordinates": [40.4168, -3.7038],
+    "wikiSlug": "Spanish_transition_to_democracy"
+  },
+  {
+    "date": "1992-01-01",
+    "title": "European Capital of Culture",
+    "shortDesc": "Madrid's designation as European Capital of Culture in 1992—a year also marked by Seville's Universal Exposition and Barcelona's Summer Olympics—served as a catalyst for major investments in the city's cultural infrastructure, including the inauguration of the Reina Sofía National Museum and the expansion of the Prado (Bianchini & Parkinson, 1993). The year reinforced Madrid's international positioning as a centre of the arts and contributed to the emergence of the Paseo del Arte—the cultural corridor linking the Prado, the Thyssen-Bornemisza, and the Reina Sofía—as a globally recognised museum destination.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [40.4138, -3.6921],
+    "wikiSlug": "European_Capital_of_Culture"
+  },
+  {
+    "date": "2004-03-11",
+    "title": "11-M: Madrid Train Bombings",
+    "shortDesc": "The coordinated bombings of 11 March 2004—ten improvised explosive devices detonated aboard four Cercanías commuter trains during the morning rush hour, killing 193 people and injuring approximately 2,050—constituted the deadliest terrorist attack in Spanish history and the most lethal in Europe since the 1988 Lockerbie bombing (Reinares, 2014). Occurring three days before the Spanish general election, the attacks and the government's initial misattribution to the Basque separatist organisation ETA contributed to the incumbent Popular Party's electoral defeat.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [40.4258, -3.6929],
+    "wikiSlug": "2004_Madrid_train_bombings"
+  },
+  {
+    "date": "2011-05-15",
+    "title": "15-M: The Indignados Movement",
+    "shortDesc": "The encampment of tens of thousands of demonstrators in Madrid's Puerta del Sol beginning on 15 May 2011—in response to austerity policies, youth unemployment exceeding 40%, and disillusionment with the bipartisan political system—established the Indignados movement as a precursor to global protest phenomena including Occupy Wall Street and informed subsequent left-wing party formation in Spain (Castells, 2012). The movement's horizontal, networked organisational model and its explicit rejection of representative party structures prefigured the populist political dynamics that reshaped Southern European democratic systems in the decade following.",
+    "type": "neutral",
+    "category": "social",
+    "coordinates": [40.4169, -3.7033],
+    "wikiSlug": "15-M_movement"
+  }
+]

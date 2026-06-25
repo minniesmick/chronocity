@@ -1,0 +1,83 @@
+[
+  {
+    "date": "1868-01-03",
+    "title": "Meiji Restoration: Edo Becomes Tokyo",
+    "shortDesc": "The Meiji Restoration of January 1868—in which power was formally transferred from the Tokugawa Shogunate to Emperor Meiji—and the subsequent renaming of Edo as Tokyo ('Eastern Capital') in September of the same year, initiated the most rapid state-directed programme of industrialisation and modernisation in modern history, transforming a feudal castle town of approximately one million into the administrative, cultural, and eventually economic capital of an industrial nation-state (Keene, 2002). The Meiji government's programme of selective Western technological borrowing while preserving distinct Japanese political and cultural institutions established the paradigm of modernisation without Westernisation that shaped Tokyo's urban development.",
+    "type": "positive",
+    "category": "political",
+    "coordinates": [35.6762, 139.6503],
+    "wikiSlug": "Meiji_Restoration"
+  },
+  {
+    "date": "1872-06-12",
+    "title": "First Japanese Railway: Shimbashi to Yokohama",
+    "shortDesc": "The inauguration of Japan's first railway on 12 June 1872, connecting Shimbashi Station in Tokyo to Yokohama—a distance of approximately 29 kilometres—was personally officiated by Emperor Meiji and symbolised the Meiji government's commitment to technological modernisation as a means of national strengthening (Smith, 1978). The railway's success demonstrated the viability of steam locomotion in Japan and catalysed the rapid expansion of a national rail network that would, within three decades, integrate the archipelago's major urban centres and fundamentally reshape the geography of Japanese commerce.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [35.6656, 139.7582],
+    "wikiSlug": "Japan's_first_railway"
+  },
+  {
+    "date": "1923-09-01",
+    "title": "Great Kantō Earthquake: Catastrophe and Reconstruction",
+    "shortDesc": "The Great Kantō Earthquake of 1 September 1923, registering 7.9 Mw and striking at noon when cooking fires were lit, killed approximately 140,000 people in Tokyo and Yokohama through seismic damage, fires, and a catastrophic firestorm in the Honjo and Fukagawa districts—constituting the deadliest natural disaster in Japanese history (Schencking, 2013). The reconstruction programme directed by Home Minister Shinpei Gotō implemented a comprehensive replanning of the destroyed areas, widening streets, creating firebreaks and parks, and imposing modern zoning regulations that laid the infrastructural foundation for the modern Tokyo metropolitan region.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [35.6762, 139.6503],
+    "wikiSlug": "1923_Great_Kantō_earthquake"
+  },
+  {
+    "date": "1945-03-10",
+    "title": "Firebombing of Tokyo: Operation Meetinghouse",
+    "shortDesc": "Operation Meetinghouse of 9–10 March 1945—the largest and most destructive conventional bombing raid in military history—deployed 334 B-29 Superfortress bombers against Tokyo's densely built low-rise residential fabric, igniting a firestorm that killed an estimated 80,000–100,000 civilians, destroyed approximately 267,000 buildings, and rendered over one million residents homeless (Werrell, 1996). The destruction of Tokyo's eastern shitamachi districts, combined with subsequent raids, obliterated the physical fabric of Edo-period and Meiji-era urbanism, creating the near-total tabula rasa upon which the postwar city was constructed.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [35.7100, 139.8161],
+    "wikiSlug": "Bombing_of_Tokyo_(10_March_1945)"
+  },
+  {
+    "date": "1964-10-01",
+    "title": "Tokyo Olympics and the Shinkansen: Modern Japan Arrives",
+    "shortDesc": "The inauguration of the Tōkaidō Shinkansen high-speed rail line on 1 October 1964—nine days before the opening of the Tokyo Summer Olympics—juxtaposed two symbols of Japanese postwar reconstruction: the bullet train connecting Tokyo to Osaka at 210 km/h and the Olympic facilities designed by Kenzo Tange, including the iconic Yoyogi National Gymnasium (Hood, 2006; Tagsold, 2009). The 1964 Games, Japan's first post-Occupation Olympic host role, presented a reconstructed, economically ascendant Japan to a global audience and catalysed the expressway and urban infrastructure investments—Metropolitan Expressway, Haneda Airport expansion—that shaped Tokyo's spatial form for the subsequent generation.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [35.6762, 139.6503],
+    "wikiSlug": "1964_Summer_Olympics"
+  },
+  {
+    "date": "1973-10-16",
+    "title": "Oil Shock: The Limits of High-Growth Urbanism",
+    "shortDesc": "The OPEC oil embargo of October 1973, which quadrupled oil prices within three months, abruptly terminated Japan's era of double-digit economic growth—the 'economic miracle' of 1955–1973—and exposed the structural vulnerabilities of a metropolitan economy and built environment that had been constructed on the assumption of cheap, abundant energy (Allinson, 1997). The oil shock accelerated a spatial restructuring of Tokyo's economy away from energy-intensive heavy manufacturing toward service industries, financial services, and high-value-added manufacturing, initiating the deindustrialisation of the city's eastern waterfront districts.",
+    "type": "negative",
+    "category": "economic",
+    "coordinates": [35.6762, 139.6503],
+    "wikiSlug": "1973_oil_crisis"
+  },
+  {
+    "date": "1989-12-29",
+    "title": "The Bubble Economy: Tokyo at Its Peak",
+    "shortDesc": "The Nikkei 225 index reached its all-time peak of 38,915 on 29 December 1989, the culmination of an asset price bubble in which Tokyo real estate had appreciated to values that, at their zenith, made the land beneath the Imperial Palace theoretically worth more than all real estate in California (Wood, 1992). The bubble's subsequent collapse between 1990 and 1992, triggered by Bank of Japan monetary tightening, initiated Japan's 'Lost Decade' of economic stagnation and produced a sustained fall in Tokyo property values that fundamentally altered the city's development dynamics, leaving a legacy of zombie banks, depopulating commercial districts, and deferred infrastructure investment.",
+    "type": "negative",
+    "category": "economic",
+    "coordinates": [35.6762, 139.7690],
+    "wikiSlug": "Japanese_asset_price_bubble"
+  },
+  {
+    "date": "1995-03-20",
+    "title": "Aum Shinrikyo: Sarin on the Subway",
+    "shortDesc": "The sarin nerve agent attack on the Tokyo Metro on 20 March 1995—carried out by members of the Aum Shinrikyo religious organisation who released the agent on five converging lines during the morning rush hour, killing 13 and injuring approximately 6,000—exposed the vulnerability of urban transit infrastructure to unconventional terrorist attack and precipitated a comprehensive review of Japanese security protocols (Murakami, 2000). The attack fundamentally altered the relationship between Japanese civil society and religious organisations, prompted new anti-cult legislation, and influenced international preparedness planning for chemical, biological, radiological, and nuclear (CBRN) incidents in urban environments.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [35.6762, 139.6503],
+    "wikiSlug": "Tokyo_subway_sarin_attack"
+  },
+  {
+    "date": "2011-03-11",
+    "title": "Tōhoku Earthquake and the Fukushima Crisis",
+    "shortDesc": "The Tōhoku earthquake and tsunami of 11 March 2011—a 9.0 Mw event followed by a 14-metre tsunami that killed approximately 19,000 people in coastal Tōhoku—triggered the Fukushima Daiichi nuclear disaster, the most severe nuclear accident since Chernobyl, which forced the evacuation of approximately 150,000 residents from a 20-kilometre exclusion zone (Samuels, 2013). Though Tokyo experienced only minor structural damage, the crisis exposed the city's dependence on nuclear-generated electricity, precipitating a sweeping review of Japan's energy policy and the temporary suspension of all 54 of the nation's nuclear reactors.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [38.2975, 141.0304],
+    "wikiSlug": "2011_Tōhoku_earthquake_and_tsunami"
+  }
+]

@@ -1,0 +1,101 @@
+[
+  {
+    "date": "1851-05-01",
+    "title": "Great Exhibition: A Nation on Display",
+    "shortDesc": "The Great Exhibition of the Works of Industry of All Nations, inaugurated on 1 May 1851 in the Crystal Palace—a prefabricated iron-and-glass structure designed by Joseph Paxton in Hyde Park—attracted approximately 6 million visitors over 141 days and presented British industrial supremacy to an international audience (Auerbach, 1999). The exhibition's surplus revenue funded the construction of the South Kensington museum complex, including the Victoria and Albert Museum, the Science Museum, and the Natural History Museum, establishing a permanent cultural quarter that remains intact.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [51.5074, -0.1657],
+    "wikiSlug": "Great_Exhibition"
+  },
+  {
+    "date": "1863-01-10",
+    "title": "Metropolitan Railway: The World's First Underground",
+    "shortDesc": "The inauguration of the Metropolitan Railway on 10 January 1863, connecting Paddington to Farringdon Street through a cut-and-cover tunnel beneath the Marylebone Road, established the world's first passenger underground railway and offered a model for urban mass transit that would be replicated in cities across Europe, North America, and Asia over the following century (Wolmar, 2012). The Underground system's subsequent expansion into a comprehensive network catalysed the growth of London's outer suburbs and gave rise to the 'Metroland' phenomenon of planned residential development along railway corridors.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [51.5225, -0.1572],
+    "wikiSlug": "Metropolitan_Railway"
+  },
+  {
+    "date": "1875-08-11",
+    "title": "Bazalgette's Sewers: Cleansing the Metropolis",
+    "shortDesc": "The Public Health Act of 1875 consolidated the sanitary reform programme initiated by Joseph Bazalgette following the Great Stink of 1858, completing a system of 1,100 miles of street sewers and 82 miles of intercepting sewers that channelled London's waste away from the Thames to downstream outfalls—a feat of civil engineering that effectively eliminated cholera from the city (Halliday, 1999). The sewerage system, constructed between 1858 and 1875, established the standard for urban sanitation infrastructure and has been continuously operational, largely unchanged in its primary structure, for 150 years.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [51.5074, -0.1278],
+    "wikiSlug": "Joseph_Bazalgette"
+  },
+  {
+    "date": "1940-09-07",
+    "title": "The Blitz: London Under Bombardment",
+    "shortDesc": "The German Luftwaffe's sustained aerial bombardment of London, beginning on 7 September 1940 and continuing for 57 consecutive nights before extending across the following eight months, killed approximately 30,000 civilians in the capital and destroyed or damaged over one million homes (Gardiner, 2010). The Blitz caused the permanent displacement of communities from inner East London boroughs and created the tabula rasa conditions that enabled postwar slum clearance programmes and the construction of Modernist housing estates on bomb-damaged sites.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [51.5074, -0.1278],
+    "wikiSlug": "The_Blitz"
+  },
+  {
+    "date": "1951-05-03",
+    "title": "Festival of Britain: Architecture of Optimism",
+    "shortDesc": "The Festival of Britain, inaugurated on 3 May 1951 on the South Bank of the Thames, presented a vision of a modern, forward-looking Britain through an exhibition of contemporary design, architecture, and technology that attracted over 8.5 million visitors (Hennessy, 1992). The Festival's legacy—the Royal Festival Hall, the only permanent structure retained after its closure—seeded the subsequent development of the South Bank cultural precinct and constituted a pivotal moment in the popularisation of British Modernist design.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [51.5045, -0.1157],
+    "wikiSlug": "Festival_of_Britain"
+  },
+  {
+    "date": "1952-12-05",
+    "title": "Great Smog: Environmental Catastrophe",
+    "shortDesc": "The Great Smog of London, which settled over the city from 5–9 December 1952, resulted from a temperature inversion that trapped pollutants from coal combustion in an acrid, near-impenetrable fog; epidemiological reassessment indicates that the event caused between 4,000 and 12,000 excess deaths and significantly elevated respiratory illness across the metropolitan area (Bell & Davis, 2001). The disaster directly precipitated the Clean Air Act of 1956, which restricted domestic coal combustion and established Britain's first modern air quality regulatory framework.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [51.5074, -0.1278],
+    "wikiSlug": "Great_Smog_of_London"
+  },
+  {
+    "date": "1981-04-10",
+    "title": "Brixton Riots: Race, Policing, and Urban Decline",
+    "shortDesc": "The Brixton disorders of 10–12 April 1981, involving approximately 5,000 rioters and resulting in 279 police injuries and 45 buildings damaged or destroyed, were precipitated by the Metropolitan Police's controversial 'Operation Swamp 81' stop-and-search campaign in the predominantly African-Caribbean inner-London neighbourhood (Scarman, 1982). Lord Scarman's subsequent inquiry attributed the disorders to the accumulated effects of racial disadvantage, heavy-handed policing, and the withdrawal of urban economic opportunity—a diagnosis that shaped British race relations policy for the following decade.",
+    "type": "negative",
+    "category": "social",
+    "coordinates": [51.4612, -0.1149],
+    "wikiSlug": "1981_Brixton_riot"
+  },
+  {
+    "date": "1988-05-01",
+    "title": "Canary Wharf: Docklands Redevelopment",
+    "shortDesc": "The commencement of construction on the Canary Wharf development in 1988—led by Olympia & York on the Isle of Dogs in London's former docklands, which had been virtually derelict since the closure of the West India Docks in 1980—constituted the largest commercial real estate project in British history and was enabled by the London Docklands Development Corporation's enterprise zone designation (Brownill, 1990). The project's contested planning history, which bypassed elected local authorities, and its displacement of working-class communities from Poplar and Cubitt Town, generated foundational debates about the equity of market-led urban regeneration.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [51.5055, -0.0200],
+    "wikiSlug": "Canary_Wharf"
+  },
+  {
+    "date": "2005-07-07",
+    "title": "7/7: London Bombings",
+    "shortDesc": "The coordinated bombings of 7 July 2005—targeting three London Underground trains and a double-decker bus in Tavistock Square during the morning rush hour—killed 52 civilians and injured approximately 700, constituting the deadliest terrorist attack on British soil since the 1988 Lockerbie bombing (Intelligence and Security Committee, 2006). The attacks were perpetrated by four British-born Muslim men radicalised in West Yorkshire and prompted a sweeping review of counter-terrorism policy, community relations, and the contested concepts of British multiculturalism.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [51.5227, -0.1240],
+    "wikiSlug": "7_July_2005_London_bombings"
+  },
+  {
+    "date": "2012-07-27",
+    "title": "London Summer Olympics: East End Transformation",
+    "shortDesc": "The 2012 London Summer Olympics, inaugurated on 27 July 2012 with a ceremony directed by Danny Boyle in the newly constructed Olympic Stadium in Stratford, represented a deliberate strategy of using mega-event investment to regenerate the derelict Lower Lea Valley—one of the most contaminated industrial sites in London—into a new urban quarter incorporating approximately 2,800 permanently affordable homes (Gold & Gold, 2007). The long-term urban legacy of the Olympic Park, rebranded as Queen Elizabeth Olympic Park, demonstrated the potential and limitations of the mega-event as a vehicle for socially equitable urban transformation.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [51.5388, -0.0160],
+    "wikiSlug": "2012_Summer_Olympics"
+  },
+  {
+    "date": "2016-06-23",
+    "title": "Brexit: The Referendum that Divided a City",
+    "shortDesc": "The United Kingdom's referendum of 23 June 2016 produced a 52% vote in favour of leaving the European Union, though London voted 60% in favour of Remain—a divergence that crystallised the city's distinct economic and cultural interests from those of post-industrial regions outside the capital (Clarke, Goodwin, & Whiteley, 2017). Brexit's consequences for London included disruptions to financial services regulation, restrictions on freedom of movement for EU citizens who constituted approximately 13% of the city's workforce, and an accelerated relocation of financial institutions to Amsterdam, Frankfurt, and Dublin.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [51.5074, -0.1278],
+    "wikiSlug": "2016_United_Kingdom_European_Union_membership_referendum"
+  }
+]

@@ -1,0 +1,83 @@
+[
+  {
+    "date": "1859-01-01",
+    "title": "Cerdà's Eixample: The Grid as Social Utopia",
+    "shortDesc": "The approval of Ildefons Cerdà's extension plan for Barcelona in 1859 imposed a regular orthogonal grid of octagonal city blocks upon the territory between the medieval city and the independent municipalities of Gràcia and Sants, creating a template for urban expansion that was simultaneously a social programme—standardised block dimensions, mandatory interior courtyards, and uniform street widths intended to democratise access to light and ventilation (Aibar & Bijker, 1997). Cerdà's plan, which he theorised in his 1867 General Theory of Urbanisation—one of the foundational texts of modern urban planning—was contested at the local level but imposed by the central government in Madrid.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [41.3964, 2.1623],
+    "wikiSlug": "Eixample"
+  },
+  {
+    "date": "1882-03-19",
+    "title": "Sagrada Família: A Cathedral in Perpetual Construction",
+    "shortDesc": "The laying of the foundation stone of the Sagrada Família on 19 March 1882 initiated a construction project that, under Antoni Gaudí's direction from 1883 until his death in 1926, became the most ambitious expression of Catalan Modernisme and a synthesis of Gothic structural logic with organic naturalist ornamentation (Van Hensbergen, 2001). The basilica, designated a UNESCO World Heritage Site in 2005, remains under construction more than 140 years after its inception and is projected for completion in the decade following 2026.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [41.4036, 2.1744],
+    "wikiSlug": "Sagrada_Família"
+  },
+  {
+    "date": "1888-04-08",
+    "title": "Universal Exposition: Barcelona's Urban Ambition",
+    "shortDesc": "The Universal Exposition of 1888, held in the Ciutadella Park district, provided Barcelona's municipal government under Mayor Francesc Rius i Taulet with the pretext for a comprehensive upgrading of public infrastructure—sewage, gas lighting, paved roads—and debuted the Arc de Triomf and the Castell dels Tres Dragons as permanent architectural legacies (Hall, 1997). The Exposition catalysed Barcelona's emergence as an industrial and commercial metropolis of European stature and stimulated the cultural efflorescence of Modernisme in the following decade.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [41.3873, 2.1869],
+    "wikiSlug": "1888_World's_Fair"
+  },
+  {
+    "date": "1936-07-19",
+    "title": "Spanish Civil War: Barcelona's Anarchist Revolution",
+    "shortDesc": "The nationalist military uprising of 17–19 July 1936 was suppressed in Barcelona by armed workers and loyal police, transforming the city into the effective capital of the Spanish Republic's resistance and briefly establishing an anarcho-syndicalist commune in which collectivised factories and social services operated under worker control (Beevor, 2006). The subsequent internecine conflict between Republican factions—Stalinist communists against the POUM and anarchists—and Barcelona's eventual fall to Franco's forces on 26 January 1939 inaugurated nearly four decades of cultural and political repression of Catalan identity.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [41.3851, 2.1734],
+    "wikiSlug": "Spanish_Civil_War"
+  },
+  {
+    "date": "1975-11-20",
+    "title": "Death of Franco: The Transition Begins",
+    "shortDesc": "The death of General Francisco Franco on 20 November 1975 ended 36 years of authoritarian rule and initiated the Transition to Democracy—a negotiated process leading to the 1978 Constitution and the Statute of Autonomy of Catalonia in 1979, which restored the Generalitat and recognised Catalan as a co-official language (Preston, 1993). For Barcelona, the Transition enabled an explosive cultural renaissance—the Movida, the return of exiled intellectuals—and the restoration of an elected city government that would initiate the urban renewal strategies for which the city would become internationally celebrated.",
+    "type": "positive",
+    "category": "political",
+    "coordinates": [41.3851, 2.1734],
+    "wikiSlug": "Spanish_transition_to_democracy"
+  },
+  {
+    "date": "1992-07-25",
+    "title": "Barcelona Olympics: The Model of Urban Renewal",
+    "shortDesc": "The 1992 Barcelona Summer Olympics, inaugurated on 25 July, implemented a comprehensive urban renewal strategy that opened four previously inaccessible kilometres of Mediterranean waterfront, constructed the Vila Olímpica residential neighbourhood in the former Poblenou industrial district, and created the Port Olímpic marina and the Ronda de Dalt ring road—transforming Barcelona's urban structure fundamentally within a seven-year preparation period (Monclús, 2003). The 'Barcelona Model' of integrating Olympic infrastructure with urban master planning became a global paradigm for mega-event urbanism, referenced in the planning of Sydney 2000, Athens 2004, and London 2012.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [41.3809, 2.1886],
+    "wikiSlug": "1992_Summer_Olympics"
+  },
+  {
+    "date": "2004-05-09",
+    "title": "Forum de les Cultures and the 22@ Innovation District",
+    "shortDesc": "The Forum de les Cultures of 2004, held in the newly developed Diagonal Mar district at the northeastern terminus of the Diagonal, continued the waterfront regeneration strategy of 1992 and accompanied the broader 22@ Innovation District programme, which rezoned 200 hectares of the former Poblenou industrial area for high-technology and knowledge-economy uses (Monclús, 2003). The 22@ project, initiated in 2000, represented a significant departure from the mixed-use residential urbanism associated with Cerdà's Eixample, substituting market-driven gentrification for the social equity objectives that had been central to Cerdà's original plan.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [41.4102, 2.2120],
+    "wikiSlug": "22@"
+  },
+  {
+    "date": "2017-08-17",
+    "title": "Las Ramblas Attack: Terror on the Boulevard",
+    "shortDesc": "The vehicle-ramming attack on Las Ramblas on 17 August 2017, perpetrated by a driver affiliated with an Islamic State-inspired cell operating from Ripoll, killed 13 individuals and injured over 130 on Barcelona's most heavily frequented pedestrian boulevard (Reinares, 2018). The attack, occurring weeks before the disputed Catalan independence referendum of 1 October 2017, compressed two distinct crises—international terrorism and domestic constitutional conflict—into a single traumatic autumn that tested the city's governance capacity and social cohesion.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [41.3817, 2.1722],
+    "wikiSlug": "2017_Las_Ramblas_attacks"
+  },
+  {
+    "date": "2017-10-01",
+    "title": "Catalan Independence Referendum",
+    "shortDesc": "The Catalan independence referendum of 1 October 2017, declared illegal by the Spanish Constitutional Court and conducted amid police seizure of ballot boxes and violent interventions against voters, resulted in a claimed 90% vote in favour of independence on a turnout of approximately 43% of eligible voters (Muro, 2018). The Catalan government's subsequent unilateral declaration of independence on 27 October, immediately suspended by the application of Article 155 of the Spanish Constitution and the imposition of direct central government rule, marked the most severe constitutional crisis in Spain since the transition to democracy.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [41.3851, 2.1734],
+    "wikiSlug": "2017_Catalan_independence_referendum"
+  }
+]

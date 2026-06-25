@@ -1,0 +1,83 @@
+[
+  {
+    "date": "1871-10-08",
+    "title": "Great Chicago Fire: Destruction and Rebuilding",
+    "shortDesc": "The Great Chicago Fire of 8–10 October 1871 destroyed approximately 17,450 buildings across 2,100 acres, killed an estimated 300 persons, and rendered 100,000 residents homeless—yet paradoxically catalysed the city's emergence as the laboratory of modern American urbanism (Miller, 1996). The necessity of rapid reconstruction attracted an exceptional concentration of architectural talent and produced the Chicago School of commercial architecture, inaugurating the steel-frame skyscraper as the definitive building type of the industrial metropolis.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [41.8549, -87.6253],
+    "wikiSlug": "Great_Chicago_Fire"
+  },
+  {
+    "date": "1886-05-04",
+    "title": "Haymarket Affair: Labour and Capital",
+    "shortDesc": "The Haymarket Square bombing of 4 May 1886—occurring at a workers' rally protesting police violence during a strike for the eight-hour workday—killed seven police officers and four civilians and triggered a wave of anti-labour repression that set back the American labour movement for a decade (Green, 2006). The subsequent trial and execution of four anarchists, widely condemned internationally as a miscarriage of justice, made 4 May an internationally recognised symbol of the struggle for workers' rights and the origin of May Day commemorations.",
+    "type": "negative",
+    "category": "social",
+    "coordinates": [41.8858, -87.6503],
+    "wikiSlug": "Haymarket_affair"
+  },
+  {
+    "date": "1893-05-01",
+    "title": "World's Columbian Exposition: The White City",
+    "shortDesc": "The World's Columbian Exposition of 1893, commemorating the 400th anniversary of Columbus's landfall, attracted over 27 million visitors to a 690-acre neoclassical campus on Chicago's lakefront designed under Daniel Burnham's direction—a temporary city of white-stuccoed Beaux-Arts pavilions that gave rise to the epithet 'the White City' (Larson, 2003). The Exposition launched the City Beautiful movement, directly inspiring Burnham's later comprehensive plan for Chicago and establishing the civic campus as a model for American urban planning.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [41.7946, -87.5868],
+    "wikiSlug": "World's_Columbian_Exposition"
+  },
+  {
+    "date": "1909-11-01",
+    "title": "Burnham Plan: Blueprint for the Metropolis",
+    "shortDesc": "The Plan of Chicago, presented by Daniel Burnham and Edward H. Bennett in 1909, constituted the first comprehensive metropolitan plan in American history, integrating lakefront parks, a regional highway network, and a civic centre into a unified vision of Chicago as a purposefully ordered city (Smith, 2006). The Plan's most durable legacy was the preservation of the lakefront as a continuous public amenity through the principle—still operative—that the shore of Lake Michigan shall remain 'forever open, clear, and free.'",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [41.8827, -87.6233],
+    "wikiSlug": "Burnham_Plan_of_Chicago"
+  },
+  {
+    "date": "1919-07-27",
+    "title": "Chicago Race Riot: Red Summer",
+    "shortDesc": "The Chicago Race Riot of 27 July–3 August 1919, triggered by the drowning of a Black teenager at a segregated beach, killed 38 individuals, injured 537, and destroyed over 1,000 homes primarily in African American neighbourhoods, constituting the most lethal episode of the nationwide racial violence of the 'Red Summer' (Tuttle, 1970). The riot accelerated the consolidation of racially segregated residential geographies on Chicago's South Side and institutionalised the neighbourhood boundaries that would define the city's spatial apartheid for generations.",
+    "type": "negative",
+    "category": "social",
+    "coordinates": [41.7956, -87.5887],
+    "wikiSlug": "Chicago_race_riot_of_1919"
+  },
+  {
+    "date": "1968-08-26",
+    "title": "Democratic National Convention: Streets of Chicago",
+    "shortDesc": "The 1968 Democratic National Convention, held in Chicago from 26–29 August, was marked by violent confrontations between approximately 10,000 anti-Vietnam War demonstrators and the Chicago Police Department in Grant Park—events broadcast live to a national television audience and characterised by an official commission as a 'police riot' (Farber, 1988). The Convention and its violent context deepened the fractures within the Democratic Party, contributed to Richard Nixon's electoral victory, and permanently altered the protocols of American political conventions.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [41.8726, -87.6189],
+    "wikiSlug": "1968_Democratic_National_Convention"
+  },
+  {
+    "date": "1973-05-03",
+    "title": "Sears Tower: The Vertical Frontier",
+    "shortDesc": "The completion of the Sears Tower (now Willis Tower) on 3 May 1973—designed by Skidmore, Owings & Merrill as a bundled-tube structural system rising 1,451 feet—made Chicago once again the home of the world's tallest building, a position it had held and surrendered several times since the 1880s (Condit, 1974). The bundled-tube innovation, devised by structural engineer Fazlur Rahman Khan, enabled the efficient construction of supertall buildings and influenced skyscraper design globally for the subsequent two decades.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [41.8789, -87.6359],
+    "wikiSlug": "Willis_Tower"
+  },
+  {
+    "date": "2004-07-16",
+    "title": "Millennium Park: Civic Space Reimagined",
+    "shortDesc": "The opening of Millennium Park on 16 July 2004—featuring Frank Gehry's BP Bridge and Jay Pritzker Pavilion, Anish Kapoor's Cloud Gate sculpture, and Jaume Plensa's Crown Fountain—transformed a former rail yard on the lakefront into one of the most intensively used urban public spaces in North America (Gilfoyle, 2006). The Park's success in generating adjacent real estate appreciation and tourism revenue stimulated widespread interest in signature public space investment as an economic development strategy, with the 'Bilbao Effect' paradigm applied at an urban scale.",
+    "type": "positive",
+    "category": "urban planning",
+    "coordinates": [41.8827, -87.6233],
+    "wikiSlug": "Millennium_Park"
+  },
+  {
+    "date": "2016-11-02",
+    "title": "Chicago Cubs: Ending the Drought",
+    "shortDesc": "The Chicago Cubs' World Series victory on 2 November 2016—ending a 108-year championship drought—produced spontaneous celebrations across the city attended by an estimated 5 million people in a victory parade, briefly making it one of the largest human gatherings in American history (ESPN, 2016). The triumph held particular significance for Chicago's working-class North Side neighbourhoods surrounding Wrigley Field, where the Cubs' fortunes had served for generations as a shared civic reference point cutting across racial and class divisions.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [41.9484, -87.6553],
+    "wikiSlug": "2016_World_Series"
+  }
+]

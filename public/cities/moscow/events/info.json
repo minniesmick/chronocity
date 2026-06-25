@@ -1,0 +1,83 @@
+[
+  {
+    "date": "1812-09-14",
+    "title": "Napoleonic Invasion: Moscow Burns",
+    "shortDesc": "Napoleon's Grande Armée entered Moscow on 14 September 1812, occupying a city from which the Russian civilian population and military had largely withdrawn; within hours, fires—almost certainly set by Russian patriots—consumed approximately three-quarters of the city's predominantly wooden structures, destroying 6,532 of 9,151 buildings and depriving the French army of the winter quarters essential to sustaining the occupation (Zamoyski, 2004). The Moscow campaign's failure, produced by logistical overextension, scorched-earth resistance, and the catastrophic winter retreat, constituted the decisive turning point of the Napoleonic Wars and shaped Russian national identity for the following two centuries.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [55.7558, 37.6173],
+    "wikiSlug": "French_invasion_of_Russia"
+  },
+  {
+    "date": "1905-12-20",
+    "title": "1905 Revolution: Moscow Barricades",
+    "shortDesc": "The Moscow armed uprising of December 1905, centred on the Presnya district, represented the most intense episode of the first Russian Revolution—a nine-day insurrection in which workers' militias erected barricades and engaged Tsarist troops before being suppressed with artillery, leaving approximately 1,000 dead (Ascher, 1988). The revolution forced Tsar Nicholas II to issue the October Manifesto, establishing a parliament and civil liberties, though these concessions were progressively retracted, establishing the unresolved political tensions that would culminate in 1917.",
+    "type": "negative",
+    "category": "social",
+    "coordinates": [55.7614, 37.5733],
+    "wikiSlug": "1905_Russian_Revolution"
+  },
+  {
+    "date": "1917-11-02",
+    "title": "October Revolution: Moscow Under Fire",
+    "shortDesc": "While the October Revolution was initiated in Petrograd on 25 October (7 November NS) 1917, Moscow experienced a week of intense armed conflict between Bolshevik Red Guards and Junker cadets loyal to the Provisional Government before Soviet power was established on 2 November, with significant damage to the Kremlin and surrounding districts (Fitzpatrick, 2001). The revolution terminated the Provisional Government, inaugurated Soviet rule, and set in motion a transformation of Russian state and society whose urban expression—the reconstruction of Moscow as a socialist capital—would reshape the city over the following seven decades.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [55.7517, 37.6178],
+    "wikiSlug": "October_Revolution"
+  },
+  {
+    "date": "1918-03-12",
+    "title": "Moscow Becomes Soviet Capital",
+    "shortDesc": "The transfer of the Soviet government from Petrograd to Moscow on 12 March 1918—driven by the city's greater distance from German forces and its superior rail connectivity to the Russian interior—restored Moscow's role as national capital after two centuries of Petrine displacement and initiated a fundamental reorientation of the city's spatial and symbolic organisation toward the Kremlin as the centre of socialist state power (Colton, 1995). The designation catalysed the first systematic Soviet urban planning initiatives, including the proposals of the 1920s constructivist architects who sought to rationalise Moscow's spatial structure according to socialist principles.",
+    "type": "positive",
+    "category": "political",
+    "coordinates": [55.7517, 37.6178],
+    "wikiSlug": "Moscow"
+  },
+  {
+    "date": "1935-07-15",
+    "title": "General Plan of Reconstruction and the Metro",
+    "shortDesc": "The General Plan for the Reconstruction of Moscow, adopted in July 1935 under Stalin's personal direction, designated Moscow the 'model communist city' and mandated the widening of principal arteries, the construction of the Moscow-Volga Canal, and the phased replacement of the historic urban fabric with monumental socialist buildings—including the never-realised Palace of the Soviets on the site of the demolished Cathedral of Christ the Saviour (Colton, 1995). The Plan coincided with the opening of the first Moscow Metro line, whose palatial stations, decorated with marble, mosaics, and chandeliers, were conceived as 'palaces for the people' and constituted the definitive expression of Stalinist architecture.",
+    "type": "neutral",
+    "category": "urban planning",
+    "coordinates": [55.7558, 37.6173],
+    "wikiSlug": "Moscow_Metro"
+  },
+  {
+    "date": "1941-10-02",
+    "title": "Battle of Moscow: The Capital Holds",
+    "shortDesc": "Operation Typhoon, the German offensive aimed at capturing Moscow, launched on 2 October 1941 and approached to within 20 kilometres of the capital by early December before being halted by the Soviet counter-offensive of 5–6 December—the first significant German military reversal of the Second World War (Glantz & House, 2015). The defence of Moscow, conducted under conditions of extreme material privation and involving the evacuation of approximately 2 million civilians and most government ministries, preserved the symbolic heart of the Soviet state and demonstrated the resilience of a metropolitan population mobilised in total war.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [55.7558, 37.6173],
+    "wikiSlug": "Battle_of_Moscow"
+  },
+  {
+    "date": "1980-07-19",
+    "title": "Moscow Summer Olympics: Cold War Showcase",
+    "shortDesc": "The 1980 Moscow Summer Olympics, inaugurated on 19 July, were the first Olympic Games held in a socialist country and were boycotted by the United States and 65 other nations in protest at the Soviet invasion of Afghanistan—reducing participation to 80 nations and stripping the Games of competitive legitimacy in several key disciplines (Riordan, 1980). The Olympics nonetheless catalysed significant infrastructural investment in the city, including the construction of the Olimpiyskiy stadium, the Sheremetyevo international terminal, and new hotels, modernising elements of Moscow's urban infrastructure for the first time since the Stalinist era.",
+    "type": "neutral",
+    "category": "cultural",
+    "coordinates": [55.7900, 37.5550],
+    "wikiSlug": "1980_Summer_Olympics"
+  },
+  {
+    "date": "1991-08-19",
+    "title": "August Coup and the Dissolution of the USSR",
+    "shortDesc": "The attempted coup of 19–21 August 1991—in which hardline members of the Soviet leadership placed Mikhail Gorbachev under house arrest and deployed military units around Moscow—was defeated by the resistance of Russian citizens at barricades before the Russian White House and the refusal of military units to fire on civilians, fatally undermining the authority of the Communist Party of the Soviet Union (Brown, 1996). The coup's failure accelerated the independence declarations of Soviet republics and culminated in the formal dissolution of the USSR on 25 December 1991, transforming Moscow overnight from the capital of a superpower into the capital of the Russian Federation.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [55.7570, 37.5941],
+    "wikiSlug": "1991_Soviet_coup_d'état_attempt"
+  },
+  {
+    "date": "2018-06-14",
+    "title": "FIFA World Cup: Moscow on the World Stage",
+    "shortDesc": "The 2018 FIFA World Cup, inaugurated on 14 June with the opening match at Luzhniki Stadium, used Moscow and eleven other Russian cities as venues and catalysed substantial investment in transportation, hospitality, and stadium infrastructure in preparation for an international audience of unprecedented scale for Russia (Müller, 2017). Scholarly assessments of the event's legacy have noted the tension between short-term image-projection objectives—presenting a modernised, welcoming Russia to a global audience—and the structural economic and governance challenges that continued to characterise post-Soviet urban development.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [55.7150, 37.5662],
+    "wikiSlug": "2018_FIFA_World_Cup"
+  }
+]

@@ -1,0 +1,101 @@
+[
+  {
+    "date": "1853-06-01",
+    "title": "Haussmannisation: Remaking the Imperial Capital",
+    "shortDesc": "The appointment of Baron Georges-Eugène Haussmann as Prefect of the Seine in 1853 initiated the most radical urban transformation in nineteenth-century European history, demolishing approximately 20,000 buildings and displacing an estimated 350,000 residents to impose wide boulevards, uniform cornice heights, and modern sanitary infrastructure upon the medieval fabric of Paris (Jordan, 1995). The Grands Travaux established the Haussmannian apartment block as a morphological template that continues to define the city's visual identity.",
+    "type": "neutral",
+    "category": "urban planning",
+    "coordinates": [48.8566, 2.3522],
+    "wikiSlug": "Haussmann's_renovation_of_Paris"
+  },
+  {
+    "date": "1871-03-18",
+    "title": "The Paris Commune",
+    "shortDesc": "The Paris Commune of 18 March–28 May 1871 constituted the world's first socialist municipal government, establishing workers' councils and implementing egalitarian reforms before its violent suppression by Versailles forces in La Semaine Sanglante, which claimed between 10,000 and 30,000 lives (Merriman, 2014). The Commune's defeat left an enduring mark on European socialist thought and accelerated construction of compensatory national monuments, including the Sacré-Cœur Basilica on Montmartre.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [48.8867, 2.3431],
+    "wikiSlug": "Paris_Commune"
+  },
+  {
+    "date": "1889-05-06",
+    "title": "Eiffel Tower and the Universal Exposition",
+    "shortDesc": "The Universal Exposition of 1889, commemorating the centenary of the French Revolution, debuted the Eiffel Tower—a 1,083-foot wrought-iron lattice structure engineered by Gustave Eiffel that briefly became the tallest man-made structure in the world—and attracted approximately 32 million visitors (Loyrette, 1985). Initially controversial among Parisian intellectuals, the tower was retained as a radio transmission mast after its planned demolition date and has since become the most visited paid monument on earth.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [48.8584, 2.2945],
+    "wikiSlug": "Eiffel_Tower"
+  },
+  {
+    "date": "1900-04-15",
+    "title": "Universal Exposition and the Paris Métro",
+    "shortDesc": "The Universal Exposition of 1900 drew approximately 50 million visitors and coincided with the inauguration of the Paris Métro's first line, whose Art Nouveau station entrances designed by Hector Guimard became emblematic of the Belle Époque aesthetic (Ovenden, 2013). The Exposition also premiered the Grand Palais and Petit Palais, whose Beaux-Arts architecture along the Champs-Élysées axis completed the ceremonial urban framework first articulated by Haussmann.",
+    "type": "positive",
+    "category": "infrastructure",
+    "coordinates": [48.8589, 2.3469],
+    "wikiSlug": "1900_World's_Fair"
+  },
+  {
+    "date": "1940-06-14",
+    "title": "German Occupation of Paris",
+    "shortDesc": "The Wehrmacht entered Paris on 14 June 1940 following the French government's abandonment of the capital, initiating four years of occupation under German military authority and the Vichy regime (Jackson, 2001). The occupation produced severe economic deprivation, the systematic deportation of approximately 77,000 French Jews to extermination camps, and a complex social history of collaboration, accommodation, and resistance that remains contested in French historiography.",
+    "type": "negative",
+    "category": "political",
+    "coordinates": [48.8566, 2.3522],
+    "wikiSlug": "German_military_administration_in_occupied_France"
+  },
+  {
+    "date": "1944-08-25",
+    "title": "Liberation of Paris",
+    "shortDesc": "The liberation of Paris on 25 August 1944, effected primarily by the Free French 2nd Armoured Division under General Philippe Leclerc, ended four years of German occupation and provided the Allied campaign with a powerful symbolic asset (Beevor & Cooper, 1994). De Gaulle's ceremonial march along the Champs-Élysées on 26 August, conducted under sniper fire, consolidated the Gaullist narrative of French resistance and shaped the political mythology of the Fourth and Fifth Republics.",
+    "type": "positive",
+    "category": "political",
+    "coordinates": [48.8698, 2.3080],
+    "wikiSlug": "Liberation_of_Paris"
+  },
+  {
+    "date": "1968-05-10",
+    "title": "May 1968: The Night of the Barricades",
+    "shortDesc": "The events of May 1968 in Paris—originating in student protests at Nanterre and escalating into a general strike involving approximately 10 million workers—constituted the most severe socio-political crisis of the Fifth Republic and challenged the institutional framework of Gaullist France (Ross, 2002). The occupation of the Sorbonne and the barricades of the Quartier Latin produced a cultural rupture whose afterlives in feminist, ecological, and post-colonial thought reshaped French intellectual life for decades.",
+    "type": "negative",
+    "category": "social",
+    "coordinates": [48.8505, 2.3455],
+    "wikiSlug": "May_68"
+  },
+  {
+    "date": "1977-01-31",
+    "title": "Centre Pompidou: High-Tech Urbanism",
+    "shortDesc": "The inauguration of the Centre Pompidou on 31 January 1977—designed by Renzo Piano and Richard Rogers with structural and mechanical systems exposed on the façade—constituted a deliberate architectural provocation in the historic Marais district (Silver, 1994). The building's open-plan floors, freed from internal columns, and the urban activation of the adjacent Beaubourg piazza established a new paradigm for the civic cultural institution as generator of public space.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [48.8606, 2.3522],
+    "wikiSlug": "Centre_Georges_Pompidou"
+  },
+  {
+    "date": "1989-03-29",
+    "title": "Louvre Pyramid: Grands Travaux",
+    "shortDesc": "The opening of I.M. Pei's glass pyramid at the Louvre on 29 March 1989—centrepiece of President Mitterrand's Grands Travaux programme—introduced a 70-foot geometric form into the Cour Napoléon and resolved longstanding circulation deficiencies in the world's most visited museum (Wiseman, 1990). The Grands Travaux, comprising nine major architectural commissions including the Grande Arche de la Défense, represented an unprecedented state investment in monumental architecture as an instrument of national prestige.",
+    "type": "positive",
+    "category": "architecture",
+    "coordinates": [48.8606, 2.3376],
+    "wikiSlug": "Louvre_Pyramid"
+  },
+  {
+    "date": "2015-11-13",
+    "title": "November Attacks: The Bataclan and Beyond",
+    "shortDesc": "The coordinated terrorist attacks of 13 November 2015—targeting the Bataclan concert hall, the Stade de France, and multiple café terraces—killed 130 individuals and constituted the deadliest attack on French soil since World War II (Coolsaet, 2016). The attacks intensified debates over surveillance, civil liberties, and the integration of migrant-background communities, and prompted a prolonged state of emergency that substantially altered civic life in Paris.",
+    "type": "negative",
+    "category": "disaster",
+    "coordinates": [48.8534, 2.3732],
+    "wikiSlug": "November_2015_Paris_attacks"
+  },
+  {
+    "date": "2024-07-26",
+    "title": "Paris Summer Olympics: The River as Stadium",
+    "shortDesc": "The 2024 Paris Summer Olympics, inaugurated with an unprecedented opening ceremony along the Seine, embedded competition venues within existing monuments—the Grand Palais, Les Invalides, the Trocadéro—rather than constructing a satellite stadium complex, advancing the IOC's post-2014 Agenda 2020 reform framework (Gold & Gold, 2007). The Games catalysed investment in cycling infrastructure and a decade-long programme to remediate Seine water quality, rendering the river swimmable for the first time since 1923.",
+    "type": "positive",
+    "category": "cultural",
+    "coordinates": [48.8566, 2.3522],
+    "wikiSlug": "2024_Summer_Olympics"
+  }
+]
