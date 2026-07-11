@@ -50,6 +50,12 @@ export default function GlobeSelector() {
   const autoPausedRef    = useRef(false);
   const globeIconRef     = useRef<AnimatedIconHandle>(null);
 
+  // Fly-to animation refs (accessible from both RAF and JSX onClick)
+  const flyToRef    = useRef<{ pos: THREE.Vector3; cityId: string; frame: number } | null>(null);
+  const dotsRef     = useRef<{ city: CityMeta; mesh: THREE.Mesh }[]>([]);
+  const navigateRef = useRef(navigate);
+  useEffect(() => { navigateRef.current = navigate; }, [navigate]);
+
   // Three.js refs
   const globeMatRef = useRef<THREE.MeshPhongMaterial | null>(null);
   const texCacheRef = useRef<{ night: THREE.Texture | null; day: THREE.Texture | null }>({ night: null, day: null });
@@ -226,6 +232,7 @@ export default function GlobeSelector() {
       globe.add(mesh);
       dots.push({ city, mesh });
     });
+    dotsRef.current = dots; // expose to FLY TO onClick
 
     // Drag & raycaster
     const raycaster = new THREE.Raycaster();
@@ -286,6 +293,24 @@ export default function GlobeSelector() {
 
     const animate = () => {
       rafId = requestAnimationFrame(animate);
+
+      // Fly-to: 24-frame camera lerp toward city, then navigate
+      if (flyToRef.current) {
+        const ft = flyToRef.current;
+        ft.frame++;
+        if (ft.frame >= 24) {
+          flyToRef.current = null;
+          navigateRef.current(`/city/${ft.cityId}`);
+        } else {
+          const ez = 1 - Math.pow(1 - ft.frame / 24, 2); // ease-out quad
+          camera.position.x += (ft.pos.x * 3.5 - camera.position.x) * 0.13;
+          camera.position.y += (ft.pos.y * 3.5 - camera.position.y) * 0.13;
+          camera.position.z += (11 - camera.position.z) * (0.06 + ez * 0.06);
+          camera.lookAt(0, 0, 0);
+          renderer.render(scene, camera);
+        }
+        return;
+      }
 
       // Galaksi → Dünya intro zoom (ease-out cubic, 1.75s)
       if (introFrame < INTRO_FRAMES) {
@@ -552,7 +577,19 @@ export default function GlobeSelector() {
               )}
               <button
                 className="city-card__fly"
-                onClick={(e) => { e.stopPropagation(); navigate(`/city/${city.id}`); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const dot = dotsRef.current.find(d => d.city.id === city.id);
+                  if (dot) {
+                    const wp = new THREE.Vector3();
+                    dot.mesh.getWorldPosition(wp);
+                    wp.normalize();
+                    flyToRef.current = { pos: wp, cityId: city.id, frame: 0 };
+                    pauseGlobe();
+                  } else {
+                    navigate(`/city/${city.id}`);
+                  }
+                }}
                 disabled={!city.hasBuildingData}
                 title={!city.hasBuildingData ? "Bina verisi henüz yok" : undefined}
               >

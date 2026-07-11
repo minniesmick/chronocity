@@ -122,15 +122,6 @@
   transition: background var(--duration-slow) var(--ease-cinematic);
 }
 
-.city-exp::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 85% 80% at 50% 50%, transparent 55%, rgba(10, 10, 15, 0.55) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
 /* Gündüz — hafif amber zemin parıltısı */
 .city-exp[data-day="true"] {
   background:
