@@ -393,9 +393,9 @@ export default function GlobeSelector() {
           else if (isLeft) tx = "calc(-100% - 14px)";
           else             tx = "-50%";
 
-          card.style.left      = `${lx2}px`;
-          card.style.top       = `${ly2}px`;
-          card.style.transform = `translate(${tx}, ${ty})`;
+          card.style.left    = `${lx2}px`;
+          card.style.top     = `${ly2}px`;
+          card.style.translate = `${tx} ${ty}`;
           card.classList.toggle('city-card--visible', isHov || isSel);
           card.dataset.selected = String(isSel);
         }

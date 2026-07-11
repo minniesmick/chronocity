@@ -162,7 +162,7 @@ export default function MapCanvas({ city }: { city: CityId }) {
         id: `buildings-${city}`,
         data,
         extruded: true,
-        wireframe: false,
+        wireframe: !isDayMode,
         getElevation: (f: BFeature) =>
           isBuilt(f, currentYear) ? f.properties.height : 0,
         getFillColor: (f: BFeature) => {
