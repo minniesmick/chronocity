@@ -45,8 +45,9 @@ export default function EventPopup() {
 
   const color = ev ? TYPE_COLOR[ev.type] : "#f59e0b";
   const year = ev ? parseInt(ev.date.slice(0, 4), 10) : null;
+  // Events içeriği akademik İngilizce, slug'lar EN Wikipedia'dan
   const wikiUrl = ev?.wikiSlug
-    ? `https://tr.wikipedia.org/wiki/${ev.wikiSlug}`
+    ? `https://en.wikipedia.org/wiki/${ev.wikiSlug}`
     : null;
 
   return (

@@ -9,6 +9,8 @@ import GlobeIcon from "@/components/icons/globe-icon";
 import PlayerIcon from "@/components/icons/player-icon";
 import type { AnimatedIconHandle } from "@/components/icons/types";
 import type { CityMeta } from "@/types";
+// Lazy route: kendi stillerini kendisi getirmeli — eager zincire güvenme
+import "@/components/sprint2.css";
 
 function hexToGlowRgba(hex: string, alpha = 0.14): string {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -206,11 +208,20 @@ export default function GlobeSelector() {
       globeMat.color.set(0xffffff);
       globeMat.needsUpdate = true;
     };
-    loader.load("/textures/earth-night.jpg", (tex) => {
+    // Progressive gece dokusu: önce 2048 (0.6MB, anında), sonra 8K (7.7MB) swap —
+    // intro zoom'u sırasında globe asla çıplak kalmaz
+    loader.load("/textures/earth-night-2048.jpg", (tex) => {
+      if (texCacheRef.current.night) { tex.dispose(); return; } // full-res kazandı
       texCacheRef.current.night = tex;
       if (!isDayRef.current) applyTex(tex);
       else globeMat.color.setHex(0x0d1b2a);
     }, undefined, () => { globeMat.color.setHex(0x0d1b2a); });
+    loader.load("/textures/earth-night.jpg", (tex) => {
+      const old = texCacheRef.current.night;
+      texCacheRef.current.night = tex;
+      if (!isDayRef.current) applyTex(tex);
+      if (old) old.dispose();
+    });
     loader.load("/textures/earth-day.jpg", (tex) => {
       texCacheRef.current.day = tex;
       if (isDayRef.current) applyTex(tex);
@@ -426,8 +437,9 @@ export default function GlobeSelector() {
         }
       });
 
-      // Subtle camera parallax — mouse x/y drifts camera ±0.14 units
-      if (!dragging && introFrame >= INTRO_FRAMES) {
+      // Subtle camera parallax — mouse x/y drifts camera ±0.14 units.
+      // mouse (-99,-99) sentinel'de başlar: imleç canvas'a hiç girmediyse uygulama
+      if (!dragging && introFrame >= INTRO_FRAMES && mouse.x > -2 && mouse.y > -2) {
         camera.position.x += (mouse.x * 0.14 - camera.position.x) * 0.04;
         camera.position.y += (0.15 + mouse.y * 0.06 - camera.position.y) * 0.04;
         camera.lookAt(0, 0, 0);
@@ -451,10 +463,18 @@ export default function GlobeSelector() {
       canvas.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointerup", onUp);
       ro.disconnect();
-      starGeo.dispose();
-      starMat.dispose();
-      mwGeo.dispose();
-      mwMat.dispose();
+      // Tüm geometry/material'ları serbest bırak — globe↔city gidiş-gelişlerinde
+      // GPU bellek sızıntısını önler (önceden yalnız star/mw dispose ediliyordu)
+      scene.traverse((obj) => {
+        const mesh = obj as THREE.Mesh;
+        if (mesh.geometry) mesh.geometry.dispose();
+        const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+        else if (mat) mat.dispose();
+      });
+      texCacheRef.current.night?.dispose();
+      texCacheRef.current.day?.dispose();
+      texCacheRef.current = { night: null, day: null };
       renderer.dispose();
     };
   }, [navigate, pauseGlobe, resumeGlobe]);
@@ -579,8 +599,9 @@ export default function GlobeSelector() {
                 className="city-card__fly"
                 onClick={(e) => {
                   e.stopPropagation();
+                  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
                   const dot = dotsRef.current.find(d => d.city.id === city.id);
-                  if (dot) {
+                  if (dot && !reduceMotion) {
                     const wp = new THREE.Vector3();
                     dot.mesh.getWorldPosition(wp);
                     wp.normalize();

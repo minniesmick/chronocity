@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import "@/components/sprint2.css";
 
 /**
  * Sprint 2 — Giriş ekranı.

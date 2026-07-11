@@ -1,7 +1,7 @@
 {
   "name": "chronocity",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,17 +10,16 @@
     "lint": "eslint . --ext ts,tsx"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/space-grotesk": "^5.2.10",
     "deck.gl": "^9.0.33",
     "flag-icons": "^7.5.0",
     "framer-motion": "^11.11.1",
-    "gsap": "^3.12.5",
-    "maplibre-gl": "^4.7.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-map-gl": "^7.1.7",
     "react-router-dom": "^6.26.2",
     "three": "^0.169.0",
-    "tone": "^15.0.4",
     "zustand": "^5.0.0"
   },
   "devDependencies": {

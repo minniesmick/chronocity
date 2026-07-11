@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import DeckGL from "@deck.gl/react";
 import { BitmapLayer, GeoJsonLayer } from "@deck.gl/layers";
@@ -17,9 +17,10 @@ import { useCityBuildings } from "@/hooks/useCityBuildings";
 import { useStore } from "@/store/useStore";
 import type { ActiveBuilding } from "@/store/useStore";
 import { yearFromT } from "@/lib/time";
-import { colorByEra, colorUndated } from "@/lib/buildingColors";
+import { colorByEra } from "@/lib/buildingColors";
 
 type BFeature = Feature<Geometry, BuildingProperties>;
+type BFC = GeoJSON.FeatureCollection<Geometry, BuildingProperties>;
 
 const dayLighting = new LightingEffect({
   ambient: new AmbientLight({ color: [255, 245, 230], intensity: 1.1 }),
@@ -39,11 +40,6 @@ const nightLighting = new LightingEffect({
   }),
 });
 
-const isBuilt = (f: BFeature, year: number): boolean => {
-  const y = f.properties.construction_year;
-  return y == null || y <= year;
-};
-
 export default function MapCanvas({ city }: { city: CityId }) {
   const { data, loading, error } = useCityBuildings(city);
   const t = useStore((s) => s.t);
@@ -53,10 +49,31 @@ export default function MapCanvas({ city }: { city: CityId }) {
   const setCurrentZoom = useStore((s) => s.setCurrentZoom);
   const currentYear = yearFromT(t);
 
-  // Pulse animasyonu için ~20fps RAF sayacı
+  // Veriyi ikiye böl: yılı bilinen (statik renk) / bilinmeyen (nefes efekti).
+  // Pulse yalnız undated katmanın layer-opacity'sini oynatır — 170K binanın
+  // fill color attribute'u artık her frame yeniden hesaplanmaz.
+  const { datedData, undatedData } = useMemo(() => {
+    if (!data) return { datedData: null, undatedData: null };
+    const dated: BFeature[] = [];
+    const undated: BFeature[] = [];
+    for (const f of data.features as BFeature[]) {
+      (f.properties.construction_year == null ? undated : dated).push(f);
+    }
+    return {
+      datedData: dated.length
+        ? ({ type: "FeatureCollection", features: dated } as BFC)
+        : null,
+      undatedData: undated.length
+        ? ({ type: "FeatureCollection", features: undated } as BFC)
+        : null,
+    };
+  }, [data]);
+
+  // Pulse animasyonu için ~20fps RAF sayacı — undated bina yoksa hiç çalışmaz
   const [frame, setFrame] = useState(0);
   const rafRef = useRef<number>(0);
   useEffect(() => {
+    if (!undatedData) return;
     let last = 0;
     const tick = (now: number) => {
       if (now - last > 50) {
@@ -67,7 +84,7 @@ export default function MapCanvas({ city }: { city: CityId }) {
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, []);
+  }, [undatedData]);
 
   // FlyTo: uncontrolled → controlled viewState
   const center = CITIES[city].center;
@@ -130,74 +147,103 @@ export default function MapCanvas({ city }: { city: CityId }) {
     zoomHintTimer.current = setTimeout(() => setZoomHint(null), 1600);
   };
 
-  const layers = useMemo(() => {
-    const satelliteLayer = new TileLayer({
-      id: "satellite",
-      data: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      minZoom: 0,
-      maxZoom: 19,
-      tileSize: 256,
-      extent: cityBbox,
-      opacity: isDayMode ? 0.45 : 0.28,
-      renderSubLayers: (props) => {
-        const { boundingBox } = props.tile;
-        return new BitmapLayer({
-          ...props,
-          data: undefined,
-          image: props.data,
-          bounds: [
-            boundingBox[0][0],
-            boundingBox[0][1],
-            boundingBox[1][0],
-            boundingBox[1][1],
-          ],
-        });
-      },
-    });
+  const onBuildingClick = useCallback(
+    (info: { object?: { properties: BuildingProperties }; x: number; y: number }) => {
+      if (info.object) {
+        setActiveBuilding({
+          properties: info.object.properties,
+          x: info.x,
+          y: info.y,
+        } as ActiveBuilding);
+      } else {
+        setActiveBuilding(null);
+      }
+    },
+    [setActiveBuilding],
+  );
 
-    if (!data) return [satelliteLayer];
-    return [
-      satelliteLayer,
-      new GeoJsonLayer<BuildingProperties>({
-        id: `buildings-${city}`,
-        data,
-        extruded: true,
-        wireframe: !isDayMode,
-        getElevation: (f: BFeature) =>
-          isBuilt(f, currentYear) ? f.properties.height : 0,
-        getFillColor: (f: BFeature) => {
-          if (!isBuilt(f, currentYear)) return [0, 0, 0, 0];
-          const year = f.properties.construction_year;
-          if (year == null) return colorUndated(frame, !isDayMode);
-          return colorByEra(year, !isDayMode);
-        },
-        material: {
-          ambient: 0.72,
-          diffuse: 0.45,
-          shininess: 32,
-          specularColor: [60, 50, 40],
-        },
-        pickable: true,
-        onClick: (info) => {
-          if (info.object) {
-            setActiveBuilding({
-              properties: info.object.properties,
-              x: info.x,
-              y: info.y,
-            } as ActiveBuilding);
-          } else {
-            setActiveBuilding(null);
-          }
-        },
-        transitions: { getElevation: 400, getFillColor: 400 },
-        updateTriggers: {
-          getElevation: currentYear,
-          getFillColor: [currentYear, isDayMode, frame],
+  const buildingMaterial = {
+    ambient: 0.72,
+    diffuse: 0.45,
+    shininess: 32,
+    specularColor: [60, 50, 40] as [number, number, number],
+  };
+
+  const satelliteLayer = useMemo(
+    () =>
+      new TileLayer({
+        id: "satellite",
+        data: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        minZoom: 0,
+        maxZoom: 19,
+        tileSize: 256,
+        extent: cityBbox,
+        opacity: isDayMode ? 0.45 : 0.28,
+        renderSubLayers: (props) => {
+          const { boundingBox } = props.tile;
+          return new BitmapLayer({
+            ...props,
+            data: undefined,
+            image: props.data,
+            bounds: [
+              boundingBox[0][0],
+              boundingBox[0][1],
+              boundingBox[1][0],
+              boundingBox[1][1],
+            ],
+          });
         },
       }),
-    ];
+    [cityBbox, isDayMode],
+  );
+
+  // Yılı bilinen binalar — frame bağımlılığı YOK; yalnız yıl/gündüz değişince güncellenir
+  const datedLayer = useMemo(() => {
+    if (!datedData) return null;
+    return new GeoJsonLayer<BuildingProperties>({
+      id: `buildings-${city}`,
+      data: datedData,
+      extruded: true,
+      wireframe: !isDayMode,
+      getElevation: (f: BFeature) =>
+        f.properties.construction_year! <= currentYear ? f.properties.height : 0,
+      getFillColor: (f: BFeature) => {
+        const year = f.properties.construction_year!;
+        if (year > currentYear) return [0, 0, 0, 0];
+        return colorByEra(year, !isDayMode);
+      },
+      material: buildingMaterial,
+      pickable: true,
+      onClick: onBuildingClick,
+      transitions: { getElevation: 400, getFillColor: 400 },
+      updateTriggers: {
+        getElevation: currentYear,
+        getFillColor: [currentYear, isDayMode],
+      },
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, city, currentYear, isDayMode, frame, cityBbox]);
+  }, [datedData, city, currentYear, isDayMode, onBuildingClick]);
+
+  // Tarihsiz binalar — sabit renk (constant accessor = uniform), nefes efekti
+  // layer.opacity ile: her frame'de GPU'ya tek float gider, attribute recompute yok
+  const undatedLayer = undatedData
+    ? new GeoJsonLayer<BuildingProperties>({
+        id: `buildings-undated-${city}`,
+        data: undatedData,
+        extruded: true,
+        wireframe: !isDayMode,
+        getElevation: (f: BFeature) => f.properties.height,
+        getFillColor: isDayMode
+          ? [105, 115, 135, 215]
+          : [58, 68, 92, 215],
+        opacity: 0.34 + 0.22 * Math.sin(frame * 0.08),
+        material: buildingMaterial,
+        pickable: true,
+        onClick: onBuildingClick,
+      })
+    : null;
+
+  const layers = [satelliteLayer, datedLayer, undatedLayer].filter(Boolean);
 
   return (
     <div className="map-canvas">
@@ -210,7 +256,11 @@ export default function MapCanvas({ city }: { city: CityId }) {
           prevZoomRef.current = newZoom;
           if (newZoom <= 12 && prevZoom > 12) triggerZoomHint('min');
           if (newZoom >= 18.8 && prevZoom < 18.8) triggerZoomHint('max');
-          setCurrentZoom(newZoom);
+          // Store'a yalnız 0.1 hassasiyetinde değişim yaz — pan/zoom sırasında
+          // zoom abonelerinin (EraLegend) 60fps re-render'ını keser
+          if (Math.round(newZoom * 10) !== Math.round(prevZoom * 10)) {
+            setCurrentZoom(newZoom);
+          }
           setViewState(newVs);
         }}
         controller={true}

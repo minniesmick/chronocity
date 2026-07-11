@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { CITIES } from "@/data/cities";
+import { FEATURES } from "@/config";
+import { yearFromT, tFromYear, eraFromYear, YEAR_MIN, YEAR_MAX } from "@/lib/time";
 import type { CityId } from "@/types";
 import MapCanvas from "@/components/MapCanvas";
 import ArrowNarrowLeftIcon from "@/components/icons/arrow-narrow-left-icon";
@@ -19,6 +21,22 @@ import { useEraAudio } from "@/hooks/useEraAudio";
 import "@/components/sprint1.css";
 import "@/components/sprint2.css";
 
+/**
+ * URL ?year= senkronu — t'ye abone olur, null render eder:
+ * re-render maliyeti CityExperience'a sıçramaz.
+ */
+function YearUrlSync() {
+  const t = useStore((s) => s.t);
+  const year = yearFromT(t);
+  useEffect(() => {
+    const id = setTimeout(() => {
+      window.history.replaceState(null, "", `?year=${year}`);
+    }, 300);
+    return () => clearTimeout(id);
+  }, [year]);
+  return null;
+}
+
 export default function CityExperience() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -34,6 +52,22 @@ export default function CityExperience() {
     return () => setActiveCity(null);
   }, [city, setActiveCity]);
 
+  // Deep-link: /city/:id?year=1931 → timeline o yıla açılır
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search).get("year");
+    if (!p) return;
+    const y = parseInt(p, 10);
+    if (Number.isNaN(y)) return;
+    const clamped = Math.max(YEAR_MIN, Math.min(YEAR_MAX, y));
+    useStore.getState().setT(tFromYear(clamped));
+    useStore.getState().setEra(eraFromYear(clamped));
+  }, []);
+
+  // meta yoksa globe'a dön — render sırasında navigate React anti-pattern'i
+  useEffect(() => {
+    if (!meta) navigate("/globe", { replace: true });
+  }, [meta, navigate]);
+
   const [showLoading, setShowLoading] = useState(true);
   const [showShortcuts, setShowShortcuts] = useState(() => !localStorage.getItem('cc-shortcuts'));
   useEraAudio();
@@ -47,15 +81,13 @@ export default function CityExperience() {
     return () => clearTimeout(t);
   }, [showShortcuts]);
 
-  if (!meta) {
-    navigate("/globe");
-    return null;
-  }
+  if (!meta) return null;
 
   return (
     <div className="city-exp" data-day={isDayMode}>
       {/* Harita hep açık — loading screen üstüne overlay gelir */}
       <MapCanvas city={city} />
+      <YearUrlSync />
 
       <motion.header
         className="city-exp__top"
@@ -90,7 +122,7 @@ export default function CityExperience() {
         <DayNightToggle />
       </motion.header>
 
-      <FrequencyVisualizer />
+      {FEATURES.music && <FrequencyVisualizer />}
       <BuildingPopup />
       <EventPopup />
 

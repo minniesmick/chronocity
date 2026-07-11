@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { FEATURES } from "@/config";
 import { useStore } from "@/store/useStore";
 import { getAudioContext, masterGain } from "@/lib/audioContext";
 
@@ -20,6 +21,7 @@ export function useEraAudio() {
 
   // AudioContext lazy init — kullanıcı etkileşimi gerekir
   useEffect(() => {
+    if (!FEATURES.music) return;
     const resume = () => {
       const c = getAudioContext();
       if (!gainA.current) {
@@ -43,6 +45,7 @@ export function useEraAudio() {
 
   // Era / city crossfade
   useEffect(() => {
+    if (!FEATURES.music) return;
     if (!audioReady || !activeCity || !era) return;
     if (!gainA.current || !gainB.current) return;
 
@@ -84,6 +87,7 @@ export function useEraAudio() {
 
   // Şehir çıkınca fade-out
   useEffect(() => {
+    if (!FEATURES.music) return;
     if (activeCity) return;
     const c = getAudioContext();
     const now = c.currentTime;

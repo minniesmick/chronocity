@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FEATURES } from "@/config";
 import { useStore } from "@/store/useStore";
 import { yearFromT, tFromYear, eraFromYear, YEAR_MIN, YEAR_MAX } from "@/lib/time";
 import { useCityEvents } from "@/hooks/useCityEvents";
@@ -151,22 +152,23 @@ export default function TimelineBar() {
         </div>
       </div>
 
-      {/* Sağ: müzik era radio pill'leri */}
-      <div className="timeline__era" role="group" aria-label="Müzik dönemi">
-        {ERA_ORDER.map((id) => (
-          <button
-            key={id}
-            className="timeline__era-pill"
-            data-active={era === id}
-            onClick={() => setEra(id)}
-            aria-pressed={era === id}
-            title={`/public/cities/{şehir}/music/${id}.mp3`}
-            style={{ "--era-color": ERA_ID_COLORS[id].hex } as React.CSSProperties}
-          >
-            {ERA_LABELS[id]}
-          </button>
-        ))}
-      </div>
+      {/* Sağ: müzik era radio pill'leri — müzik dosyaları eklenene kadar gizli */}
+      {FEATURES.music && (
+        <div className="timeline__era" role="group" aria-label="Müzik dönemi">
+          {ERA_ORDER.map((id) => (
+            <button
+              key={id}
+              className="timeline__era-pill"
+              data-active={era === id}
+              onClick={() => setEra(id)}
+              aria-pressed={era === id}
+              style={{ "--era-color": ERA_ID_COLORS[id].hex } as React.CSSProperties}
+            >
+              {ERA_LABELS[id]}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
