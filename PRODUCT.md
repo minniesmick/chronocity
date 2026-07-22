@@ -33,4 +33,4 @@ Cinematic. Precise. Reverent.
 
 ## Accessibility & Inclusion
 
-No WCAG level specified; baseline contrast for legibility. Keyboard navigation not currently targeted (3D camera is mouse/touch). `prefers-reduced-motion` not yet implemented — flagged for post-demo polish.
+No WCAG level specified; baseline contrast for legibility. Keyboard navigation partially covered (timeline: Space play/pause, arrow keys ±1 year, Shift ×10); 3D camera remains mouse/touch. `prefers-reduced-motion` implemented for CSS animations (global reduce block in sprint2.css) and the globe fly-to camera animation (falls back to direct navigate); deck.gl year-morph GPU transitions not yet gated.

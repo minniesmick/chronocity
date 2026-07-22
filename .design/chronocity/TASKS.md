@@ -71,6 +71,8 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 - [x] **FrequencyVisualizer**: `AnalyserNode` (fftSize=128, 64 bin) → Canvas 2D, 32 bar × (3+2)px. requestAnimationFrame getByteFrequencyData. Amber linear gradient per bar (transparan→tam). mix-blend-mode:screen, opacity:0.7. audioReady=false → null (gizli). bottom:116px left, müzik gelince canlı. `src/components/FrequencyVisualizer.tsx`. _New. Depends on: EraAudioEngine._
 
+> **Not (2026-07-22):** MP3 asset'leri hiç eklenmedi — motor çalışıyor ama içerik yok. Kırık izlenim vermemek için era pill'leri + FrequencyVisualizer + useEraAudio `FEATURES.music=false` bayrağıyla gizlendi (`src/config.ts`). Müzik dosyaları eklenince bayrak açılır, her şey geri gelir.
+
 ---
 
 ## SPRINT 5 — City Data & Multi-City
@@ -83,11 +85,28 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 - [x] **eraColors.ts**: Paylaşımlı era renk modülü. 7 dönem × {hex, label, yearStart, yearEnd}. `eraByYear(year)` → EraColor. `ERA_ID_COLORS`: EraId → building era rengi. BuildingPopup + TimelineBar era pills + GlobeSelector senkron. _New._
 
-- [ ] **Multi-City Event Data**: 5 şehir × 30–50 olay. Wikidata SPARQL sorgusu ile çek, JSON düzenle. Her şehir için `/public/cities/{city}/events/` doldur. _Arkadaşın görevi — veri toplama._
+- [x] **Multi-City Event Data**: Plan değişti — Wikidata SPARQL yerine akademik literatür. 11 şehrin tamamı akademik İngilizce olaylarla dolduruldu (8–22 olay/şehir), APA in-text citation + şehir başına `events/references.md` bibliyografyası. Wikipedia referans olarak kullanılmadı; `wikiSlug` yalnız UI "Daha fazla" linki için. _(2026-07: NY/Paris/Vienna/Chicago/London/Barcelona/Madrid/Moscow/Tokyo; 2026-07-22: Berlin + İstanbul TR→EN çevrildi — 11/11 aynı format.)_
 
 ---
 
-## SPRINT 6 — Fluid Heatmap & Layers
+## ARA SPRINT (2026-06-22 → 2026-07-22) — v0.3 Görsel Cila + Performans
+
+> Planlanmamış ama gerçekleşen iş. UX_advice.md + Fable_Advice.md kaynaklı.
+
+- [x] **NASA Texture Upgrade**: Globe gece 8K Black Marble (7.7MB) + gündüz Blue Marble (2.4MB). Progressive yükleme: önce `earth-night-2048.jpg` (0.6MB) anında, 8K arkada inince swap.
+- [x] **Galaxy Intro + Starfield**: Kamera z 30→18 ease-out zoom (1.75s), 1800 yıldız + 380 mavi Samanyolu bandı noktası (`THREE.Points`).
+- [x] **UX_advice 1A–1G**: Connector dash-flow animasyonu, atmosfer rim 0.20/0.10, mouse parallax (sentinel-guard'lı), city card `scale(0.94→1)` entrance, FLY TO hover glow (color-mix), fly-to kamera animasyonu (24-frame lerp → navigate, reduced-motion'da direkt navigate).
+- [x] **Şehir Ekranı Cilası**: Gece modu bina wireframe, satellite opacity 0.45/0.28, map-vignette, `city-year-bg` dekoratif yıl overlay, BuildingPopup isim 2 satır clamp.
+- [x] **Fable Batch 1 — Performans (2026-07-22)**: Bina katmanı dated/undated ikiye bölündü — pulse artık layer opacity uniform'u (170K binanın fill color attribute'u 20fps yeniden hesaplanmıyor; undated yoksa RAF hiç çalışmıyor). Route-level code splitting (`React.lazy`: Three.js yalnız /globe, deck.gl yalnız /city). Font self-host (@fontsource: Space Grotesk + Inter + JetBrains Mono — JetBrains Mono ilk kez gerçekten yükleniyor). Ölü deps çıkarıldı: tone/gsap/maplibre-gl/react-map-gl (−57 paket). `useCityEvents` module cache, zoom store yazımı 0.1 adım guard'lı, GlobeSelector unmount'ta tam scene dispose (GPU leak fix).
+- [x] **Deep-link**: `/city/:id?year=1931` — mount'ta okur, `YearUrlSync` debounced replaceState ile yazar. Jüri demo script'i için tek-link yıl atlama.
+- [x] **EventPopup**: wiki linkleri `en.wikipedia.org` (içerik akademik İngilizce olduğundan).
+- [x] **Sürüm senkronu**: package.json 0.1.0 → 0.3.0 (README badge ile uyumlu).
+
+---
+
+> **⚠️ Vizyon değişikliği (2026-06-21):** Aşağıdaki Sprint 6–9 ESKİ vizyona ait. FluidHeatmap, WebSocket ses notu, StreetViewBlend, CompareMode, PWA **iptal / süresiz ertelendi** — yerini CAPSTONE ML + NLP aldı. Bölümler tarihsel kayıt olarak duruyor.
+
+## SPRINT 6 — Fluid Heatmap & Layers _(ESKİ VİZYON — İPTAL)_
 
 - [ ] **FluidHeatmap — Navier-Stokes Particle**: Canvas 2D veya WebGL particle sistemi. IBB/OpenData API'den nüfus/trafik verisi density'ye dönüştürür. `animate-in` opacity + scale. _New. Depends on: MapCanvas._
 
@@ -97,7 +116,7 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 ---
 
-## SPRINT 7 — Realtime & AI
+## SPRINT 7 — Realtime & AI _(ESKİ VİZYON — GeminiReportDrawer yerini NLP capstone'a bıraktı)_
 
 - [ ] **WebSocket — Ses Notu**: FastAPI `/ws` endpoint. Haritada uzun basınca pin düşer, mikrofon izni, kayıt → broadcast. Diğer kullanıcılar hover'da duyar. _New. Depends on: FastAPI Backend._
 
@@ -107,7 +126,7 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 ---
 
-## SPRINT 8 — Onboarding & Polish
+## SPRINT 8 — Onboarding & Polish _(ESKİ VİZYON — shortcut overlay fiilen yapıldı, kalanı iptal)_
 
 - [ ] **OnboardingPopups**: İlk girişte scroll-triggered tooltip popup'ları (max 4 adım): Timeline kullan, Şehir seç, Olaya tıkla, Ses notu bırak. LocalStorage'da "görüldü" flag. _New._
 
@@ -117,7 +136,7 @@ React Router v6 bağlandı: `/` → IntroScene, `/globe` → GlobeSelector, `/ci
 
 ---
 
-## SPRINT 9 — PWA & Responsive
+## SPRINT 9 — PWA & Responsive _(ERTELENDİ — demo sonrası)_
 
 - [ ] **PWAShell**: `vite-plugin-pwa` konfigürasyonu. Service worker, offline cache (static assets + son kullanılan şehir verisi). Install prompt. _New._
 
@@ -270,3 +289,5 @@ Guided tour demo scripti
 | S10 | Design review + final polish + demo | Teknik rapor (mimari + ML metodoloji + sonuçlar) |
 
 > **Durum özeti (2026-06-21):** SDP1 S0–S5 **TAMAMEN** tamamlandı. UI altyapısı bitirme projesi için hazır. Şehirler: 11 (NY/Chicago/Berlin/Vienna/Paris/London/Barcelona/Madrid/Tokyo/Moscow/İstanbul). Veri analizi: NY %98 year, Berlin %10, diğerleri <%6 — PLUTO+GHSL ile zenginleştirilecek. **Yeni vizyon onaylandı (2026-06-21):** Çok şehirli bina era tahmin ML modeli (XGBoost/MLP, tabular geometrik features) + Llama 3.1 8B local RAG chatbot (function calling ile app state kontrolü) + data provenance katmanı (PLUTO/Geoportal/GHSL/AI badge'leri). Danışman: 3 ML/AI geçmişli hoca, Amerika geçmişli — akademik rigor bekleniyor. Sıradaki: ML-1 veri mühendisliği (PLUTO pipeline).
+
+> **Durum özeti (2026-07-22):** SDP1 S0–S5 + v0.3 ara sprint (görsel cila + performans) tamam. **ML-1/2/3 tamam**: 43.5K etiketli bina, XGBoost CV F1=0.561 (cross-city bulgular belgeli), 3 inference endpoint çalışıyor. Events: **11/11 şehir akademik İngilizce + APA + references.md**. Müzik: motor hazır, mp3 yok — `FEATURES.music=false`. Sürüm 0.3.0, master push güncel (`546fa20`). **Sıradaki: ML-4 frontend entegrasyonu** (provenance badge, AI tahmin katmanı, filtre paneli — backend hazır, frontend'de sıfır /api çağrısı var!) + NLP capstone (Ollama+RAG). Bilinen borçlar Fable_Advice.md'de: GeoJSON diyet+brotli (2.2), era histogram (1.5), metodoloji modal (1.7), i18n (3.2), loading gerçek % (3.5), Vitest+CI (1.11). Backend taşınabilirlik fix'i gerekli: `main.py:237` predict.parquet yolu hardcode (`D:\PROJELER\ml_data`).
